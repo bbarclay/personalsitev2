@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Logo } from "@/components/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <Script id="mathjax-config" strategy="beforeInteractive">
           {`
@@ -38,17 +41,28 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <nav className="bg-blue-600 text-white p-4">
-          <div className="container mx-auto flex justify-between items-center">
-            <a href="/" className="text-xl font-bold">Brandon's Site</a>
-            <div className="space-x-4">
-              <a href="/" className="hover:underline">Home</a>
-              <a href="/math" className="hover:underline">Math</a>
-              <a href="/ai" className="hover:underline">AI</a>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <nav className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-md p-4">
+            <div className="container mx-auto flex justify-between items-center">
+              <a href="/" className="flex items-center space-x-2">
+                <Logo width={36} height={36} />
+                <span className="text-xl font-bold">Brandon's Site</span>
+              </a>
+              <div className="flex items-center space-x-4">
+                <a href="/" className="hover:underline">Home</a>
+                <a href="/math" className="hover:underline">Math</a>
+                <a href="/ai" className="hover:underline">AI</a>
+                <ThemeToggle />
+              </div>
             </div>
-          </div>
-        </nav>
-        <main>{children}</main>
+          </nav>
+          <main className="min-h-screen bg-gray-50 dark:bg-slate-900">{children}</main>
+        </ThemeProvider>
       </body>
     </html>
   );
