@@ -1,0 +1,64 @@
+"use client";
+
+import React from 'react';
+import { ToolPageLayout, createDynamicPanelComponent } from '@/components/layouts/ToolPageLayout';
+import dynamic from 'next/dynamic';
+import { ToolMeta, DEFAULT_SIDEBAR_TABS } from '@/types/tool-types';
+
+// Dynamic imports for panels
+const SolverPanel = dynamic(() => import('./components/SolverPanel'));
+const ExplanationPanel = dynamic(() => import('./components/ExplanationPanel'));
+const ApplicationsPanel = dynamic(() => import('./components/ApplicationsPanel'));
+const ResourcesPanel = dynamic(() => import('./components/ResourcesPanel'));
+
+// Import and validate metadata
+import metaJson from './meta.json';
+
+// Ensure color is a string for the ToolMeta type
+const colorString = typeof metaJson.color === 'string' 
+  ? metaJson.color 
+  : (typeof metaJson.color === 'object' && metaJson.color !== null && 'gradient' in metaJson.color
+    ? (metaJson.color as any).gradient 
+    : 'from-purple-500 to-indigo-500');
+
+// Cast and validate the meta data
+const meta: ToolMeta = {
+  ...metaJson,
+  id: metaJson.id || 'riemann',
+  title: metaJson.title || 'Riemann Calculator',
+  description: metaJson.description || 'Calculate Riemann sums for definite integrals',
+  category: metaJson.category || 'Math',
+  type: 'math' as const,
+  icon: metaJson.icon || 'ζ',
+  difficulty: metaJson.difficulty?.toLowerCase() as 'beginner' | 'intermediate' | 'advanced' || 'advanced',
+  lastUpdated: metaJson.lastUpdated || new Date().toISOString().split('T')[0],
+  color: colorString,
+  enabled: metaJson.enabled !== false,
+  tags: metaJson.tags || ['riemann', 'calculus', 'integration'],
+  keywords: metaJson.keywords || ['riemann', 'sum', 'calculus', 'integration'],
+  sidebar: metaJson.sidebar || {
+    tabs: DEFAULT_SIDEBAR_TABS
+  },
+  navigation: metaJson.navigation || {
+    category: {
+      title: 'Mathematics',
+      path: '/math'
+    }
+  }
+};
+
+// Create dynamic panel component with proper props for ExplanationPanel
+const RiemannContent = createDynamicPanelComponent({
+  solver: SolverPanel,
+  explanation: () => <ExplanationPanel explanation="The Riemann zeta function is a fundamental function in number theory that extends the concept of summing series to complex numbers. It has deep connections to prime numbers and the distribution of primes." />,
+  applications: ApplicationsPanel,
+  resources: ResourcesPanel
+});
+
+export default function RiemannPage() {
+  return (
+    <ToolPageLayout meta={meta}>
+      <RiemannContent />
+    </ToolPageLayout>
+  );
+}

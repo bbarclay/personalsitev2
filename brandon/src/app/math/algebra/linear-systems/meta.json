@@ -1,0 +1,80 @@
+{
+  "id": "linear-systems",
+  "title": "Linear Systems Solver",
+  "description": "Solve systems of linear equations step-by-step using elimination, substitution, or matrix methods. Visualize the solution process with interactive steps and graphical representation.",
+  "category": "Algebra",
+  "subcategory": "Equations",
+  "featured": true,
+  "difficulty": "intermediate",
+  "lastUpdated": "2023-03-29",
+  "icon": "function-square",
+  "tags": [
+    "linear systems",
+    "simultaneous equations",
+    "elimination",
+    "substitution",
+    "matrices",
+    "algebra"
+  ],
+  "keywords": [
+    "linear systems",
+    "simultaneous equations",
+    "elimination",
+    "substitution",
+    "matrices",
+    "algebra"
+  ],
+  "relatedTools": [
+    "equation-solver",
+    "factorization"
+  ],
+  "type": "math",
+  "color": "from-blue-500 to-purple-500",
+  "enabled": true,
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Solver",
+        "icon": "🧮",
+        "color": {
+          "active": "bg-blue-500 text-white",
+          "hover": "bg-blue-100 dark:bg-blue-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "💡",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Algebra",
+      "path": "/math"
+    }
+  }
+}

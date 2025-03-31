@@ -1,0 +1,15 @@
+import { createToolPage } from '@/utils/tool-page';
+import metaJson from './meta.json';
+
+// Let's assume StatisticsTool is properly created elsewhere
+const StatisticsTool = () => {
+  return <div>Statistics Tool Implementation</div>;
+};
+
+// Create a standardized tool page with metadata and component
+const { meta, metadata, default: Page } = createToolPage(metaJson, StatisticsTool);
+
+// Export Next.js required values
+export { metadata };
+export { meta };
+export default Page; 

@@ -1,0 +1,581 @@
+"use client";
+
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import type { Metadata } from 'next';
+import meta from './meta.json';
+import { PlayControl } from '@/components/math-shared/PlayControl';
+import { Button } from "@/components/ui/button";
+// Input and Label are now used within sub-components, but keep Label for Slider
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+// Table related imports are now in StepVisualizer
+// import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+// Alert imports are now in CalculationStatus and SolutionDisplay
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Slider } from "@/components/ui/slider";
+// Select imports are now in SizeSelector
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+// Motion imports are now in CalculationStatus and SolutionDisplay
+// import { motion, AnimatePresence } from 'framer-motion';
+// Icon imports are now in CalculationStatus and SolutionDisplay
+// import { AlertCircle, CheckCircle, Info } from 'lucide-react';
+
+// Import the new reusable components
+import { MatrixInputGrid } from '@/components/math-shared/MatrixInputGrid';
+import { VectorInput } from '@/components/math-shared/VectorInput';
+import { SizeSelector } from '@/components/math-shared/SizeSelector';
+import { StepVisualizer } from '@/components/math-shared/StepVisualizer';
+import { SolutionDisplay } from '@/components/math-shared/SolutionDisplay';
+import { CalculationStatus } from '@/components/math-shared/CalculationStatus';
+import { ExampleSelector, ExampleSystem } from '@/components/math-shared/ExampleSelector';
+import { Navbar } from "@/components/navbar";
+import { ThemeProvider } from "@/components/theme-provider";
+
+// TODO: Implement actual Gaussian elimination logic
+// Placeholder for Gaussian elimination steps and result
+type EliminationStep = {
+  matrix: number[][];
+  vector: number[];
+  explanation: string;
+  highlight?: { type: 'row' | 'col' | 'element'; index: number | [number, number] };
+};
+
+const MAX_SIZE = 6; // Limit matrix size for performance/display
+
+const LinearSolverPage = () => {
+  const [matrixSize, setMatrixSize] = useState<number>(3);
+  const [matrixA, setMatrixA] = useState<string[][]>([]);
+  const [vectorB, setVectorB] = useState<string[]>([]);
+  const [solutionX, setSolutionX] = useState<number[] | null>(null);
+  const [stepsHistory, setStepsHistory] = useState<EliminationStep[]>([]);
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [animationSpeed, setAnimationSpeed] = useState<number>(1); // 1x speed
+  // Removed pendingSize state
+
+  // Function to reset matrix/vector state for a given size, optionally pre-filling with data
+  const resetMatrixForNewSize = (
+      size: number,
+      initialMatrix?: number[][],
+      initialVector?: number[]
+  ) => {
+    const newMatrixA = Array(size).fill(0).map(() => Array(size).fill(''));
+    const newVectorB = Array(size).fill('');
+
+    if (initialMatrix && initialVector && initialMatrix.length === size && initialVector.length === size) {
+      // Pre-fill with example data, converting numbers to strings
+      for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+          // Ensure initialMatrix[i] exists before accessing [j]
+          newMatrixA[i][j] = String(initialMatrix[i]?.[j] ?? '');
+        }
+        newVectorB[i] = String(initialVector[i] ?? '');
+      }
+    } else {
+      // Try to preserve existing values if size changes without an example
+      const currentMatrixA = matrixA;
+      const currentVectorB = vectorB;
+      if (currentMatrixA.length > 0 && currentVectorB.length > 0) {
+          for (let i = 0; i < Math.min(size, currentMatrixA.length); i++) {
+              for (let j = 0; j < Math.min(size, currentMatrixA[0]?.length || 0); j++) {
+                  newMatrixA[i][j] = currentMatrixA[i]?.[j] ?? ''; // Add nullish coalescing
+              }
+              if (i < currentVectorB.length) {
+                 newVectorB[i] = currentVectorB[i] ?? ''; // Add nullish coalescing
+              }
+          }
+      }
+    }
+
+    setMatrixA(newMatrixA);
+    setVectorB(newVectorB);
+    setSolutionX(null);
+    setStepsHistory([]);
+    setCurrentStepIndex(0);
+    setError(null);
+    setInfoMessage(null);
+    setIsPlaying(false);
+    // Return the string versions for immediate calculation if needed
+    return { matrixAStr: newMatrixA, vectorBStr: newVectorB };
+  };
+
+
+  // Initial setup on mount
+  useEffect(() => {
+    resetMatrixForNewSize(matrixSize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run only once on mount
+
+
+  // Define Example Systems
+  const examples: ExampleSystem[] = [
+    {
+      name: "Simple 2x2",
+      size: 2,
+      matrixA: [[2, 1], [1, 3]],
+      vectorB: [5, 5],
+      description: "A basic 2x2 system with a unique solution (x=2, y=1)."
+    },
+    {
+      name: "Standard 3x3",
+      size: 3,
+      matrixA: [[1, 1, 1], [0, 2, 5], [2, 5, -1]],
+      vectorB: [6, -4, 27],
+      description: "A typical 3x3 system (x=5, y=3, z=-2)."
+    },
+    {
+      name: "Needs Swap",
+      size: 3,
+      matrixA: [[0, 1, 1], [1, 2, 1], [2, 7, 9]],
+      vectorB: [4, 5, 18],
+      description: "Requires a row swap during elimination (x=-1, y=2, z=2)."
+    },
+    {
+      name: "Singular (Inf)",
+      size: 2,
+      matrixA: [[1, 2], [2, 4]],
+      vectorB: [3, 6],
+      description: "Singular system with infinite solutions (dependent equations)."
+    },
+    {
+        name: "Inconsistent",
+        size: 2,
+        matrixA: [[1, 2], [2, 4]],
+        vectorB: [3, 7], // Changed last element from 6 to 7
+        description: "Inconsistent system with no solution."
+    },
+  ];
+
+  const loadExample = (example: ExampleSystem) => {
+    // Reset matrix state *first*, pre-filling with example data
+    // This also updates the matrixA and vectorB states used by the input components
+    const { matrixAStr, vectorBStr } = resetMatrixForNewSize(example.size, example.matrixA, example.vectorB);
+    // Update the matrixSize state
+    setMatrixSize(example.size);
+    // Immediately trigger calculation with the loaded example data (as strings)
+    // Need a slight delay to ensure state updates propagate before calculation? Maybe not.
+    // Let's try calling it directly. If issues arise, consider setTimeout(..., 0)
+    performGaussianElimination(example.size, matrixAStr, vectorBStr);
+  };
+
+  const handleSizeChange = (value: string) => {
+    const newSize = parseInt(value, 10);
+    if (newSize >= 2 && newSize <= MAX_SIZE && newSize !== matrixSize) {
+      // Reset matrix state *first*, then update the size state
+      resetMatrixForNewSize(newSize);
+      setMatrixSize(newSize);
+    }
+  };
+
+  const handleMatrixInputChange = (rowIndex: number, colIndex: number, value: string) => {
+    const newMatrix = matrixA.map(row => [...row]);
+    // Allow only numbers, decimal points, and negative signs
+    if (/^-?\d*\.?\d*$/.test(value)) {
+      newMatrix[rowIndex][colIndex] = value;
+      setMatrixA(newMatrix);
+      setSolutionX(null); // Reset solution if input changes
+      setStepsHistory([]);
+      setCurrentStepIndex(0);
+    }
+  };
+
+  const handleVectorInputChange = (rowIndex: number, value: string) => {
+    const newVector = [...vectorB];
+     if (/^-?\d*\.?\d*$/.test(value)) {
+      newVector[rowIndex] = value;
+      setVectorB(newVector);
+      setSolutionX(null); // Reset solution if input changes
+      setStepsHistory([]);
+      setCurrentStepIndex(0);
+    }
+  };
+
+  // --- Gaussian Elimination Logic ---
+
+  // Helper to create deep copies for steps history
+  const deepCopyMatrix = (matrix: number[][]): number[][] => matrix.map(row => [...row]);
+  const deepCopyVector = (vector: number[]): number[] => [...vector];
+
+  // Modified to accept optional input data for immediate calculation after loading an example
+  const performGaussianElimination = (
+      inputSize: number = matrixSize,
+      inputMatrixA: string[][] = matrixA,
+      inputVectorB: string[] = vectorB
+  ) => {
+    setIsLoading(true);
+    setError(null);
+    setInfoMessage(null);
+    // Don't reset solution/steps here if called from loadExample,
+    // resetMatrixForNewSize already handled that.
+    // Only reset if called from the "Solve System" button (i.e., no args passed).
+    if (inputMatrixA === matrixA && inputVectorB === vectorB) {
+        setSolutionX(null);
+        setStepsHistory([]);
+        setCurrentStepIndex(0);
+        setIsPlaying(false);
+    }
+
+
+    // 1. Validate and Parse Inputs (use provided args or state)
+    const A: number[][] = [];
+    const b: number[] = [];
+    const n = inputSize; // Use the size passed in or from state
+
+    try {
+      for (let i = 0; i < n; i++) {
+        A[i] = [];
+        // Ensure inputVectorB has enough elements before accessing
+        if (i >= inputVectorB.length) throw new Error(`Input vector b is shorter than matrix size at row ${i + 1}.`);
+        const bVal = parseFloat(inputVectorB[i]);
+        if (isNaN(bVal)) throw new Error(`Invalid input in vector b at row ${i + 1}.`);
+        b[i] = bVal;
+
+        // Ensure inputMatrixA has enough rows/cols before accessing
+        if (i >= inputMatrixA.length) throw new Error(`Input matrix A has fewer rows than matrix size at row ${i + 1}.`);
+        if (inputMatrixA[i].length < n) throw new Error(`Input matrix A row ${i + 1} has fewer columns than matrix size.`);
+
+        for (let j = 0; j < n; j++) {
+          const aVal = parseFloat(inputMatrixA[i][j]);
+          if (isNaN(aVal)) throw new Error(`Invalid input in matrix A at row ${i + 1}, column ${j + 1}.`);
+          A[i][j] = aVal;
+        }
+      }
+    } catch (err: any) {
+      setError(err.message || "Invalid input. Please enter valid numbers.");
+      setIsLoading(false);
+      return;
+    }
+
+    // const n = inputSize; // n is already defined above
+    const steps: EliminationStep[] = [];
+    const augMatrix = A.map((row, i) => [...row, b[i]]); // Create augmented matrix [A|b]
+
+    const recordStep = (explanation: string, highlight?: EliminationStep['highlight']) => {
+      const currentA = augMatrix.map(row => row.slice(0, n));
+      const currentB = augMatrix.map(row => row[n]);
+      steps.push({
+        matrix: deepCopyMatrix(currentA),
+        vector: deepCopyVector(currentB),
+        explanation,
+        highlight
+      });
+    };
+
+    recordStep('Initial augmented matrix [A|b]. Starting forward elimination.');
+
+    // 2. Forward Elimination (Transform to Row Echelon Form)
+    try {
+      for (let i = 0; i < n; i++) {
+        // Find pivot (largest element in current column below current row)
+        let pivotRow = i;
+        for (let k = i + 1; k < n; k++) {
+          if (Math.abs(augMatrix[k][i]) > Math.abs(augMatrix[pivotRow][i])) {
+            pivotRow = k;
+          }
+        }
+        recordStep(`Finding pivot for column ${i + 1}. Largest absolute value is in row ${pivotRow + 1}.`, { type: 'col', index: i });
+
+        // Check for tiny pivot (potential singularity)
+        const pivotValue = augMatrix[pivotRow][i];
+        if (Math.abs(pivotValue) < 1e-10) {
+           // Check if the rest of the column is also zero
+           let columnIsZero = true;
+           for (let k = i + 1; k < n; k++) {
+               if (Math.abs(augMatrix[k][i]) >= 1e-10) {
+                   columnIsZero = false;
+                   break;
+               }
+           }
+           if (columnIsZero) {
+               recordStep(`Column ${i + 1} has a zero pivot and zeros below. The matrix might be singular. Continuing process.`, { type: 'col', index: i });
+               continue; // Skip this column if pivot and below are zero
+           } else {
+              // This case should ideally be handled by the pivot search finding a non-zero element if one exists.
+              // If we reach here, it implies an issue or a truly singular matrix where this column cannot be cleared.
+              recordStep(`Pivot in column ${i + 1} is zero or very small. Attempting to continue, but matrix might be singular.`, { type: 'element', index: [pivotRow, i] });
+              // We might still continue if a row swap brings a non-zero pivot later, but let's proceed cautiously.
+           }
+        }
+
+
+        // Swap rows if necessary
+        if (pivotRow !== i) {
+          [augMatrix[i], augMatrix[pivotRow]] = [augMatrix[pivotRow], augMatrix[i]];
+          recordStep(`Swap row ${i + 1} with row ${pivotRow + 1} to bring pivot to diagonal.`, { type: 'row', index: i });
+        }
+
+        // Check pivot again after potential swap
+        const currentPivotValue = augMatrix[i][i];
+         if (Math.abs(currentPivotValue) < 1e-10) {
+             // If pivot is still zero after swapping, the matrix is likely singular or dependent
+             recordStep(`Pivot at [${i+1},${i+1}] is zero after swapping. Matrix is singular (no unique solution).`, { type: 'element', index: [i, i] });
+             // Check for inconsistency (0 = non-zero)
+             let inconsistent = false;
+             for(let rowCheck = i; rowCheck < n; rowCheck++) {
+                 let rowIsZero = true;
+                 for (let colCheck = i; colCheck < n; colCheck++) {
+                     if (Math.abs(augMatrix[rowCheck][colCheck]) >= 1e-10) {
+                         rowIsZero = false;
+                         break;
+                     }
+                 }
+                 if (rowIsZero && Math.abs(augMatrix[rowCheck][n]) >= 1e-10) {
+                     inconsistent = true;
+                     recordStep(`Inconsistency found: Row ${rowCheck + 1} is all zeros in A, but non-zero in b (${augMatrix[rowCheck][n].toFixed(2)}). No solution exists.`, { type: 'row', index: rowCheck });
+                     throw new Error("System is inconsistent (no solution).");
+                 }
+             }
+             if (!inconsistent) {
+                 recordStep(`Zero pivot encountered, but system might have infinite solutions. Cannot proceed with standard back-substitution.`, { type: 'element', index: [i, i] });
+                 throw new Error("System has no unique solution (potentially infinite solutions).");
+             }
+             // If inconsistent, the error is already thrown. If potentially infinite, error is thrown.
+             // If we somehow continue, it means the column was skipped earlier.
+             continue; // Skip to next column if pivot is zero
+         }
+
+
+        // Eliminate elements below the pivot
+        for (let k = i + 1; k < n; k++) {
+          const factor = augMatrix[k][i] / currentPivotValue;
+          recordStep(`Eliminate element at [${k + 1}, ${i + 1}]. Operation: R${k + 1} = R${k + 1} - (${factor.toFixed(2)}) * R${i + 1}.`, { type: 'row', index: k });
+          for (let j = i; j <= n; j++) { // Apply to the rest of the row including 'b' part
+            augMatrix[k][j] -= factor * augMatrix[i][j];
+             // Handle potential floating point inaccuracies by zeroing out very small numbers
+             if (Math.abs(augMatrix[k][j]) < 1e-10) {
+                 augMatrix[k][j] = 0;
+             }
+          }
+           recordStep(`Result after applying operation to row ${k + 1}.`, { type: 'row', index: k });
+        }
+      }
+
+      recordStep('Forward elimination complete. Matrix is in row echelon form.');
+
+      // 3. Backward Substitution
+      const x: number[] = Array(n).fill(0);
+      for (let i = n - 1; i >= 0; i--) {
+         // Check for zero on diagonal during back substitution (another check for singularity)
+         if (Math.abs(augMatrix[i][i]) < 1e-10) {
+             // Check if corresponding b value is also zero for infinite solutions
+             if (Math.abs(augMatrix[i][n]) < 1e-10) {
+                 recordStep(`Zero pivot at [${i+1},${i+1}] during back-substitution, with b[${i+1}]=0. Infinite solutions likely.`, { type: 'element', index: [i, i] });
+                 throw new Error("System has no unique solution (potentially infinite solutions).");
+             } else {
+                 recordStep(`Zero pivot at [${i+1},${i+1}] during back-substitution, with b[${i+1}]!=0. System is inconsistent.`, { type: 'element', index: [i, i] });
+                 throw new Error("System is inconsistent (no solution).");
+             }
+         }
+
+        let sum = 0;
+        for (let j = i + 1; j < n; j++) {
+          sum += augMatrix[i][j] * x[j];
+        }
+        x[i] = (augMatrix[i][n] - sum) / augMatrix[i][i];
+        recordStep(`Back-substituting for x${i + 1}: (${augMatrix[i][n].toFixed(2)} - ${sum.toFixed(2)}) / ${augMatrix[i][i].toFixed(2)} = ${x[i].toFixed(2)}.`, { type: 'element', index: [i, i] });
+      }
+
+      recordStep('Backward substitution complete. Solution found.');
+      setSolutionX(x);
+      setInfoMessage("Gaussian elimination complete. Solution found.");
+
+    } catch (err: any) {
+      setError(err.message || "An error occurred during calculation.");
+      // Keep the steps recorded up to the point of error
+    } finally {
+      setStepsHistory(steps);
+      setIsLoading(false);
+    }
+  };
+
+  // --- Playback Controls ---
+  const handlePlay = () => {
+    if (stepsHistory.length > 0 && currentStepIndex < stepsHistory.length - 1) {
+      setIsPlaying(true);
+    }
+  };
+
+  const handlePause = () => {
+    setIsPlaying(false);
+  };
+
+  const handleReset = () => {
+    resetMatrixForNewSize(matrixSize); // Reset inputs and state using the current size
+  };
+
+  const handleStep = () => {
+    if (currentStepIndex < stepsHistory.length - 1) {
+      setCurrentStepIndex(prev => prev + 1);
+      setIsPlaying(false); // Pause if stepping manually
+    }
+  };
+
+  // Effect for automatic stepping when playing
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
+    if (isPlaying && currentStepIndex < stepsHistory.length - 1) {
+      const delay = 1500 / animationSpeed; // Adjust delay based on speed
+      intervalId = setInterval(() => {
+        setCurrentStepIndex(prev => {
+          const nextStep = prev + 1;
+          if (nextStep >= stepsHistory.length - 1) {
+            setIsPlaying(false); // Stop at the last step
+          }
+          return nextStep;
+        });
+      }, delay);
+    } else {
+      setIsPlaying(false); // Ensure playing stops if at the end
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isPlaying, currentStepIndex, stepsHistory.length, animationSpeed]);
+
+  const currentDisplayStep = stepsHistory[currentStepIndex];
+
+  // --- Rendering ---
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <Card className="mb-8 shadow-lg border-indigo-500/20">
+        <CardHeader>
+          <CardTitle className="text-3xl font-bold text-gradient bg-gradient-to-r from-sky-600 to-cyan-500">{meta.title}</CardTitle>
+          <CardDescription>
+            {meta.description}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Input Section */}
+            <Card className="lg:col-span-1 shadow-md">
+        <CardHeader>
+          <CardTitle className="text-3xl font-bold text-gradient bg-gradient-to-r from-sky-600 to-cyan-500 shadow-md">Input System Ax = b</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+           
+                <SizeSelector
+                  currentSize={matrixSize}
+                  maxSize={MAX_SIZE}
+                  onSizeChange={handleSizeChange}
+                  disabled={isLoading || isPlaying}
+                />
+
+                <MatrixInputGrid
+                  matrix={matrixA}
+                  size={matrixSize}
+                  onChange={handleMatrixInputChange}
+                  disabled={isLoading || isPlaying}
+                />
+
+                <VectorInput
+                  vector={vectorB}
+                  size={matrixSize}
+                  onChange={handleVectorInputChange}
+                  disabled={isLoading || isPlaying}
+                />
+              </CardContent>
+              <CardFooter>
+                {/* Pass default args to ensure it uses current state */}
+                <Button onClick={() => performGaussianElimination()} disabled={isLoading || isPlaying} className="w-full">
+                  {isLoading ? 'Calculating...' : 'Solve System'}
+                </Button>
+              </CardFooter>
+            </Card>
+
+            {/* Visualization and Control Section */}
+            <Card className="lg:col-span-2 shadow-md">
+              <CardHeader>
+                <CardTitle>Step-by-Step Visualization</CardTitle>
+                <CardDescription>Watch the Gaussian elimination process unfold.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Controls */}
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                  <PlayControl
+                    isPlaying={isPlaying}
+                    onPlay={handlePlay}
+                    onPause={handlePause}
+                    onReset={handleReset}
+                    onStep={handleStep}
+                    disabled={isLoading || stepsHistory.length === 0}
+                  />
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                     <Label htmlFor="speed-slider" className="whitespace-nowrap">Speed:</Label>
+                     <Slider
+                        id="speed-slider"
+                        min={0.5}
+                        max={3}
+                        step={0.5}
+                        value={[animationSpeed]}
+                        onValueChange={(value) => setAnimationSpeed(value[0])}
+                        className="w-full sm:w-[150px]"
+                        disabled={isLoading}
+                     />
+                     <span className="text-sm w-[30px] text-right">{animationSpeed.toFixed(1)}x</span>
+                  </div>
+                </div>
+
+                <CalculationStatus error={error} infoMessage={infoMessage} />
+
+                <StepVisualizer
+                  stepData={currentDisplayStep}
+                  stepIndex={currentStepIndex}
+                  totalSteps={stepsHistory.length}
+                  matrixSize={matrixSize}
+                />
+
+                <SolutionDisplay solution={solutionX} error={error} />
+              </CardContent>
+              <CardFooter>
+                 {/* Maybe add export options later */}
+              </CardFooter>
+            </Card>
+
+            {/* Explanation/Theory Section (Placeholder) */}
+            <Card className="lg:col-span-3 shadow-md">
+               <CardHeader>
+                 <CardTitle>How it Works: Gaussian Elimination</CardTitle>
+               </CardHeader>
+               <CardContent className="prose dark:prose-invert max-w-none">
+                 <p>
+                   Gaussian elimination is a systematic method for solving systems of linear equations. The goal is to transform the augmented matrix [A|b] into an upper triangular form (row echelon form) using elementary row operations:
+                 </p>
+                 <ol>
+                   <li><strong>Swapping two rows:</strong> Changes the order of equations.</li>
+                   <li><strong>Multiplying a row by a non-zero scalar:</strong> Scales an equation.</li>
+                   <li><strong>Adding a multiple of one row to another row:</strong> Combines equations to eliminate variables.</li>
+                 </ol>
+                 <p>
+                   Once the matrix is in row echelon form, the solution can be found using back-substitution, starting from the last equation and working upwards.
+                 </p>
+                 <p>
+                   This interactive tool visualizes each step of the process. Use the controls to play through the steps, step forward manually, or reset the system.
+                 </p>
+                 {/* TODO: Add more detailed explanations, link steps to theory */}
+               </CardContent>
+            </Card>
+
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* CSS for Text Gradient */}
+      <style jsx>{`
+        .text-gradient {
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          text-fill-color: transparent;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default LinearSolverPage;

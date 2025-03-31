@@ -1,0 +1,67 @@
+"use client";
+
+import React from 'react';
+import { ToolPageLayout, createDynamicPanelComponent } from '@/components/layouts/ToolPageLayout';
+import { ToolMeta, DEFAULT_SIDEBAR_TABS } from '@/types/tool-types';
+
+// Import and validate metadata
+import metaJson from './meta.json';
+
+// Ensure color is a string for the ToolMeta type
+const colorString = typeof metaJson.color === 'string' 
+  ? metaJson.color 
+  : (typeof metaJson.color === 'object' && metaJson.color !== null && 'gradient' in metaJson.color
+    ? (metaJson.color as any).gradient 
+    : 'from-blue-500 to-indigo-500');
+
+// Cast and validate the meta data
+const meta: ToolMeta = {
+  ...metaJson,
+  id: metaJson.id || 'math-template',
+  title: metaJson.title || 'Math Template',
+  description: metaJson.description || 'Template for creating new math tools',
+  category: metaJson.category || 'Math',
+  type: 'math' as const,
+  icon: metaJson.icon || '🧮',
+  difficulty: metaJson.difficulty?.toLowerCase() as 'beginner' | 'intermediate' | 'advanced' || 'intermediate',
+  lastUpdated: metaJson.lastUpdated || new Date().toISOString().split('T')[0],
+  color: colorString,
+  enabled: metaJson.enabled !== false,
+  tags: metaJson.tags || ['template', 'math', 'tool'],
+  keywords: metaJson.keywords || ['template', 'math tool', 'starter', 'example'],
+  sidebar: metaJson.sidebar || {
+    tabs: DEFAULT_SIDEBAR_TABS
+  },
+  navigation: metaJson.navigation || {
+    category: {
+      title: 'Mathematics',
+      path: '/math'
+    }
+  }
+};
+
+// Basic placeholder components
+const PlaceholderPanel = () => (
+  <div className="p-4">
+    <h2 className="text-2xl font-bold mb-4">Math Tool Template</h2>
+    <p className="text-gray-700 dark:text-gray-300">
+      This is a template for creating new math tools. Replace this component with your actual implementation.
+    </p>
+  </div>
+);
+
+// Create dynamic panel component with placeholders
+const TemplateContent = createDynamicPanelComponent({
+  solver: PlaceholderPanel,
+  explanation: PlaceholderPanel,
+  applications: PlaceholderPanel,
+  resources: PlaceholderPanel
+});
+
+export default function TemplatePage() {
+  return (
+    <ToolPageLayout meta={meta}>
+      <TemplateContent />
+    </ToolPageLayout>
+  );
+} 

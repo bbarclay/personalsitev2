@@ -1,0 +1,29 @@
+import React from 'react';
+import { Metadata } from 'next';
+import { TaylorSeries } from './components/TaylorSeries';
+import { MathToolHeader } from '@/components/math-shared/MathToolHeader';
+import meta from './meta.json';
+
+export const metadata: Metadata = {
+  title: `${meta.title} | Math Tools`,
+  description: meta.description,
+};
+
+export default function TaylorSeriesPage() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <MathToolHeader
+        title={meta.title}
+        icon={meta.icon}
+        category={meta.category}
+        subcategory={meta.subcategory}
+        difficulty={meta.difficulty as "beginner" | "intermediate" | "advanced"}
+        description={meta.description}
+      />
+      
+      <div className="mt-8">
+        <TaylorSeries />
+      </div>
+    </div>
+  );
+}

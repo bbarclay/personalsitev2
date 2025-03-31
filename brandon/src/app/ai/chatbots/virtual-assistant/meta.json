@@ -1,0 +1,83 @@
+{
+  "id": "virtual-assistant",
+  "title": "AI Virtual Assistant",
+  "description": "A conversational AI assistant that can answer questions, provide recommendations, and help with various tasks",
+  "category": "Chatbots",
+  "subcategory": "Assistants",
+  "featured": true,
+  "difficulty": "beginner",
+  "lastUpdated": "2023-03-29",
+  "icon": "🤖",
+  "color": "from-blue-600 to-purple-600",
+  "shape": "circle",
+  "enabled": true,
+  "tags": [
+    "chatbot",
+    "virtual assistant",
+    "conversation",
+    "Q&A",
+    "helper"
+  ],
+  "keywords": [
+    "assistant",
+    "chat",
+    "conversation",
+    "help",
+    "question answering"
+  ],
+  "type": "ai",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Solver",
+        "icon": "🧮",
+        "color": {
+          "active": "bg-blue-500 text-white",
+          "hover": "bg-blue-100 dark:bg-blue-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "💡",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "AI Tools",
+      "path": "/ai"
+    },
+    "nextTools": [
+      {
+        "id": "code-assistant",
+        "title": "Code Assistant",
+        "icon": "👨‍💻",
+        "path": "/ai/code-generation/code-assistant"
+      }
+    ]
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": "sentiment-analyzer",
+  "title": "AI Sentiment Analyzer",
+  "description": "Analyze the sentiment of text to determine positive, negative, or neutral emotions",
+  "category": "Data Analysis",
+  "subcategory": "Text Analysis",
+  "featured": false,
+  "difficulty": "intermediate",
+  "lastUpdated": "2023-03-29",
+  "icon": "😊",
+  "color": "from-yellow-600 to-orange-600",
+  "shape": "circle",
+  "enabled": true,
+  "tags": [
+    "sentiment analysis",
+    "text analysis",
+    "emotions",
+    "opinion mining"
+  ],
+  "keywords": [
+    "sentiment",
+    "emotion",
+    "text analysis",
+    "opinion",
+    "feeling"
+  ],
+  "type": "ai",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Solver",
+        "icon": "🧮",
+        "color": {
+          "active": "bg-blue-500 text-white",
+          "hover": "bg-blue-100 dark:bg-blue-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "💡",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "AI Tools",
+      "path": "/ai"
+    },
+    "nextTools": [
+      {
+        "id": "image-creator",
+        "title": "Image Creator",
+        "icon": "🖼️",
+        "path": "/ai/image-generation/image-creator"
+      }
+    ]
+  }
+}

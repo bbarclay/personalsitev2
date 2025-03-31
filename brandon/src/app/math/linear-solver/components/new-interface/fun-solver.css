@@ -1,0 +1,254 @@
+/* Fun animations and styles for the Linear Solver */
+
+/* Animation keyframes */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes dash {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes blob {
+  0%, 100% {
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  }
+  25% {
+    border-radius: 50% 50% 30% 70% / 60% 40% 60% 40%;
+  }
+  50% {
+    border-radius: 30% 70% 70% 30% / 50% 60% 40% 50%;
+  }
+  75% {
+    border-radius: 70% 30% 50% 50% / 40% 50% 50% 60%;
+  }
+}
+
+@keyframes confetti {
+  0% { transform: translateY(0) rotate(0); opacity: 1; }
+  100% { transform: translateY(500px) rotate(360deg); opacity: 0; }
+}
+
+/* Utility animation classes */
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.animate-rotate {
+  animation: rotate 20s linear infinite;
+}
+
+.animate-bounce-slow {
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, 
+    rgba(255,255,255,0) 0%, 
+    rgba(255,255,255,0.2) 50%, 
+    rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-dash {
+  stroke-dasharray: 10;
+  stroke-dashoffset: 10;
+  animation: dash 1.5s linear infinite;
+}
+
+.animate-blob {
+  animation: blob 10s linear infinite;
+}
+
+/* Animation delays */
+.animation-delay-100 { animation-delay: 100ms; }
+.animation-delay-200 { animation-delay: 200ms; }
+.animation-delay-300 { animation-delay: 300ms; }
+.animation-delay-500 { animation-delay: 500ms; }
+.animation-delay-1000 { animation-delay: 1000ms; }
+.animation-delay-2000 { animation-delay: 2000ms; }
+.animation-delay-4000 { animation-delay: 4000ms; }
+
+/* Fun Matrix Input Styles */
+.matrix-input-fun input {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 2px solid transparent;
+}
+
+.matrix-input-fun input:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.matrix-input-fun input:focus {
+  background-color: rgba(224, 231, 255, 0.5);
+  border-color: rgba(99, 102, 241, 0.8);
+  outline: none;
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(99, 102, 241, 0.2);
+}
+
+/* Vector input enhancements */
+.vector-input-fun input {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 2px solid transparent;
+}
+
+.vector-input-fun input:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: rgba(217, 70, 239, 0.5);
+}
+
+.vector-input-fun input:focus {
+  background-color: rgba(240, 219, 255, 0.5);
+  border-color: rgba(217, 70, 239, 0.8);
+  outline: none;
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(217, 70, 239, 0.2);
+}
+
+/* Glass card effect */
+.glass-card {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.dark .glass-card {
+  background-color: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(30, 41, 59, 0.3);
+}
+
+.glass-card:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Fun Button Styles */
+.fun-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.fun-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease, height 0.5s ease;
+}
+
+.fun-button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Confetti Animation for Celebrations */
+.confetti-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 0;
+  animation: confetti 3s ease-in-out forwards;
+}
+
+/* Decorative floating elements */
+.floating-decorations {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.floating-decorations div {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(45deg, rgba(99, 102, 241, 0.3), rgba(217, 70, 239, 0.3));
+  filter: blur(5px);
+}
+
+/* Media Queries for better mobile experience */
+@media (max-width: 768px) {
+  .matrix-input-fun input, 
+  .vector-input-fun input {
+    font-size: 14px;
+    padding: 6px;
+  }
+  
+  .glass-card {
+    padding: 10px;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .matrix-input-fun input, 
+  .vector-input-fun input {
+    border-width: 1px;
+    font-size: 12px;
+    padding: 4px;
+  }
+} 

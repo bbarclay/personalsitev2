@@ -1,0 +1,122 @@
+---
+title: "Gaussian Elimination"
+description: "Understanding the Gaussian Elimination method for solving linear systems"
+---
+
+import { Callout } from 'nextra/components'
+import GaussianEliminationDemo from '../../../components/demos/GaussianEliminationDemo'
+
+# Gaussian Elimination
+
+<Callout type="info">
+  Gaussian elimination is a systematic procedure for solving systems of linear equations by transforming the system into an equivalent system with an upper triangular matrix.
+</Callout>
+
+## Algorithm Overview
+
+Gaussian elimination consists of two main phases:
+1. **Forward elimination**: Transform the augmented matrix [A|b] into an upper triangular form
+2. **Back substitution**: Solve for the unknowns using the triangular system
+
+## Mathematical Formulation
+
+Consider a system of linear equations:
+
+$$
+\begin{align}
+a_{11}x_1 + a_{12}x_2 + \ldots + a_{1n}x_n &= b_1 \\
+a_{21}x_1 + a_{22}x_2 + \ldots + a_{2n}x_n &= b_2 \\
+\vdots \\
+a_{m1}x_1 + a_{m2}x_2 + \ldots + a_{mn}x_n &= b_m
+\end{align}
+$$
+
+We represent this as an augmented matrix:
+
+$$
+\begin{bmatrix}
+a_{11} & a_{12} & \cdots & a_{1n} & | & b_1 \\
+a_{21} & a_{22} & \cdots & a_{2n} & | & b_2 \\
+\vdots & \vdots & \ddots & \vdots & | & \vdots \\
+a_{m1} & a_{m2} & \cdots & a_{mn} & | & b_m
+\end{bmatrix}
+$$
+
+## Step-by-Step Procedure
+
+1. For each column k from 1 to n-1:
+   - Find the pivot (usually the element with the largest absolute value in the current column)
+   - Swap rows if necessary (partial pivoting)
+   - For each row i below the pivot row k:
+     - Calculate the factor: $m_{ik} = a_{ik} / a_{kk}$
+     - For each element j from k to n:
+       - Set $a_{ij} = a_{ij} - m_{ik} \times a_{kj}$
+     - Set $b_i = b_i - m_{ik} \times b_k$
+
+2. Once in upper triangular form, solve for x using back substitution:
+   - $x_n = b_n / a_{nn}$
+   - For i from n-1 to 1:
+     - $x_i = (b_i - \sum_{j=i+1}^{n} a_{ij}x_j) / a_{ii}$
+
+## Implementation
+
+Here's a Python implementation of the Gaussian elimination algorithm:
+
+```python
+import numpy as np
+
+def gaussian_elimination(A, b):
+    # Create an augmented matrix
+    n = len(b)
+    augmented = np.column_stack((A, b))
+    
+    # Forward elimination
+    for k in range(n-1):
+        # Partial pivoting
+        max_row = np.argmax(np.abs(augmented[k:, k])) + k
+        if max_row != k:
+            augmented[[k, max_row]] = augmented[[max_row, k]]
+            
+        for i in range(k+1, n):
+            factor = augmented[i, k] / augmented[k, k]
+            augmented[i, k:] -= factor * augmented[k, k:]
+    
+    # Back substitution
+    x = np.zeros(n)
+    for i in range(n-1, -1, -1):
+        x[i] = (augmented[i, -1] - np.sum(augmented[i, i+1:n] * x[i+1:])) / augmented[i, i]
+    
+    return x
+```
+
+## Complexity Analysis
+
+- Time Complexity: O(n³) for an n×n system
+- Space Complexity: O(n²)
+
+## Potential Issues
+
+<Callout type="warning">
+  Gaussian elimination can encounter numerical issues with ill-conditioned matrices or when pivots become very small.
+</Callout>
+
+1. **Zero Pivots**: If a pivot element is zero, the algorithm will fail unless row exchanges are performed.
+2. **Near-Zero Pivots**: Small pivots can lead to large multiplication factors, causing numerical instability.
+3. **Round-off Errors**: Accumulation of floating-point errors can affect the solution's accuracy.
+
+## Improvements
+
+Several enhancements to basic Gaussian elimination exist:
+
+1. **Partial Pivoting**: Selecting the largest element in the current column as the pivot.
+2. **Complete Pivoting**: Selecting the largest element in the remaining matrix as the pivot.
+3. **Scaled Pivoting**: Taking into account the relative magnitudes of elements.
+
+## Interactive Demonstration
+
+<GaussianEliminationDemo />
+
+## Related Methods
+
+- [LU Decomposition](/linear-solver/direct-methods/lu-decomposition)
+- [Gauss-Jordan Elimination](/linear-solver/direct-methods/gauss-jordan)

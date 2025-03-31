@@ -1,0 +1,91 @@
+{
+  "id": "linear-solver",
+  "title": "Linear System Solver",
+  "description": "Solve systems of linear equations step by step with detailed explanations and visualizations",
+  "category": "Linear Algebra",
+  "subcategory": "Matrix Operations",
+  "featured": true,
+  "type": "math",
+  "difficulty": "intermediate",
+  "lastUpdated": "2024-03-31",
+  "icon": "📊",
+  "color": "from-blue-500 to-purple-500",
+  "shape": "rectangle",
+  "enabled": true,
+  "tags": [
+    "linear algebra",
+    "matrix",
+    "vector",
+    "gaussian elimination",
+    "solver",
+    "equations"
+  ],
+  "keywords": [
+    "linear system",
+    "solver",
+    "gaussian elimination",
+    "matrix",
+    "vector",
+    "linear algebra"
+  ],
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Solver",
+        "icon": "⚡",
+        "color": {
+          "active": "bg-blue-500 text-white",
+          "hover": "bg-blue-100 dark:bg-blue-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Explanation",
+        "icon": "📚",
+        "color": {
+          "active": "bg-purple-500 text-white",
+          "hover": "bg-purple-100 dark:bg-purple-900"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Applications",
+        "icon": "🎯",
+        "color": {
+          "active": "bg-green-500 text-white",
+          "hover": "bg-green-100 dark:bg-green-900"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📖",
+        "color": {
+          "active": "bg-orange-500 text-white",
+          "hover": "bg-orange-100 dark:bg-orange-900"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Mathematics",
+      "path": "/math"
+    },
+    "nextTools": [
+      {
+        "id": "quadratic-solver",
+        "title": "Quadratic Solver",
+        "icon": "📈",
+        "path": "/math/quadratic-solver"
+      },
+      {
+        "id": "polynomial-solver",
+        "title": "Polynomial Solver",
+        "icon": "🔢",
+        "path": "/math/polynomial"
+      }
+    ]
+  }
+}

@@ -1,0 +1,2655 @@
+import React, { useState, useEffect, useRef } from 'react';
+
+const QuantumCatsGame = () => {
+  // Game states
+  const [gameStarted, setGameStarted] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
+  const [currentLevel, setCurrentLevel] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showTutorial, setShowTutorial] = useState(true);
+  const [tutorialStep, setTutorialStep] = useState(0);
+  const [username, setUsername] = useState('');
+  const [gameCompleted, setGameCompleted] = useState(false);
+  
+  // Quantum simulation states
+  const [qubits, setQubits] = useState([]);
+  const [superpositionState, setSuperpositionState] = useState({});
+  const [isMeasuring, setIsMeasuring] = useState(false);
+  const [measurementResult, setMeasurementResult] = useState(null);
+  const [collapseAnimation, setCollapseAnimation] = useState(false);
+  const [entangledQubits, setEntangledQubits] = useState([]);
+  const [quantumGates, setQuantumGates] = useState([]);
+  const [activeGate, setActiveGate] = useState(null);
+  
+  // Puzzle states
+  const [puzzleBoxes, setPuzzleBoxes] = useState([]);
+  const [puzzleSolved, setPuzzleSolved] = useState(false);
+  const [attempts, setAttempts] = useState(0);
+  const [showExplanation, setShowExplanation] = useState(false);
+  
+  // Animation effects
+  const catAnimationRef = useRef(null);
+  const waveAnimationRef = useRef(null);
+  const [catState, setCatState] = useState("superposition");
+  const [waveFunctionVisible, setWaveFunctionVisible] = useState(true);
+  
+  // Levels definition
+  const levels = [
+    {
+      id: 'intro',
+      name: 'The Cat Paradox',
+      description: 'Learn about quantum superposition through Schrödinger\'s famous thought experiment.',
+      minScore: 0,
+      completed: false
+    },
+    {
+      id: 'qubits',
+      name: 'Quantum Bits',
+      description: 'Explore qubits, the fundamental units of quantum information.',
+      minScore: 100,
+      completed: false
+    },
+    {
+      id: 'gates',
+      name: 'Quantum Gates',
+      description: 'Manipulate quantum states with gates to solve puzzles.',
+      minScore: 250,
+      completed: false
+    },
+    {
+      id: 'entanglement',
+      name: 'Quantum Entanglement',
+      description: 'Discover how particles can become entangled across distance.',
+      minScore: 400,
+      completed: false
+    },
+    {
+      id: 'application',
+      name: 'Quantum Applications',
+      description: 'Apply your quantum knowledge to real-world scenarios.',
+      minScore: 600,
+      completed: false
+    }
+  ];
+  
+  // Tutorial steps
+  const tutorialSteps = [
+    { 
+      text: "Welcome to Quantum Cats! I'm Professor Qubit, your guide to the quantum realm.",
+      character: "professor"
+    },
+    { 
+      text: "In this adventure, you'll learn about quantum superposition - one of the strangest and most powerful phenomena in physics.",
+      character: "professor"
+    },
+    { 
+      text: "Quantum superposition allows particles to exist in multiple states at once, until they're measured or observed.",
+      character: "professor"
+    },
+    { 
+      text: "We'll start with the famous Schrödinger's cat thought experiment. Don't worry - no actual cats are harmed in quantum physics!",
+      character: "professor"
+    },
+    { 
+      text: "Ready to begin your quantum journey? Enter your name and prepare to have your mind expanded!",
+      character: "professor"
+    }
+  ];
+  
+  // Quantum facts
+  const quantumFacts = [
+    "Quantum superposition allows particles to exist in multiple states simultaneously.",
+    "When measured, quantum systems 'collapse' from superposition to a definite state.",
+    "Quantum computers use superposition to perform calculations on multiple values at once.",
+    "Schrödinger's cat was a thought experiment to illustrate the paradoxical nature of quantum superposition.",
+    "The double-slit experiment demonstrates that particles like electrons can behave as both particles and waves.",
+    "Heisenberg's Uncertainty Principle states that we cannot simultaneously know both the position and momentum of a quantum particle with perfect accuracy.",
+    "Quantum tunneling allows particles to pass through energy barriers that would be impossible in classical physics.",
+    "Quantum entanglement enables particles to be connected in ways that their states remain correlated regardless of distance.",
+    "Quantum superposition is mathematically represented by wave functions.",
+    "The many-worlds interpretation suggests each quantum measurement creates branching parallel universes."
+  ];
+  
+  // Educational content for each level
+  const levelContent = [
+    // Level 1: Cat Paradox
+    {
+      title: "Schrödinger's Cat and Quantum Superposition",
+      sections: [
+        {
+          heading: "The Famous Thought Experiment",
+          content: "In 1935, physicist Erwin Schrödinger proposed a thought experiment involving a cat in a sealed box with a radioactive atom. If the atom decays, it triggers a mechanism that breaks a vial of poison, killing the cat. According to quantum mechanics, until we open the box to observe it, the atom exists in a superposition of 'decayed' and 'not decayed' states, making the cat simultaneously alive and dead."
+        },
+        {
+          heading: "What is Superposition?",
+          content: "Quantum superposition describes the ability of a quantum system to exist in multiple states at the same time. Unlike classical systems that must be in one definite state, quantum particles can exist in a combination of all possible states until measured. In our game, we represent superposition as a probability distribution across possible states."
+        },
+        {
+          heading: "Measurement Collapses the Wave Function",
+          content: "When we measure a quantum system, we force it from superposition into a single definite state - this is called 'wave function collapse.' The mathematics of quantum mechanics can only tell us the probability of observing each possible state, not predict which specific state will be observed."
+        }
+      ],
+      challenge: {
+        title: "Quantum Cat Challenge",
+        description: "In this puzzle, you need to determine which boxes might contain a cat in superposition. Click on a box to observe its contents. Use logic and probability to find all superposition cats with the fewest observations possible."
+      }
+    },
+    
+    // Level 2: Qubits
+    {
+      title: "Understanding Quantum Bits (Qubits)",
+      sections: [
+        {
+          heading: "From Classical Bits to Qubits",
+          content: "Classical computers use bits that are either 0 or 1. Quantum computers use qubits that can exist in a superposition of both 0 and 1 states simultaneously. This allows quantum computers to process multiple possibilities at once."
+        },
+        {
+          heading: "The Bloch Sphere",
+          content: "A qubit's state can be visualized using the Bloch sphere, where the north pole represents |0⟩, the south pole represents |1⟩, and points on the sphere represent superpositions of these states. The position on the sphere tells us the probability of measuring 0 or 1."
+        },
+        {
+          heading: "Multiple Qubits",
+          content: "With multiple qubits, the power of quantum computing grows exponentially. Two qubits can represent four states simultaneously (00, 01, 10, 11), three qubits can represent eight states, and so on. This exponential scaling gives quantum computers their potential advantage."
+        }
+      ],
+      challenge: {
+        title: "Qubit Configuration Challenge",
+        description: "Create a specific superposition state by adjusting the probability amplitudes of the qubits. Match the target state as closely as possible to advance."
+      }
+    },
+    
+    // Level 3: Quantum Gates
+    {
+      title: "Quantum Gates and Operations",
+      sections: [
+        {
+          heading: "Manipulating Qubits",
+          content: "Quantum gates are the building blocks of quantum circuits, similar to logic gates in classical computing. They transform qubit states in specific ways. Common quantum gates include the X gate (bit flip), Z gate (phase flip), and H gate (creates superposition)."
+        },
+        {
+          heading: "The Hadamard Gate",
+          content: "The Hadamard (H) gate is particularly important as it creates superposition from definite states. Applying it to |0⟩ creates an equal superposition of |0⟩ and |1⟩, giving 50% probability of measuring either outcome."
+        },
+        {
+          heading: "Building Quantum Circuits",
+          content: "By combining quantum gates in sequences, we create quantum circuits that perform calculations. The power of quantum computing comes from creatively combining these gates to solve problems that would be difficult for classical computers."
+        }
+      ],
+      challenge: {
+        title: "Quantum Circuit Challenge",
+        description: "Build a quantum circuit using available gates to transform the input state into the target output state. Think carefully about how each gate affects the qubits."
+      }
+    },
+    
+    // Level 4: Entanglement
+    {
+      title: "Quantum Entanglement",
+      sections: [
+        {
+          heading: "Spooky Action at a Distance",
+          content: "Einstein called quantum entanglement 'spooky action at a distance.' When two qubits become entangled, their states become correlated in such a way that measuring one instantly affects the other, regardless of how far apart they are."
+        },
+        {
+          heading: "Creating Entanglement",
+          content: "Entanglement can be created using quantum gates like the CNOT (Controlled-NOT) gate, which flips the second qubit only if the first qubit is in state |1⟩. This creates a correlation between the qubits that classical physics cannot explain."
+        },
+        {
+          heading: "Applications of Entanglement",
+          content: "Quantum entanglement enables powerful applications like quantum teleportation (transferring quantum states between particles) and super-dense coding (transmitting two classical bits using one qubit). It's also fundamental to quantum cryptography."
+        }
+      ],
+      challenge: {
+        title: "Entanglement Puzzle",
+        description: "Create entangled pairs of quantum cats and observe how measuring one affects the other. Use this property to solve the puzzle with minimal measurements."
+      }
+    },
+    
+    // Level 5: Applications
+    {
+      title: "Real-World Quantum Applications",
+      sections: [
+        {
+          heading: "Quantum Computing",
+          content: "Quantum computers leverage superposition and entanglement to potentially solve certain problems exponentially faster than classical computers. These include factoring large numbers (important for cryptography), searching unsorted databases, and simulating quantum systems."
+        },
+        {
+          heading: "Quantum Cryptography",
+          content: "Quantum key distribution uses the principles of quantum mechanics to establish secure communication channels. Any attempt to eavesdrop would disturb the quantum states, alerting the communicating parties to the intrusion."
+        },
+        {
+          heading: "Quantum Sensing",
+          content: "Quantum sensors use quantum coherence to achieve unprecedented sensitivity in measuring physical quantities like time, gravity, and electromagnetic fields. This has applications in navigation, medical imaging, and geological surveying."
+        }
+      ],
+      challenge: {
+        title: "Quantum Application Challenge",
+        description: "Apply your quantum knowledge to solve a real-world problem. Design a quantum solution for the scenario presented."
+      }
+    }
+  ];
+  
+  // Initialize level 1 puzzle
+  useEffect(() => {
+    if (gameStarted && currentLevel === 0 && puzzleBoxes.length === 0) {
+      // Create 9 boxes for the first puzzle
+      const boxes = Array(9).fill(null).map((_, index) => {
+        // Randomly assign some boxes to have superposition cats
+        const hasCat = Math.random() < 0.4;
+        return {
+          id: index,
+          hasCat,
+          observed: false,
+          state: hasCat ? "superposition" : "empty"
+        };
+      });
+      setPuzzleBoxes(boxes);
+    }
+  }, [gameStarted, currentLevel, puzzleBoxes.length]);
+  
+  // Initialize qubits for level 2
+  useEffect(() => {
+    if (gameStarted && currentLevel === 1 && qubits.length === 0) {
+      // Create 2 qubits in superposition
+      const newQubits = [
+        { id: 0, state: "superposition", probabilities: { 0: 0.5, 1: 0.5 } },
+        { id: 1, state: "superposition", probabilities: { 0: 0.5, 1: 0.5 } }
+      ];
+      setQubits(newQubits);
+      
+      // Set target state for the puzzle
+      setSuperpositionState({
+        target: { 0: 0.7, 1: 0.3 },
+        current: { 0: 0.5, 1: 0.5 }
+      });
+    }
+  }, [gameStarted, currentLevel, qubits.length]);
+  
+  // Initialize quantum gates for level 3
+  useEffect(() => {
+    if (gameStarted && currentLevel === 2 && quantumGates.length === 0) {
+      setQuantumGates([
+        { id: "h", name: "H", description: "Hadamard: Creates superposition" },
+        { id: "x", name: "X", description: "Pauli-X: Bit flip (NOT gate)" },
+        { id: "z", name: "Z", description: "Pauli-Z: Phase flip" },
+        { id: "cnot", name: "CNOT", description: "Controlled-NOT: Entangles qubits" }
+      ]);
+    }
+  }, [gameStarted, currentLevel, quantumGates.length]);
+  
+  // Level completion check
+  useEffect(() => {
+    if (puzzleSolved && !levels[currentLevel].completed) {
+      const levelPoints = 100 + (currentLevel * 50);
+      setScore(prev => prev + levelPoints);
+      
+      // Mark level as completed
+      const updatedLevels = [...levels];
+      updatedLevels[currentLevel].completed = true;
+      
+      // Show level completion message
+      setTimeout(() => {
+        if (currentLevel < levels.length - 1) {
+          setCurrentLevel(currentLevel + 1);
+          setPuzzleSolved(false);
+          setShowExplanation(true);
+        } else {
+          setGameCompleted(true);
+        }
+      }, 2000);
+    }
+  }, [puzzleSolved, currentLevel, levels]);
+  
+  // Functions for game mechanics
+  const toggleTheme = () => setDarkMode(!darkMode);
+  
+  const startGame = () => {
+    if (username.trim() === '') {
+      alert("Please enter your name to begin the quantum journey!");
+      return;
+    }
+    setGameStarted(true);
+    setScore(0);
+  };
+  
+  const nextTutorialStep = () => {
+    if (tutorialStep < tutorialSteps.length - 1) {
+      setTutorialStep(tutorialStep + 1);
+    } else {
+      setShowTutorial(false);
+    }
+  };
+  
+  // Observe a box (level 1)
+  const observeBox = (boxId) => {
+    if (puzzleSolved) return;
+    
+    const updatedBoxes = puzzleBoxes.map(box => {
+      if (box.id === boxId && !box.observed) {
+        // Collapse the quantum state
+        setCollapseAnimation(true);
+        setTimeout(() => setCollapseAnimation(false), 1000);
+        
+        // Determine outcome based on probabilities
+        const outcome = box.hasCat ? (Math.random() < 0.5 ? "alive" : "dead") : "empty";
+        
+        return {
+          ...box,
+          observed: true,
+          state: outcome
+        };
+      }
+      return box;
+    });
+    
+    setPuzzleBoxes(updatedBoxes);
+    setAttempts(prev => prev + 1);
+    
+    // Check if all superposition boxes have been found
+    const allSuperpositionFound = updatedBoxes.every(box => 
+      !box.hasCat || (box.hasCat && box.observed)
+    );
+    
+    if (allSuperpositionFound) {
+      setPuzzleSolved(true);
+    }
+  };
+  
+  // Adjust qubit probabilities (level 2)
+  const adjustQubit = (qubitId, value) => {
+    if (puzzleSolved) return;
+    
+    const newValue = Math.max(0, Math.min(1, parseFloat(value)));
+    const updatedQubits = qubits.map(qubit => {
+      if (qubit.id === qubitId) {
+        return {
+          ...qubit,
+          probabilities: { 0: newValue, 1: 1 - newValue }
+        };
+      }
+      return qubit;
+    });
+    
+    setQubits(updatedQubits);
+    
+    // Update current state for the puzzle
+    setSuperpositionState(prev => ({
+      ...prev,
+      current: updatedQubits[0].probabilities
+    }));
+    
+    // Check if the current state matches the target
+    const difference = Math.abs(updatedQubits[0].probabilities[0] - superpositionState.target[0]);
+    if (difference < 0.05) {
+      setPuzzleSolved(true);
+    }
+  };
+  
+  // Apply quantum gate (level 3)
+  const applyGate = (gate) => {
+    if (puzzleSolved) return;
+    
+    setActiveGate(gate);
+    
+    // Simulate quantum gate effects
+    let updatedQubits = [...qubits];
+    
+    switch (gate.id) {
+      case "h": // Hadamard
+        updatedQubits = updatedQubits.map(qubit => ({
+          ...qubit,
+          probabilities: { 0: 0.5, 1: 0.5 }
+        }));
+        break;
+      case "x": // Pauli-X (bit flip)
+        updatedQubits = updatedQubits.map(qubit => ({
+          ...qubit,
+          probabilities: { 0: qubit.probabilities[1], 1: qubit.probabilities[0] }
+        }));
+        break;
+      case "z": // Pauli-Z (phase flip)
+        // In our simplified model, we'll just visualize this
+        setCollapseAnimation(true);
+        setTimeout(() => setCollapseAnimation(false), 800);
+        break;
+      case "cnot": // CNOT - entangle qubits
+        if (qubits.length >= 2) {
+          setEntangledQubits([0, 1]);
+        }
+        break;
+      default:
+        break;
+    }
+    
+    setQubits(updatedQubits);
+    
+    // Check puzzle completion
+    // This is a simplified check - in a real game, you'd have more sophisticated conditions
+    if (gate.id === "cnot" && entangledQubits.length === 2) {
+      setPuzzleSolved(true);
+    }
+  };
+  
+  // Measurement function
+  const measureQubit = (qubitId) => {
+    setIsMeasuring(true);
+    
+    // Simulate measurement causing wave function collapse
+    setCollapseAnimation(true);
+    
+    setTimeout(() => {
+      const qubit = qubits.find(q => q.id === qubitId);
+      
+      // Determine outcome based on probabilities
+      const random = Math.random();
+      const outcome = random < qubit.probabilities[0] ? 0 : 1;
+      
+      setMeasurementResult({
+        qubitId,
+        outcome,
+        probability: outcome === 0 ? qubit.probabilities[0] : qubit.probabilities[1]
+      });
+      
+      // Update qubit state to reflect measurement
+      const updatedQubits = qubits.map(q => {
+        if (q.id === qubitId) {
+          return {
+            ...q,
+            state: "measured",
+            probabilities: { 0: outcome === 0 ? 1 : 0, 1: outcome === 1 ? 1 : 0 }
+          };
+        }
+        // If qubits are entangled, measuring one affects the other
+        if (entangledQubits.includes(q.id) && entangledQubits.includes(qubitId)) {
+          return {
+            ...q,
+            state: "measured",
+            probabilities: { 0: outcome === 0 ? 1 : 0, 1: outcome === 1 ? 1 : 0 }
+          };
+        }
+        return q;
+      });
+      
+      setQubits(updatedQubits);
+      setCollapseAnimation(false);
+      setIsMeasuring(false);
+    }, 1000);
+  };
+  
+  // Reset puzzle
+  const resetPuzzle = () => {
+    setAttempts(0);
+    setPuzzleSolved(false);
+    setMeasurementResult(null);
+    setEntangledQubits([]);
+    setCollapseAnimation(false);
+    
+    // Reset based on current level
+    if (currentLevel === 0) {
+      // Reset level 1 puzzle boxes
+      const boxes = Array(9).fill(null).map((_, index) => {
+        const hasCat = Math.random() < 0.4;
+        return {
+          id: index,
+          hasCat,
+          observed: false,
+          state: hasCat ? "superposition" : "empty"
+        };
+      });
+      setPuzzleBoxes(boxes);
+    } else if (currentLevel === 1) {
+      // Reset level 2 qubits
+      const newQubits = [
+        { id: 0, state: "superposition", probabilities: { 0: 0.5, 1: 0.5 } },
+        { id: 1, state: "superposition", probabilities: { 0: 0.5, 1: 0.5 } }
+      ];
+      setQubits(newQubits);
+      
+      // New random target
+      const targetProb0 = Math.round(Math.random() * 100) / 100;
+      setSuperpositionState({
+        target: { 0: targetProb0, 1: 1 - targetProb0 },
+        current: { 0: 0.5, 1: 0.5 }
+      });
+    } else if (currentLevel === 2) {
+      // Reset level 3 quantum gates
+      const newQubits = [
+        { id: 0, state: "superposition", probabilities: { 0: 0.5, 1: 0.5 } },
+        { id: 1, state: "superposition", probabilities: { 0: 0.5, 1: 0.5 } }
+      ];
+      setQubits(newQubits);
+      setActiveGate(null);
+    }
+  };
+  
+  // Random quantum fact display
+  const [currentFact, setCurrentFact] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFact(prev => (prev + 1) % quantumFacts.length);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Render Wave Function Animation
+  const renderWaveFunction = (qubit, size = 100) => {
+    // Size of the wave visualization
+    const width = size;
+    const height = size * 0.6;
+    
+    // If the qubit is measured, show a straight line
+    if (qubit?.state === "measured") {
+      return (
+        <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+          <line
+            x1="0"
+            y1={height / 2}
+            x2={width}
+            y2={height / 2}
+            stroke={darkMode ? "#4f9" : "#07f"}
+            strokeWidth="2"
+          />
+        </svg>
+      );
+    }
+    
+    // Otherwise show a wave function
+    const points = [];
+    const numPoints = 20;
+    const amplitude = height * 0.4;
+    
+    for (let i = 0; i <= numPoints; i++) {
+      const x = (i / numPoints) * width;
+      const y = (height / 2) + Math.sin((i / numPoints) * Math.PI * 4) * amplitude;
+      points.push(`${x},${y}`);
+    }
+    
+    return (
+      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="wave-function">
+        <polyline
+          points={points.join(" ")}
+          fill="none"
+          stroke={collapseAnimation ? "#f55" : (darkMode ? "#4f9" : "#07f")}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  };
+  
+  // Render Bloch Sphere (simplified 2D version)
+  const renderBlochSphere = (qubit, size = 120) => {
+    const radius = size / 2;
+    const centerX = radius;
+    const centerY = radius;
+    
+    // Calculate point position based on probabilities
+    const angle = Math.acos(2 * qubit.probabilities[0] - 1);
+    const pointX = centerX + radius * Math.sin(angle) * 0.8;
+    const pointY = centerY - radius * Math.cos(angle) * 0.8;
+    
+    return (
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        {/* Circle */}
+        <circle
+          cx={centerX}
+          cy={centerY}
+          r={radius - 2}
+          fill="none"
+          stroke={darkMode ? "#666" : "#ccc"}
+          strokeWidth="1"
+        />
+        
+        {/* Vertical axis */}
+        <line
+          x1={centerX}
+          y1={centerY - radius}
+          x2={centerX}
+          y2={centerY + radius}
+          stroke={darkMode ? "#999" : "#666"}
+          strokeWidth="1"
+          strokeDasharray="4,4"
+        />
+        
+        {/* Labels */}
+        <text x={centerX} y={10} textAnchor="middle" fill={darkMode ? "#eee" : "#333"} fontSize="12">|0⟩</text>
+        <text x={centerX} y={size - 5} textAnchor="middle" fill={darkMode ? "#eee" : "#333"} fontSize="12">|1⟩</text>
+        
+        {/* Qubit state */}
+        <circle
+          cx={pointX}
+          cy={pointY}
+          r="5"
+          fill={collapseAnimation ? "#f55" : (darkMode ? "#4f9" : "#07f")}
+        />
+        
+        {/* Line from center to point */}
+        <line
+          x1={centerX}
+          y1={centerY}
+          x2={pointX}
+          y2={pointY}
+          stroke={collapseAnimation ? "#f55" : (darkMode ? "#4f9" : "#07f")}
+          strokeWidth="1"
+        />
+      </svg>
+    );
+  };
+  
+  // Render Probability Bar
+  const renderProbabilityBar = (qubit, width = 200, height = 40) => {
+    const prob0 = qubit.probabilities[0] * 100;
+    const prob1 = qubit.probabilities[1] * 100;
+    
+    return (
+      <div style={{ width: `${width}px`, height: `${height}px`, position: 'relative' }}>
+        <div style={{
+          display: 'flex',
+          width: '100%',
+          height: '100%',
+          borderRadius: '4px',
+          overflow: 'hidden',
+          border: `1px solid ${darkMode ? '#555' : '#ddd'}`
+        }}>
+          <div style={{
+            width: `${prob0}%`,
+            height: '100%',
+            backgroundColor: darkMode ? '#4f9' : '#07f',
+            opacity: collapseAnimation ? 0.5 : 0.8,
+            transition: 'width 0.3s ease'
+          }} />
+          <div style={{
+            width: `${prob1}%`,
+            height: '100%',
+            backgroundColor: darkMode ? '#f95' : '#f55',
+            opacity: collapseAnimation ? 0.5 : 0.8,
+            transition: 'width 0.3s ease'
+          }} />
+        </div>
+        
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '0 10px',
+          boxSizing: 'border-box',
+          pointerEvents: 'none'
+        }}>
+          <span style={{ color: prob0 > 30 ? 'white' : (darkMode ? '#eee' : '#333'), fontSize: '12px', fontWeight: 'bold' }}>
+            |0⟩: {prob0.toFixed(1)}%
+          </span>
+          <span style={{ color: prob1 > 30 ? 'white' : (darkMode ? '#eee' : '#333'), fontSize: '12px', fontWeight: 'bold' }}>
+            |1⟩: {prob1.toFixed(1)}%
+          </span>
+        </div>
+      </div>
+    );
+  };
+  
+  // Render Cat States
+  const renderCat = (state, size = 60) => {
+    // Cat emoji representations for different states
+    const catEmojis = {
+      "superposition": "😺❓",
+      "alive": "😺",
+      "dead": "😿",
+      "empty": "❌"
+    };
+    
+    return (
+      <div style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: darkMode ? '#1a1a2e' : '#f0f0ff',
+        borderRadius: '8px',
+        fontSize: `${size/3}px`,
+        overflow: 'hidden',
+        position: 'relative'
+      }}>
+        {state === "superposition" && waveFunctionVisible && (
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            opacity: 0.3,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <div style={{
+              width: '80%',
+              height: '2px',
+              backgroundColor: collapseAnimation ? '#f55' : '#4f9',
+              animation: 'wave 2s infinite ease-in-out'
+            }} />
+          </div>
+        )}
+        <span className={collapseAnimation ? "collapse-animation" : ""}>
+          {catEmojis[state]}
+        </span>
+      </div>
+    );
+  };
+  
+  return (
+    <div style={{
+      fontFamily: "'Montserrat', sans-serif",
+      minHeight: '100vh',
+      backgroundColor: darkMode ? '#0f0f1a' : '#f0f0fa',
+      color: darkMode ? '#e0e0ff' : '#333366',
+      transition: 'background-color 0.3s, color 0.3s',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* CSS for animations and styling */}
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+          
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+          }
+          
+          @keyframes wave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+          }
+          
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+          }
+          
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          
+          @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 200, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(0, 255, 200, 0.9); }
+          }
+          
+          @keyframes collapse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); opacity: 0.7; }
+            100% { transform: scale(1); }
+          }
+          
+          .floating { animation: float 6s ease-in-out infinite; }
+          .pulsing { animation: pulse 3s infinite; }
+          .spinning { animation: spin 10s linear infinite; }
+          .glowing { animation: glow 2s infinite; }
+          .wave-function { animation: wave 2s infinite ease-in-out; }
+          .collapse-animation { animation: collapse 1s; }
+          
+          .quantum-button {
+            background-color: ${darkMode ? 'rgba(0, 200, 150, 0.2)' : 'rgba(0, 150, 200, 0.7)'};
+            color: ${darkMode ? '#4ff' : 'white'};
+            border: 1px solid ${darkMode ? '#4ff' : 'transparent'};
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            outline: none;
+          }
+          
+          .quantum-button:hover {
+            background-color: ${darkMode ? 'rgba(0, 200, 150, 0.4)' : 'rgba(0, 150, 200, 0.9)'};
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          }
+          
+          .quantum-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+          }
+          
+          .quantum-card {
+            background-color: ${darkMode ? 'rgba(40, 40, 80, 0.8)' : 'white'};
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+          }
+          
+          .quantum-card:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+          }
+          
+          .level-box {
+            background-color: ${darkMode ? 'rgba(50, 50, 90, 0.8)' : 'rgba(240, 240, 255, 0.8)'};
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 4px solid ${darkMode ? '#4ff' : '#07f'};
+          }
+          
+          .level-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          }
+          
+          .level-box.active {
+            background-color: ${darkMode ? 'rgba(0, 150, 200, 0.3)' : 'rgba(0, 150, 200, 0.1)'};
+            border-left: 4px solid ${darkMode ? '#4ff' : '#07f'};
+          }
+          
+          .level-box.completed {
+            border-left: 4px solid ${darkMode ? '#4f9' : '#4c9'};
+          }
+          
+          .puzzle-box {
+            width: 80px;
+            height: 80px;
+            background-color: ${darkMode ? 'rgba(50, 50, 90, 0.8)' : 'rgba(240, 240, 255, 0.8)'};
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+          }
+          
+          .puzzle-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          }
+          
+          .puzzle-box.observed {
+            background-color: ${darkMode ? 'rgba(40, 40, 70, 0.8)' : 'rgba(220, 220, 240, 0.8)'};
+            cursor: default;
+            transform: none;
+            box-shadow: none;
+          }
+          
+          .quantum-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: ${darkMode ? '#333' : '#ddd'};
+            border-radius: 4px;
+            outline: none;
+          }
+          
+          .quantum-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: ${darkMode ? '#4ff' : '#07f'};
+            border-radius: 50%;
+            cursor: pointer;
+          }
+          
+          .quantum-gate {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            background-color: ${darkMode ? 'rgba(40, 40, 80, 0.8)' : 'rgba(240, 240, 255, 0.8)'};
+            border-radius: 8px;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+          }
+          
+          .quantum-gate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          }
+          
+          .quantum-gate.active {
+            background-color: ${darkMode ? 'rgba(0, 200, 150, 0.4)' : 'rgba(0, 150, 200, 0.2)'};
+            border: 1px solid ${darkMode ? '#4ff' : '#07f'};
+          }
+        `}
+      </style>
+      
+      {/* Background Particles */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div 
+            key={i}
+            style={{
+              position: 'absolute',
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              width: `${Math.random() * 4 + 1}px`,
+              height: `${Math.random() * 4 + 1}px`,
+              backgroundColor: darkMode ? 
+                `rgba(${Math.random() * 100 + 100}, ${Math.random() * 100 + 150}, ${Math.random() * 100 + 150}, ${Math.random() * 0.5 + 0.3})` :
+                `rgba(${Math.random() * 50 + 50}, ${Math.random() * 50 + 100}, ${Math.random() * 50 + 200}, ${Math.random() * 0.3 + 0.1})`,
+              borderRadius: '50%',
+              animation: `pulse ${Math.random() * 5 + 3}s infinite`
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Header */}
+      <header style={{
+        position: 'relative',
+        zIndex: 1,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '1rem',
+        backgroundColor: darkMode ? 'rgba(20, 20, 40, 0.8)' : 'rgba(80, 120, 220, 0.9)',
+        color: 'white',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)'
+      }}>
+        <h1 style={{
+          fontSize: '1.8rem',
+          fontWeight: 'bold',
+          margin: 0,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}>
+          <span role="img" aria-label="quantum cat" style={{ fontSize: '2rem' }}>😺⚛️</span>
+          Quantum Cats
+        </h1>
+        
+        {gameStarted && (
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            fontSize: '1rem', 
+            fontWeight: 'bold' 
+          }}>
+            <span>{username}</span>
+            <span style={{ margin: '0 8px' }}>|</span>
+            <span>Score: {score}</span>
+            <span style={{ margin: '0 8px' }}>|</span>
+            <span>Level {currentLevel + 1}: {levels[currentLevel].name}</span>
+          </div>
+        )}
+        
+        <button 
+          onClick={toggleTheme} 
+          className="quantum-button"
+          style={{
+            backgroundColor: 'transparent',
+            border: '1px solid white',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}
+        >
+          {darkMode ? '☀️ Light' : '🌙 Dark'}
+        </button>
+      </header>
+      
+      {/* Tutorial Dialog */}
+      {showTutorial && gameStarted && (
+        <div style={{
+          position: 'fixed',
+          bottom: '2rem',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '80%',
+          maxWidth: '600px',
+          backgroundColor: darkMode ? 'rgba(40, 40, 80, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+          borderRadius: '8px',
+          padding: '1.5rem',
+          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)',
+          zIndex: 100,
+          border: `1px solid ${darkMode ? '#4ff' : '#07f'}`,
+          animation: 'float 3s ease-in-out infinite'
+        }}>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+            <div style={{
+              width: '60px',
+              height: '60px',
+              borderRadius: '50%',
+              backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.3)' : 'rgba(0, 150, 200, 0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '2rem',
+              border: `2px solid ${darkMode ? '#4ff' : '#07f'}`
+            }}>
+              {tutorialSteps[tutorialStep].character === 'professor' ? '👨‍🔬' : '👤'}
+            </div>
+            <div>
+              <div style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: darkMode ? '#4ff' : '#07f' }}>
+                {tutorialSteps[tutorialStep].character === 'professor' ? 'Professor Qubit' : username}
+              </div>
+              <div style={{ lineHeight: '1.5' }}>{tutorialSteps[tutorialStep].text}</div>
+            </div>
+          </div>
+          
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+            <button
+              onClick={nextTutorialStep}
+              className="quantum-button"
+            >
+              {tutorialStep < tutorialSteps.length - 1 ? 'Next' : 'Start Exploring'}
+            </button>
+          </div>
+        </div>
+      )}
+      
+      {/* Main Content */}
+      <main style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '2rem 1rem',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        {!gameStarted ? (
+          // Welcome screen
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            minHeight: '60vh'
+          }}>
+            <div className="floating" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+              <div style={{ 
+                fontSize: '5rem', 
+                marginBottom: '1rem',
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '1rem'
+              }}>
+                <span className="pulsing">😺</span>
+                <span className="spinning">⚛️</span>
+              </div>
+              <h2 style={{ 
+                fontSize: '2.5rem', 
+                fontWeight: 'bold', 
+                marginBottom: '1rem' 
+              }}>
+                Quantum Superposition Adventure
+              </h2>
+              <p style={{ 
+                fontSize: '1.2rem', 
+                maxWidth: '600px', 
+                marginBottom: '2rem',
+                lineHeight: '1.6'
+              }}>
+                Embark on a journey into the quantum realm where cats exist in multiple states simultaneously, 
+                particles behave like waves, and the fundamental rules of reality get weird.
+              </p>
+            </div>
+            
+            <div className="quantum-card glowing" style={{ 
+              maxWidth: '500px',
+              width: '100%'
+            }}>
+              <h3 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 'bold', 
+                marginBottom: '1.5rem', 
+                textAlign: 'center',
+                color: darkMode ? '#4ff' : '#07f'
+              }}>
+                Begin Your Quantum Journey
+              </h3>
+              
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ 
+                  display: 'block', 
+                  marginBottom: '0.5rem', 
+                  fontWeight: 'bold' 
+                }}>
+                  Your Name
+                </label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Enter your name"
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    backgroundColor: darkMode ? 'rgba(30, 30, 60, 0.6)' : 'white',
+                    border: `1px solid ${darkMode ? '#4ff' : '#07f'}`,
+                    borderRadius: '4px',
+                    color: darkMode ? 'white' : '#333',
+                    outline: 'none',
+                    fontSize: '1rem'
+                  }}
+                />
+              </div>
+              
+              <button
+                onClick={startGame}
+                className="quantum-button glowing"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  fontSize: '1.1rem',
+                  fontWeight: 'bold'
+                }}
+              >
+                Enter Quantum Realm
+              </button>
+            </div>
+            
+            <div style={{ 
+              marginTop: '2rem', 
+              textAlign: 'center',
+              opacity: 0.7,
+              fontSize: '0.9rem'
+            }}>
+              <p>
+                "If quantum mechanics hasn't profoundly shocked you, you haven't understood it yet."<br/>
+                — Niels Bohr
+              </p>
+            </div>
+          </div>
+        ) : (
+          // Game Interface - Three column layout for larger screens
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '2rem'
+          }}>
+            {/* Left Column - Levels and Progress */}
+            <div>
+              <div className="quantum-card">
+                <h2 style={{ 
+                  fontSize: '1.5rem', 
+                  fontWeight: 'bold', 
+                  marginBottom: '1rem',
+                  color: darkMode ? '#4ff' : '#07f',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <span role="img" aria-label="quantum levels">⚛️</span> Quantum Levels
+                </h2>
+                
+                <div>
+                  {levels.map((level, index) => (
+                    <div 
+                      key={index}
+                      className={`level-box ${currentLevel === index ? 'active' : ''} ${level.completed ? 'completed' : ''}`}
+                      onClick={() => {
+                        if (index <= currentLevel) {
+                          setCurrentLevel(index);
+                          setShowExplanation(true);
+                          setCollapseAnimation(false);
+                          resetPuzzle();
+                        }
+                      }}
+                      style={{
+                        opacity: index <= currentLevel ? 1 : 0.6,
+                      }}
+                    >
+                      <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between',
+                        alignItems: 'center' 
+                      }}>
+                        <div style={{ fontWeight: 'bold' }}>Level {index + 1}</div>
+                        {level.completed ? (
+                          <span role="img" aria-label="completed" style={{ fontSize: '1.2rem' }}>✅</span>
+                        ) : (
+                          index < currentLevel && <span>Unlocked</span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>{level.name}</div>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Score Display */}
+                <div style={{ 
+                  marginTop: '1.5rem',
+                  padding: '1rem',
+                  backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.1)' : 'rgba(0, 150, 200, 0.1)',
+                  borderRadius: '8px',
+                  border: `1px solid ${darkMode ? 'rgba(0, 255, 200, 0.3)' : 'rgba(0, 150, 200, 0.3)'}`
+                }}>
+                  <h3 style={{ 
+                    fontWeight: 'bold', 
+                    marginBottom: '0.5rem',
+                    color: darkMode ? '#4ff' : '#07f'
+                  }}>
+                    Your Progress
+                  </h3>
+                  
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between',
+                    marginBottom: '0.5rem'
+                  }}>
+                    <span>Current Score:</span>
+                    <span style={{ fontWeight: 'bold' }}>{score} points</span>
+                  </div>
+                  
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between',
+                    marginBottom: '0.5rem'
+                  }}>
+                    <span>Levels Completed:</span>
+                    <span style={{ fontWeight: 'bold' }}>
+                      {levels.filter(l => l.completed).length} / {levels.length}
+                    </span>
+                  </div>
+                  
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between'
+                  }}>
+                    <span>Next Level Unlock:</span>
+                    <span style={{ fontWeight: 'bold' }}>
+                      {currentLevel < levels.length - 1 
+                        ? `${levels[currentLevel + 1].minScore} points`
+                        : 'All Levels Unlocked!'}
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Quantum Facts */}
+                <div style={{
+                  marginTop: '1.5rem',
+                  backgroundColor: darkMode ? 'rgba(40, 40, 80, 0.6)' : 'rgba(240, 240, 255, 0.6)',
+                  padding: '1rem',
+                  borderRadius: '8px',
+                }}>
+                  <p style={{ 
+                    fontWeight: 'bold', 
+                    marginBottom: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    color: darkMode ? '#4ff' : '#07f'
+                  }}>
+                    <span role="img" aria-label="quantum fact">💡</span> Quantum Fact
+                  </p>
+                  <p style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>
+                    {quantumFacts[currentFact]}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Middle Column - Current Level Content */}
+            <div>
+              {/* Level Explanation */}
+              {showExplanation && (
+                <div className="quantum-card">
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '1rem'
+                  }}>
+                    <h2 style={{ 
+                      fontSize: '1.5rem', 
+                      fontWeight: 'bold',
+                      color: darkMode ? '#4ff' : '#07f',
+                      margin: 0
+                    }}>
+                      {levelContent[currentLevel].title}
+                    </h2>
+                    <button
+                      onClick={() => setShowExplanation(false)}
+                      className="quantum-button"
+                      style={{ padding: '4px 10px', fontSize: '0.9rem' }}
+                    >
+                      Start Challenge
+                    </button>
+                  </div>
+                  
+                  {levelContent[currentLevel].sections.map((section, index) => (
+                    <div key={index} style={{ marginBottom: '1.5rem' }}>
+                      <h3 style={{ 
+                        fontSize: '1.2rem', 
+                        fontWeight: 'bold', 
+                        marginBottom: '0.75rem',
+                        color: darkMode ? 'rgba(0, 255, 200, 0.9)' : 'rgba(0, 150, 200, 0.9)',
+                      }}>
+                        {section.heading}
+                      </h3>
+                      <p style={{ 
+                        lineHeight: '1.6',
+                        fontSize: '0.95rem' 
+                      }}>
+                        {section.content}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Level Challenges */}
+              {!showExplanation && (
+                <div className="quantum-card">
+                  <h2 style={{ 
+                    fontSize: '1.5rem', 
+                    fontWeight: 'bold', 
+                    marginBottom: '1rem',
+                    color: darkMode ? '#4ff' : '#07f'
+                  }}>
+                    {levelContent[currentLevel].challenge.title}
+                  </h2>
+                  
+                  <p style={{ 
+                    marginBottom: '1.5rem',
+                    lineHeight: '1.6'
+                  }}>
+                    {levelContent[currentLevel].challenge.description}
+                  </p>
+                  
+                  {/* Level 1 Challenge: Quantum Cat Boxes */}
+                  {currentLevel === 0 && (
+                    <div>
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        gap: '1rem',
+                        marginBottom: '1.5rem'
+                      }}>
+                        {puzzleBoxes.map(box => (
+                          <div 
+                            key={box.id}
+                            className={`puzzle-box ${box.observed ? 'observed' : ''}`}
+                            onClick={() => !box.observed && observeBox(box.id)}
+                          >
+                            {renderCat(box.state, 60)}
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '1rem'
+                      }}>
+                        <div>
+                          <span style={{ fontWeight: 'bold' }}>Attempts:</span> {attempts}
+                        </div>
+                        <button
+                          onClick={resetPuzzle}
+                          className="quantum-button"
+                          disabled={puzzleSolved}
+                        >
+                          Reset Puzzle
+                        </button>
+                      </div>
+                      
+                      {/* Explanation of states */}
+                      <div style={{
+                        backgroundColor: darkMode ? 'rgba(40, 40, 80, 0.6)' : 'rgba(240, 240, 255, 0.6)',
+                        padding: '1rem',
+                        borderRadius: '8px',
+                        marginTop: '1rem'
+                      }}>
+                        <h4 style={{ 
+                          fontWeight: 'bold', 
+                          marginBottom: '0.75rem',
+                          color: darkMode ? '#4ff' : '#07f'
+                        }}>
+                          Quantum States:
+                        </h4>
+                        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span>😺❓</span> 
+                            <span>Superposition</span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span>😺</span> 
+                            <span>Alive</span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span>😿</span> 
+                            <span>Dead</span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span>❌</span> 
+                            <span>Empty</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Level 2 Challenge: Qubit Manipulation */}
+                  {currentLevel === 1 && (
+                    <div>
+                      <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '1.5rem',
+                        marginBottom: '1.5rem'
+                      }}>
+                        {/* Qubit Visualization */}
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '2rem'
+                        }}>
+                          {qubits.length > 0 && (
+                            <>
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                                <div style={{ fontWeight: 'bold', color: darkMode ? '#4ff' : '#07f' }}>Bloch Sphere</div>
+                                {renderBlochSphere(qubits[0])}
+                              </div>
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                                <div style={{ fontWeight: 'bold', color: darkMode ? '#4ff' : '#07f' }}>Wave Function</div>
+                                {renderWaveFunction(qubits[0], 120)}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        
+                        {/* Probability Display */}
+                        <div style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          width: '100%'
+                        }}>
+                          <div style={{ fontWeight: 'bold', color: darkMode ? '#4ff' : '#07f' }}>
+                            Qubit State: |ψ⟩ = √(P₀)|0⟩ + √(P₁)|1⟩
+                          </div>
+                          {qubits.length > 0 && renderProbabilityBar(qubits[0], 300, 40)}
+                          
+                          <div style={{ width: '300px', marginTop: '1rem' }}>
+                            <div style={{ 
+                              display: 'flex', 
+                              justifyContent: 'space-between',
+                              marginBottom: '0.5rem'
+                            }}>
+                              <label style={{ fontWeight: 'bold' }}>Adjust Probability of |0⟩</label>
+                              <span>{(qubits[0]?.probabilities[0] * 100).toFixed(1)}%</span>
+                            </div>
+                            <input
+                              type="range"
+                              min="0"
+                              max="1"
+                              step="0.01"
+                              value={qubits[0]?.probabilities[0] || 0.5}
+                              onChange={(e) => adjustQubit(0, e.target.value)}
+                              className="quantum-slider"
+                              disabled={puzzleSolved}
+                            />
+                          </div>
+                        </div>
+                        
+                        {/* Target State */}
+                        <div style={{
+                          backgroundColor: darkMode ? 'rgba(40, 40, 80, 0.6)' : 'rgba(240, 240, 255, 0.6)',
+                          padding: '1rem',
+                          borderRadius: '8px',
+                          width: '100%',
+                          textAlign: 'center'
+                        }}>
+                          <div style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: darkMode ? '#4ff' : '#07f' }}>
+                            Target State:
+                          </div>
+                          <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
+                            |0⟩: {(superpositionState.target[0] * 100).toFixed(1)}% / 
+                            |1⟩: {(superpositionState.target[1] * 100).toFixed(1)}%
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Control buttons */}
+                      <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between',
+                        gap: '1rem'
+                      }}>
+                        <button
+                          onClick={() => measureQubit(0)}
+                          className="quantum-button"
+                          disabled={puzzleSolved || isMeasuring}
+                        >
+                          Measure Qubit
+                        </button>
+                        <button
+                          onClick={resetPuzzle}
+                          className="quantum-button"
+                          disabled={puzzleSolved}
+                        >
+                          Reset Qubit
+                        </button>
+                      </div>
+                      
+                      {/* Measurement Result */}
+                      {measurementResult && (
+                        <div style={{
+                          marginTop: '1.5rem',
+                          backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.1)' : 'rgba(0, 150, 200, 0.1)',
+                          padding: '1rem',
+                          borderRadius: '8px',
+                          border: `1px solid ${darkMode ? 'rgba(0, 255, 200, 0.3)' : 'rgba(0, 150, 200, 0.3)'}`,
+                          textAlign: 'center'
+                        }}>
+                          <div style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: darkMode ? '#4ff' : '#07f' }}>
+                            Measurement Result:
+                          </div>
+                          <div style={{ fontWeight: 'bold', fontSize: '1.5rem' }}>
+                            |{measurementResult.outcome}⟩
+                          </div>
+                          <div style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                            This outcome had a {(measurementResult.probability * 100).toFixed(1)}% probability
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Level 3 Challenge: Quantum Gates */}
+                  {currentLevel === 2 && (
+                    <div>
+                      <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '1.5rem',
+                        marginBottom: '1.5rem'
+                      }}>
+                        {/* Qubit Circuit Visualization */}
+                        <div style={{
+                          backgroundColor: darkMode ? 'rgba(40, 40, 80, 0.6)' : 'rgba(240, 240, 255, 0.6)',
+                          padding: '1.5rem',
+                          borderRadius: '8px',
+                          width: '100%'
+                        }}>
+                          <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'center',
+                            marginBottom: '1.5rem',
+                            gap: '1rem'
+                          }}>
+                            {/* Qubit labels */}
+                            <div style={{ 
+                              display: 'flex', 
+                              flexDirection: 'column',
+                              gap: '1.5rem',
+                              marginRight: '0.5rem',
+                              fontWeight: 'bold',
+                              fontFamily: 'Courier New, monospace'
+                            }}>
+                              <div>|0⟩</div>
+                              <div>|0⟩</div>
+                            </div>
+                            
+                            {/* Circuit lines */}
+                            <div style={{ flex: 1, position: 'relative' }}>
+                              {/* Horizontal lines */}
+                              <div style={{ 
+                                height: '1px', 
+                                backgroundColor: darkMode ? '#4ff' : '#07f',
+                                width: '100%',
+                                marginBottom: '2rem'
+                              }} />
+                              <div style={{ 
+                                height: '1px', 
+                                backgroundColor: darkMode ? '#4ff' : '#07f',
+                                width: '100%'
+                              }} />
+                              
+                              {/* Entanglement visualization */}
+                              {entangledQubits.length === 2 && (
+                                <div style={{
+                                  position: 'absolute',
+                                  left: '50%',
+                                  top: 0,
+                                  height: '100%',
+                                  width: '2px',
+                                  backgroundColor: darkMode ? 'rgba(0, 255, 200, 0.5)' : 'rgba(0, 150, 200, 0.5)',
+                                  transform: 'translateX(-50%)',
+                                  animation: 'pulse 2s infinite'
+                                }} />
+                              )}
+                            </div>
+                            
+                            {/* Qubit states */}
+                            <div style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '1rem'
+                            }}>
+                              {qubits.map((qubit, i) => (
+                                <div key={i} style={{ 
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'center'
+                                }}>
+                                  {renderProbabilityBar(qubit, 150, 30)}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          
+                          {/* Available Gates */}
+                          <div>
+                            <div style={{ fontWeight: 'bold', marginBottom: '0.75rem', color: darkMode ? '#4ff' : '#07f' }}>
+                              Quantum Gates:
+                            </div>
+                            <div style={{ 
+                              display: 'flex',
+                              justifyContent: 'center',
+                              gap: '0.5rem',
+                              flexWrap: 'wrap'
+                            }}>
+                              {quantumGates.map(gate => (
+                                <div 
+                                  key={gate.id}
+                                  className={`quantum-gate ${activeGate?.id === gate.id ? 'active' : ''}`}
+                                  onClick={() => applyGate(gate)}
+                                  title={gate.description}
+                                >
+                                  {gate.name}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Gate Information */}
+                        {activeGate && (
+                          <div style={{
+                            backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.1)' : 'rgba(0, 150, 200, 0.1)',
+                            padding: '1rem',
+                            borderRadius: '8px',
+                            border: `1px solid ${darkMode ? 'rgba(0, 255, 200, 0.3)' : 'rgba(0, 150, 200, 0.3)'}`
+                          }}>
+                            <div style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: darkMode ? '#4ff' : '#07f' }}>
+                              {activeGate.name} Gate:
+                            </div>
+                            <div>{activeGate.description}</div>
+                          </div>
+                        )}
+                        
+                        {/* Entanglement Status */}
+                        {entangledQubits.length === 2 && (
+                          <div style={{
+                            backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.1)' : 'rgba(0, 150, 200, 0.1)',
+                            padding: '1rem',
+                            borderRadius: '8px',
+                            border: `1px solid ${darkMode ? 'rgba(0, 255, 200, 0.3)' : 'rgba(0, 150, 200, 0.3)'}`
+                          }}>
+                            <div style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: darkMode ? '#4ff' : '#07f' }}>
+                              Entanglement Created!
+                            </div>
+                            <div>
+                              These qubits are now entangled. Measuring one will instantly affect the other,
+                              regardless of distance.
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Control buttons */}
+                      <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between',
+                        gap: '1rem'
+                      }}>
+                        <button
+                          onClick={() => entangledQubits.length === 2 ? measureQubit(0) : null}
+                          className="quantum-button"
+                          disabled={entangledQubits.length !== 2 || puzzleSolved || isMeasuring}
+                        >
+                          Measure Qubit 1
+                        </button>
+                        <button
+                          onClick={resetPuzzle}
+                          className="quantum-button"
+                          disabled={puzzleSolved}
+                        >
+                          Reset Circuit
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Level 4+ Challenges */}
+                  {currentLevel >= 3 && (
+                    <div style={{ 
+                      display: 'flex', 
+                      flexDirection: 'column',
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      padding: '2rem' 
+                    }}>
+                      <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>🚧</div>
+                      <h3 style={{ fontWeight: 'bold', marginBottom: '1rem' }}>
+                        Challenge Under Construction
+                      </h3>
+                      <p style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                        This quantum challenge is still being developed by our team of scientists.
+                      </p>
+                      <button
+                        onClick={() => setPuzzleSolved(true)}
+                        className="quantum-button"
+                      >
+                        Complete Level
+                      </button>
+                    </div>
+                  )}
+                  
+                  {/* Puzzle Solved Message */}
+                  {puzzleSolved && (
+                    <div style={{
+                      marginTop: '1.5rem',
+                      backgroundColor: darkMode ? 'rgba(0, 255, 150, 0.1)' : 'rgba(0, 200, 100, 0.1)',
+                      padding: '1rem',
+                      borderRadius: '8px',
+                      border: `1px solid ${darkMode ? 'rgba(0, 255, 150, 0.4)' : 'rgba(0, 200, 100, 0.4)'}`,
+                      textAlign: 'center',
+                      animation: 'pulse 2s infinite'
+                    }}>
+                      <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎉</div>
+                      <div style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: darkMode ? '#5f5' : '#090' }}>
+                        Quantum Challenge Completed!
+                      </div>
+                      <div style={{ marginBottom: '0.5rem' }}>
+                        You've successfully mastered this quantum concept.
+                      </div>
+                      <div>
+                        {currentLevel < levels.length - 1 
+                          ? 'Preparing to unlock next level...'
+                          : 'You have completed all quantum levels!'}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Game Completed Message */}
+              {gameCompleted && (
+                <div className="quantum-card" style={{
+                  marginTop: '1.5rem',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🏆</div>
+                  <h2 style={{ 
+                    fontSize: '1.8rem', 
+                    fontWeight: 'bold', 
+                    marginBottom: '1rem',
+                    color: darkMode ? '#4ff' : '#07f'
+                  }}>
+                    Quantum Master!
+                  </h2>
+                  <p style={{ marginBottom: '1.5rem', fontSize: '1.1rem' }}>
+                    Congratulations! You've completed all the quantum challenges and mastered
+                    the fundamental concepts of quantum superposition and mechanics.
+                  </p>
+                  <p style={{ marginBottom: '2rem' }}>
+                    Your final score: <span style={{ fontWeight: 'bold' }}>{score} points</span>
+                  </p>
+                  <button
+                    onClick={() => {
+                      setGameStarted(false);
+                      setCurrentLevel(0);
+                      setScore(0);
+                      setGameCompleted(false);
+                      
+                      // Reset all levels
+                      levels.forEach(level => level.completed = false);
+                    }}
+                    className="quantum-button"
+                  >
+                    Play Again
+                  </button>
+                </div>
+              )}
+            </div>
+            
+            {/* Right Column - Visuals and References */}
+            <div>
+              <div className="quantum-card">
+                <h2 style={{ 
+                  fontSize: '1.5rem', 
+                  fontWeight: 'bold', 
+                  marginBottom: '1rem',
+                  color: darkMode ? '#4ff' : '#07f',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <span role="img" aria-label="quantum visuals">🔬</span> Quantum Visualization
+                </h2>
+                
+                {/* Visual explanation based on current level */}
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '1.5rem'
+                }}>
+                  {/* Level 1: Schrödinger's Cat Visualization */}
+                  {currentLevel === 0 && (
+                    <>
+                      <div style={{ 
+                        width: '120px',
+                        height: '120px',
+                        backgroundColor: darkMode ? 'rgba(40, 40, 80, 0.6)' : 'rgba(240, 240, 255, 0.6)',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        fontSize: '4rem',
+                        position: 'relative',
+                        overflow: 'hidden'
+                      }}>
+                        <div 
+                          className="pulsing" 
+                          style={{ fontSize: '3rem' }}
+                        >
+                          {catState === "superposition" ? "😺❓" : (catState === "alive" ? "😺" : "😿")}
+                        </div>
+                        
+                        {waveFunctionVisible && catState === "superposition" && (
+                          <div style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: '50%',
+                            animation: collapseAnimation ? 'collapse 1s' : 'pulse 3s infinite',
+                            boxShadow: 'inset 0 0 20px rgba(0, 255, 200, 0.5)',
+                            opacity: 0.5
+                          }} />
+                        )}
+                      </div>
+                      
+                      <div>
+                        <h3 style={{ 
+                          fontWeight: 'bold', 
+                          marginBottom: '0.75rem', 
+                          textAlign: 'center',
+                          color: darkMode ? '#4ff' : '#07f'
+                        }}>
+                          {catState === "superposition" 
+                            ? "Cat in Superposition" 
+                            : (catState === "alive" ? "Cat is Alive" : "Cat is Dead")}
+                        </h3>
+                        <p style={{ textAlign: 'center', marginBottom: '1rem', lineHeight: '1.5' }}>
+                          {catState === "superposition" 
+                            ? "Before observation, the cat exists in a superposition of alive and dead states simultaneously."
+                            : "Upon observation, the wave function collapses and the cat's state becomes definite."}
+                        </p>
+                      </div>
+                      
+                      <div style={{ display: 'flex', gap: '1rem' }}>
+                        <button
+                          onClick={() => {
+                            setCatState("superposition");
+                            setWaveFunctionVisible(true);
+                          }}
+                          className="quantum-button"
+                          disabled={catState === "superposition"}
+                        >
+                          Superposition
+                        </button>
+                        <button
+                          onClick={() => {
+                            setCollapseAnimation(true);
+                            setTimeout(() => {
+                              setCatState(Math.random() < 0.5 ? "alive" : "dead");
+                              setWaveFunctionVisible(false);
+                              setCollapseAnimation(false);
+                            }, 1000);
+                          }}
+                          className="quantum-button"
+                          disabled={catState !== "superposition"}
+                        >
+                          Observe
+                        </button>
+                      </div>
+                    </>
+                  )}
+                  
+                  {/* Level 2: Bloch Sphere Explanation */}
+                  {currentLevel === 1 && (
+                    <>
+                      <div style={{
+                        backgroundColor: darkMode ? 'rgba(40, 40, 80, 0.6)' : 'rgba(240, 240, 255, 0.6)',
+                        padding: '1rem',
+                        borderRadius: '8px',
+                        width: '100%'
+                      }}>
+                        <h3 style={{ 
+                          fontWeight: 'bold', 
+                          marginBottom: '0.75rem',
+                          color: darkMode ? '#4ff' : '#07f',
+                          textAlign: 'center'
+                        }}>
+                          The Bloch Sphere
+                        </h3>
+                        
+                        <div style={{ 
+                          display: 'flex',
+                          justifyContent: 'center',
+                          marginBottom: '1rem'
+                        }}>
+                          <svg width="200" height="200" viewBox="0 0 200 200">
+                            {/* Main circle */}
+                            <circle
+                              cx="100"
+                              cy="100"
+                              r="90"
+                              fill="none"
+                              stroke={darkMode ? '#666' : '#ccc'}
+                              strokeWidth="1"
+                            />
+                            
+                            {/* X-axis */}
+                            <line
+                              x1="10"
+                              y1="100"
+                              x2="190"
+                              y2="100"
+                              stroke={darkMode ? '#999' : '#666'}
+                              strokeWidth="1"
+                              strokeDasharray="4,4"
+                            />
+                            
+                            {/* Y-axis */}
+                            <line
+                              x1="100"
+                              y1="190"
+                              x2="100"
+                              y2="10"
+                              stroke={darkMode ? '#999' : '#666'}
+                              strokeWidth="1"
+                              strokeDasharray="4,4"
+                            />
+                            
+                            {/* Z-axis (perspective) */}
+                            <ellipse
+                              cx="100"
+                              cy="100"
+                              rx="90"
+                              ry="30"
+                              fill="none"
+                              stroke={darkMode ? '#999' : '#666'}
+                              strokeWidth="1"
+                              strokeDasharray="4,4"
+                              transform="rotate(-30, 100, 100)"
+                            />
+                            
+                            {/* State vector */}
+                            <line
+                              x1="100"
+                              y1="100"
+                              x2="150"
+                              y2="50"
+                              stroke={darkMode ? '#4ff' : '#07f'}
+                              strokeWidth="2"
+                            />
+                            
+                            {/* State point */}
+                            <circle
+                              cx="150"
+                              cy="50"
+                              r="5"
+                              fill={darkMode ? '#4ff' : '#07f'}
+                            />
+                            
+                            {/* Labels */}
+                            <text x="190" y="110" textAnchor="end" fill={darkMode ? '#eee' : '#333'} fontSize="12">X</text>
+                            <text x="105" y="20" textAnchor="start" fill={darkMode ? '#eee' : '#333'} fontSize="12">Z (|0⟩)</text>
+                            <text x="105" y="190" textAnchor="start" fill={darkMode ? '#eee' : '#333'} fontSize="12">-Z (|1⟩)</text>
+                          </svg>
+                        </div>
+                        
+                        <p style={{ fontSize: '0.9rem', lineHeight: '1.5' }}>
+                          The Bloch sphere is a geometric representation of a qubit's state space. The north
+                          pole represents |0⟩, the south pole |1⟩, and all other points represent superpositions
+                          of these states. The position on the sphere gives the probability amplitudes for
+                          measuring each state.
+                        </p>
+                      </div>
+                      
+                      <div style={{
+                        backgroundColor: darkMode ? 'rgba(40, 40, 80, 0.6)' : 'rgba(240, 240, 255, 0.6)',
+                        padding: '1rem',
+                        borderRadius: '8px',
+                        width: '100%'
+                      }}>
+                        <h3 style={{ 
+                          fontWeight: 'bold', 
+                          marginBottom: '0.75rem',
+                          color: darkMode ? '#4ff' : '#07f'
+                        }}>
+                          Quantum Bits vs. Classical Bits
+                        </h3>
+                        
+                        <div style={{
+                          display: 'flex',
+                          justifyContent: 'space-around',
+                          marginBottom: '1rem'
+                        }}>
+                          <div style={{ textAlign: 'center' }}>
+                            <div style={{ 
+                              fontWeight: 'bold', 
+                              marginBottom: '0.5rem',
+                              color: darkMode ? '#4ff' : '#07f' 
+                            }}>
+                              Classical Bit
+                            </div>
+                            <div style={{
+                              width: '80px',
+                              height: '80px',
+                              borderRadius: '8px',
+                              backgroundColor: darkMode ? 'rgba(30, 30, 60, 0.6)' : 'rgba(220, 220, 240, 0.6)',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              fontWeight: 'bold',
+                              fontFamily: 'Courier New, monospace',
+                              color: darkMode ? '#4ff' : '#07f'
+                            }}>
+                              X
+                            </div>
+                            <div>
+                              <div style={{ fontWeight: 'bold' }}>Pauli-X Gate</div>
+                              <div style={{ fontSize: '0.9rem' }}>Flips |0⟩ to |1⟩ and vice versa (quantum NOT gate)</div>
+                            </div>
+                          </div>
+                          
+                          <div style={{ 
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1rem'
+                          }}>
+                            <div style={{
+                              width: '40px',
+                              height: '40px',
+                              backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.2)' : 'rgba(0, 150, 200, 0.2)',
+                              borderRadius: '8px',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              fontWeight: 'bold',
+                              fontFamily: 'Courier New, monospace',
+                              color: darkMode ? '#4ff' : '#07f'
+                            }}>
+                              Z
+                            </div>
+                            <div>
+                              <div style={{ fontWeight: 'bold' }}>Pauli-Z Gate</div>
+                              <div style={{ fontSize: '0.9rem' }}>Flips the phase of |1⟩ but leaves |0⟩ unchanged</div>
+                            </div>
+                          </div>
+                          
+                          <div style={{ 
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1rem'
+                          }}>
+                            <div style={{
+                              width: '60px',
+                              height: '40px',
+                              backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.2)' : 'rgba(0, 150, 200, 0.2)',
+                              borderRadius: '8px',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              fontWeight: 'bold',
+                              fontFamily: 'Courier New, monospace',
+                              color: darkMode ? '#4ff' : '#07f'
+                            }}>
+                              CNOT
+                            </div>
+                            <div>
+                              <div style={{ fontWeight: 'bold' }}>Controlled-NOT Gate</div>
+                              <div style={{ fontSize: '0.9rem' }}>Flips the second qubit if the first is |1⟩, creating entanglement</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div style={{
+                        backgroundColor: darkMode ? 'rgba(40, 40, 80, 0.6)' : 'rgba(240, 240, 255, 0.6)',
+                        padding: '1rem',
+                        borderRadius: '8px',
+                        width: '100%'
+                      }}>
+                        <h3 style={{ 
+                          fontWeight: 'bold', 
+                          marginBottom: '0.75rem',
+                          color: darkMode ? '#4ff' : '#07f',
+                        }}>
+                          Quantum Entanglement
+                        </h3>
+                        
+                        <div style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          marginBottom: '1rem'
+                        }}>
+                          <div style={{
+                            display: 'flex',
+                            gap: '2rem',
+                            alignItems: 'center'
+                          }}>
+                            <div style={{
+                              width: '70px',
+                              height: '70px',
+                              borderRadius: '50%',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.2)' : 'rgba(0, 150, 200, 0.2)',
+                              fontSize: '2rem'
+                            }}>
+                              ⚛️
+                            </div>
+                            
+                            <div style={{
+                              width: '20px',
+                              height: '2px',
+                              backgroundColor: darkMode ? '#4ff' : '#07f',
+                              position: 'relative'
+                            }}>
+                              <div style={{
+                                position: 'absolute',
+                                top: '-10px',
+                                left: '0',
+                                right: '0',
+                                textAlign: 'center',
+                                fontSize: '1.2rem',
+                                animation: 'pulse 2s infinite'
+                              }}>
+                                {entangledQubits.length === 2 ? '✨' : ''}
+                              </div>
+                            </div>
+                            
+                            <div style={{
+                              width: '70px',
+                              height: '70px',
+                              borderRadius: '50%',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.2)' : 'rgba(0, 150, 200, 0.2)',
+                              fontSize: '2rem'
+                            }}>
+                              ⚛️
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <p style={{ fontSize: '0.9rem', lineHeight: '1.5' }}>
+                          When qubits become entangled, they form a single quantum system where measuring
+                          one qubit instantly reveals information about the other, regardless of the distance
+                          between them. This "spooky action at a distance" (as Einstein called it) is a key
+                          feature of quantum mechanics with no classical analog.
+                        </p>
+                      </div>
+                    </>
+                  )}
+                  
+                  {/* Level 4: Quantum Entanglement Details */}
+                  {currentLevel === 3 && (
+                    <div style={{
+                      backgroundColor: darkMode ? 'rgba(40, 40, 80, 0.6)' : 'rgba(240, 240, 255, 0.6)',
+                      padding: '1rem',
+                      borderRadius: '8px',
+                      width: '100%',
+                      marginBottom: '1.5rem'
+                    }}>
+                      <h3 style={{ 
+                        fontWeight: 'bold', 
+                        marginBottom: '0.75rem',
+                        color: darkMode ? '#4ff' : '#07f',
+                        textAlign: 'center'
+                      }}>
+                        Quantum Entanglement Visualization
+                      </h3>
+                      
+                      <div style={{ 
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '1.5rem',
+                        marginBottom: '1.5rem'
+                      }}>
+                        <div style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          width: '100%',
+                          position: 'relative'
+                        }}>
+                          {/* Left Qubit */}
+                          <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '0.5rem'
+                          }}>
+                            <div style={{
+                              width: '80px',
+                              height: '80px',
+                              borderRadius: '50%',
+                              backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.2)' : 'rgba(0, 150, 200, 0.2)',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              fontSize: '2rem'
+                            }}>
+                              😺
+                            </div>
+                            <div style={{ fontWeight: 'bold' }}>Qubit A</div>
+                          </div>
+                          
+                          {/* Connection Line */}
+                          <div style={{
+                            position: 'absolute',
+                            top: '40px',
+                            left: '80px',
+                            right: '80px',
+                            height: '2px',
+                            backgroundColor: darkMode ? '#4ff' : '#07f',
+                            zIndex: 0
+                          }}>
+                            <div style={{
+                              position: 'absolute',
+                              top: '-10px',
+                              left: '0',
+                              right: '0',
+                              textAlign: 'center',
+                              animation: 'pulse 2s infinite'
+                            }}>
+                              {Array.from({ length: 5 }).map((_, i) => (
+                                <span key={i} style={{ 
+                                  display: 'inline-block',
+                                  margin: '0 5px',
+                                  fontSize: '1rem',
+                                  opacity: 0.8
+                                }}>✨</span>
+                              ))}
+                            </div>
+                          </div>
+                          
+                          {/* Right Qubit */}
+                          <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '0.5rem'
+                          }}>
+                            <div style={{
+                              width: '80px',
+                              height: '80px',
+                              borderRadius: '50%',
+                              backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.2)' : 'rgba(0, 150, 200, 0.2)',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              fontSize: '2rem'
+                            }}>
+                              😺
+                            </div>
+                            <div style={{ fontWeight: 'bold' }}>Qubit B</div>
+                          </div>
+                        </div>
+                        
+                        <div style={{
+                          padding: '0.75rem',
+                          backgroundColor: darkMode ? 'rgba(30, 30, 60, 0.6)' : 'rgba(220, 220, 240, 0.6)',
+                          borderRadius: '8px',
+                          textAlign: 'center',
+                          width: 'fit-content'
+                        }}>
+                          <div style={{ fontWeight: 'bold' }}>
+                            |ψ⟩ = (|00⟩ + |11⟩)/√2
+                          </div>
+                          <div style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>
+                            Bell state: Both qubits are either 0 or 1, with equal probability
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <p style={{ fontSize: '0.9rem', lineHeight: '1.5' }}>
+                        When two qubits are entangled, measuring one immediately affects the other, no matter
+                        how far apart they are. If the qubits are in a Bell state, measuring one as |0⟩ means
+                        the other will also be |0⟩, and the same for |1⟩. This "correlation at a distance" has
+                        been experimentally verified and forms the basis for quantum communication and teleportation.
+                      </p>
+                    </div>
+                  )}
+                  
+                  {/* Level 5: Quantum Applications */}
+                  {currentLevel === 4 && (
+                    <div style={{
+                      backgroundColor: darkMode ? 'rgba(40, 40, 80, 0.6)' : 'rgba(240, 240, 255, 0.6)',
+                      padding: '1rem',
+                      borderRadius: '8px',
+                      width: '100%',
+                      marginBottom: '1.5rem'
+                    }}>
+                      <h3 style={{ 
+                        fontWeight: 'bold', 
+                        marginBottom: '0.75rem',
+                        color: darkMode ? '#4ff' : '#07f',
+                        textAlign: 'center'
+                      }}>
+                        Real-World Quantum Applications
+                      </h3>
+                      
+                      <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '1.5rem',
+                        marginBottom: '1rem'
+                      }}>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '1rem'
+                        }}>
+                          <div style={{
+                            fontSize: '2.5rem',
+                            minWidth: '60px',
+                            textAlign: 'center'
+                          }}>
+                            💻
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>
+                              Quantum Computing
+                            </div>
+                            <div style={{ fontSize: '0.9rem' }}>
+                              Uses qubits to perform calculations exponentially faster than classical computers
+                              for certain problems like factoring large numbers and database searches.
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '1rem'
+                        }}>
+                          <div style={{
+                            fontSize: '2.5rem',
+                            minWidth: '60px',
+                            textAlign: 'center'
+                          }}>
+                            🔒
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>
+                              Quantum Cryptography
+                            </div>
+                            <div style={{ fontSize: '0.9rem' }}>
+                              Creates unhackable communication channels using quantum properties to detect
+                              any eavesdropping attempts instantly.
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '1rem'
+                        }}>
+                          <div style={{
+                            fontSize: '2.5rem',
+                            minWidth: '60px',
+                            textAlign: 'center'
+                          }}>
+                            🔬
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>
+                              Quantum Sensors
+                            </div>
+                            <div style={{ fontSize: '0.9rem' }}>
+                              Achieve unprecedented sensitivity in measuring magnetic fields, gravity, and time,
+                              enabling advances in navigation, medical imaging, and geology.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div style={{
+                        padding: '0.75rem',
+                        backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.1)' : 'rgba(0, 150, 200, 0.1)',
+                        borderRadius: '8px',
+                        lineHeight: '1.5',
+                        fontSize: '0.9rem'
+                      }}>
+                        <div style={{ fontWeight: 'bold', marginBottom: '0.25rem', color: darkMode ? '#4ff' : '#07f' }}>
+                          Did you know?
+                        </div>
+                        Quantum technologies are already being used today in secure communications networks, 
+                        ultra-precise atomic clocks, and medical imaging devices. Major companies and governments
+                        worldwide are investing billions in quantum research.
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Educational Links and References */}
+                <div style={{
+                  marginTop: '1.5rem',
+                  padding: '1rem',
+                  backgroundColor: darkMode ? 'rgba(40, 40, 80, 0.6)' : 'rgba(240, 240, 255, 0.6)',
+                  borderRadius: '8px'
+                }}>
+                  <h3 style={{ 
+                    fontWeight: 'bold', 
+                    marginBottom: '0.75rem',
+                    color: darkMode ? '#4ff' : '#07f'
+                  }}>
+                    Learn More about Quantum Physics
+                  </h3>
+                  
+                  <ul style={{ 
+                    padding: 0, 
+                    margin: 0, 
+                    listStyle: 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.5rem'
+                  }}>
+                    <li style={{ 
+                      display: 'flex', 
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <span role="img" aria-label="book" style={{ fontSize: '1.2rem' }}>📖</span>
+                      <a 
+                        href="https://www.nobelprize.org/prizes/physics/2022/press-release/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ 
+                          color: darkMode ? '#4ff' : '#07f',
+                          textDecoration: 'none' 
+                        }}
+                      >
+                        The Nobel Prize in Physics 2022: Quantum Entanglement
+                      </a>
+                    </li>
+                    <li style={{ 
+                      display: 'flex', 
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <span role="img" aria-label="video" style={{ fontSize: '1.2rem' }}>🎬</span>
+                      <a 
+                        href="https://www.youtube.com/watch?v=zcqZHYo7ONs"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ 
+                          color: darkMode ? '#4ff' : '#07f',
+                          textDecoration: 'none' 
+                        }}
+                      >
+                        Video: Schrödinger's Cat Explained
+                      </a>
+                    </li>
+                    <li style={{ 
+                      display: 'flex', 
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <span role="img" aria-label="lab" style={{ fontSize: '1.2rem' }}>🧪</span>
+                      <a 
+                        href="https://quantum-computing.ibm.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ 
+                          color: darkMode ? '#4ff' : '#07f',
+                          textDecoration: 'none' 
+                        }}
+                      >
+                        IBM Quantum Computing: Try Real Quantum Experiments
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default QuantumCatsGame;: 'center',
+                              fontSize: '2rem',
+                              fontFamily: 'Courier New, monospace',
+                              fontWeight: 'bold'
+                            }}>
+                              0 | 1
+                            </div>
+                          </div>
+                          
+                          <div style={{ textAlign: 'center' }}>
+                            <div style={{ 
+                              fontWeight: 'bold', 
+                              marginBottom: '0.5rem',
+                              color: darkMode ? '#4ff' : '#07f' 
+                            }}>
+                              Quantum Bit
+                            </div>
+                            <div style={{
+                              width: '80px',
+                              height: '80px',
+                              borderRadius: '8px',
+                              backgroundColor: darkMode ? 'rgba(30, 30, 60, 0.6)' : 'rgba(220, 220, 240, 0.6)',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              fontSize: '1.2rem',
+                              fontFamily: 'Courier New, monospace',
+                              fontWeight: 'bold'
+                            }}>
+                              <div>α|0⟩</div>
+                              <div>+</div>
+                              <div>β|1⟩</div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <p style={{ fontSize: '0.9rem', lineHeight: '1.5' }}>
+                          Classical bits can only be in state 0 or 1. Quantum bits (qubits) can exist in a 
+                          superposition of both states simultaneously. The complex numbers α and β represent
+                          probability amplitudes, with |α|² + |β|² = 1.
+                        </p>
+                      </div>
+                    </>
+                  )}
+                  
+                  {/* Level 3: Quantum Gates */}
+                  {currentLevel === 2 && (
+                    <>
+                      <div style={{
+                        backgroundColor: darkMode ? 'rgba(40, 40, 80, 0.6)' : 'rgba(240, 240, 255, 0.6)',
+                        padding: '1rem',
+                        borderRadius: '8px',
+                        width: '100%',
+                        marginBottom: '1.5rem'
+                      }}>
+                        <h3 style={{ 
+                          fontWeight: 'bold', 
+                          marginBottom: '0.75rem',
+                          color: darkMode ? '#4ff' : '#07f',
+                          textAlign: 'center'
+                        }}>
+                          Common Quantum Gates
+                        </h3>
+                        
+                        <div style={{ 
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '1rem'
+                        }}>
+                          <div style={{ 
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1rem'
+                          }}>
+                            <div style={{
+                              width: '40px',
+                              height: '40px',
+                              backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.2)' : 'rgba(0, 150, 200, 0.2)',
+                              borderRadius: '8px',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              fontWeight: 'bold',
+                              fontFamily: 'Courier New, monospace',
+                              color: darkMode ? '#4ff' : '#07f'
+                            }}>
+                              H
+                            </div>
+                            <div>
+                              <div style={{ fontWeight: 'bold' }}>Hadamard Gate</div>
+                              <div style={{ fontSize: '0.9rem' }}>Creates superposition from |0⟩ or |1⟩ states</div>
+                            </div>
+                          </div>
+                          
+                          <div style={{ 
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1rem'
+                          }}>
+                            <div style={{
+                              width: '40px',
+                              height: '40px',
+                              backgroundColor: darkMode ? 'rgba(0, 200, 150, 0.2)' : 'rgba(0, 150, 200, 0.2)',
+                              borderRadius: '8px',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems

@@ -1,0 +1,49 @@
+'use client';
+
+import React from 'react';
+import { ToolPageLayout, withActiveTab } from '@/components/layouts/ToolPageLayout';
+import dynamic from 'next/dynamic';
+import metaJson from './meta.json';
+import { ToolMeta, ToolComponentProps } from '@/types/tool-types';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// Cast and validate the meta data
+const meta: ToolMeta = {
+  ...metaJson,
+  type: 'ai' as const,
+  difficulty: metaJson.difficulty.toLowerCase() as 'beginner' | 'intermediate' | 'advanced'
+};
+
+// Dynamically import components
+const AnalyzePanel = dynamic(() => import('./components/AnalyzePanel'), { ssr: false });
+const HistoryPanel = dynamic(() => import('./components/HistoryPanel'), { ssr: false });
+const ReportsPanel = dynamic(() => import('./components/ReportsPanel'), { ssr: false });
+const SettingsPanel = dynamic(() => import('./components/SettingsPanel'), { ssr: false });
+
+const SentimentAnalyzerContent = withActiveTab(function SentimentAnalyzerContent({ activeTab }: ToolComponentProps) {
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={activeTab}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md p-6 rounded-2xl shadow-lg"
+      >
+        {activeTab === 'analyze' && <AnalyzePanel />}
+        {activeTab === 'history' && <HistoryPanel />}
+        {activeTab === 'reports' && <ReportsPanel />}
+        {activeTab === 'settings' && <SettingsPanel />}
+      </motion.div>
+    </AnimatePresence>
+  );
+});
+
+export default function SentimentAnalyzerPage() {
+  return (
+    <ToolPageLayout meta={meta}>
+      <SentimentAnalyzerContent activeTab="analyze" />
+    </ToolPageLayout>
+  );
+}

@@ -1,0 +1,66 @@
+{
+  "title": "Polynomial Calculator",
+  "description": "A comprehensive tool for working with polynomials - factoring, finding roots, and graphing polynomial functions.",
+  "type": "math",
+  "category": "Algebra",
+  "difficulty": "intermediate",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Solver",
+        "icon": "🧮",
+        "color": {
+          "active": "text-blue-600 dark:text-blue-400",
+          "hover": "text-blue-500"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📚",
+        "color": {
+          "active": "text-green-600 dark:text-green-400",
+          "hover": "text-green-500"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "🔧",
+        "color": {
+          "active": "text-purple-600 dark:text-purple-400",
+          "hover": "text-purple-500"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📖",
+        "color": {
+          "active": "text-orange-600 dark:text-orange-400",
+          "hover": "text-orange-500"
+        }
+      }
+    ]
+  },
+  "id": "polynomial",
+  "lastUpdated": "2025-03-31",
+  "icon": "🧮",
+  "color": "from-blue-500 to-purple-500",
+  "enabled": true,
+  "tags": [
+    "polynomial",
+    "algebra"
+  ],
+  "keywords": [
+    "polynomial",
+    "algebra"
+  ],
+  "navigation": {
+    "category": {
+      "title": "Algebra",
+      "path": "/math"
+    }
+  }
+}

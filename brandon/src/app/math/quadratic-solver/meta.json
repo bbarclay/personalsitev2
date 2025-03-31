@@ -1,0 +1,89 @@
+{
+  "id": "quadratic-solver",
+  "title": "Quadratic Equation Solver",
+  "description": "Solve quadratic equations and see step-by-step solutions",
+  "category": "Algebra",
+  "subcategory": "Equations",
+  "featured": true,
+  "type": "math",
+  "difficulty": "beginner",
+  "lastUpdated": "2024-03-31",
+  "icon": "📊",
+  "color": "from-teal-600 to-emerald-700",
+  "shape": "pentagon",
+  "enabled": true,
+  "tags": [
+    "algebra",
+    "equations",
+    "quadratic",
+    "roots",
+    "solver"
+  ],
+  "keywords": [
+    "quadratic equations",
+    "roots",
+    "algebra",
+    "solver",
+    "step-by-step"
+  ],
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Solver",
+        "icon": "🧮",
+        "color": {
+          "active": "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Explanation",
+        "icon": "📚",
+        "color": {
+          "active": "bg-purple-500 text-white",
+          "hover": "bg-purple-100 dark:bg-purple-900"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Applications",
+        "icon": "🎯",
+        "color": {
+          "active": "bg-green-500 text-white",
+          "hover": "bg-green-100 dark:bg-green-900"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📖",
+        "color": {
+          "active": "bg-orange-500 text-white",
+          "hover": "bg-orange-100 dark:bg-orange-900"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Mathematics",
+      "path": "/math"
+    },
+    "nextTools": [
+      {
+        "id": "polynomial",
+        "title": "Polynomial Solver",
+        "icon": "🔢",
+        "path": "/math/polynomial"
+      },
+      {
+        "id": "linear-solver",
+        "title": "Linear Solver",
+        "icon": "📈",
+        "path": "/math/linear-solver"
+      }
+    ]
+  }
+}

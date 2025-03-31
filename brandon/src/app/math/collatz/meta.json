@@ -1,0 +1,76 @@
+{
+  "id": "collatz",
+  "title": "Collatz Conjecture Calculator",
+  "description": "Explore the Collatz conjecture by calculating sequences and visualizing patterns",
+  "category": "Math",
+  "subcategory": "Number Theory",
+  "type": "math",
+  "difficulty": "intermediate",
+  "lastUpdated": "2024-03-31",
+  "icon": "🔢",
+  "color": "from-green-500 to-emerald-500",
+  "shape": "square",
+  "enabled": true,
+  "featured": true,
+  "tags": [
+    "collatz conjecture",
+    "number theory",
+    "sequences",
+    "mathematics"
+  ],
+  "keywords": [
+    "collatz conjecture",
+    "3n+1",
+    "number sequences",
+    "mathematical conjectures",
+    "number theory"
+  ],
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Solver",
+        "icon": "calculator",
+        "color": {
+          "active": "bg-green-500",
+          "hover": "bg-green-600"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Explanation",
+        "icon": "book",
+        "color": {
+          "active": "bg-green-500",
+          "hover": "bg-green-600"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Applications",
+        "icon": "lightbulb",
+        "color": {
+          "active": "bg-green-500",
+          "hover": "bg-green-600"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "bookmark",
+        "color": {
+          "active": "bg-green-500",
+          "hover": "bg-green-600"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": "Math",
+    "path": "/math/collatz",
+    "next": {
+      "title": "Pythagoras",
+      "path": "/math/pythagoras"
+    }
+  }
+}

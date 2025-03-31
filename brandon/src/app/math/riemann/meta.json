@@ -1,0 +1,82 @@
+{
+  "id": "riemann",
+  "title": "Riemann Zeta Calculator",
+  "description": "Calculate values of the Riemann zeta function and explore its properties",
+  "category": "Math",
+  "subcategory": "Advanced",
+  "type": "math",
+  "difficulty": "advanced",
+  "lastUpdated": "2024-03-31",
+  "icon": "ζ",
+  "color": "from-purple-500 to-indigo-500",
+  "shape": "square",
+  "enabled": true,
+  "featured": true,
+  "tags": [
+    "riemann zeta",
+    "complex analysis",
+    "number theory",
+    "special functions"
+  ],
+  "keywords": [
+    "riemann zeta function",
+    "complex numbers",
+    "number theory",
+    "special functions",
+    "mathematics"
+  ],
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Solver",
+        "icon": "🧮",
+        "color": {
+          "active": "bg-purple-500 text-white",
+          "hover": "bg-purple-100 dark:bg-purple-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Explanation",
+        "icon": "📚",
+        "color": {
+          "active": "bg-blue-500 text-white",
+          "hover": "bg-blue-100 dark:bg-blue-900"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Applications",
+        "icon": "🌐",
+        "color": {
+          "active": "bg-green-500 text-white",
+          "hover": "bg-green-100 dark:bg-green-900"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📖",
+        "color": {
+          "active": "bg-orange-500 text-white",
+          "hover": "bg-orange-100 dark:bg-orange-900"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Math",
+      "path": "/math"
+    },
+    "nextTools": [
+      {
+        "id": "collatz",
+        "title": "Collatz Conjecture",
+        "path": "/math/collatz",
+        "icon": "🧮"
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+
+{
+  "name": "Leadership & Management",
+  "category": "leadership",
+  "proficiency": 95,
+  "experience": "15+ years",
+  "description": "Proven track record in strategic planning, project management, and team leadership across international organizations. Advanced Scrum Master certified with expertise in Agile methodologies and cross-functional team collaboration.",
+  "relatedTech": [
+    "Advanced Scrum Master",
+    "Scrum Master",
+    "Agile Methodologies",
+    "Strategic Planning",
+    "Project Management",
+    "Team Leadership",
+    "Cross-functional Collaboration",
+    "International Team Management"
+  ],
+  "icon": "Users",
+  "achievements": [
+    "Led cross-functional teams to expand AI engine features by 50%",
+    "Directed international teams across multiple time zones",
+    "Reduced development costs by 20% through effective outsourcing",
+    "Improved team productivity through Agile implementation",
+    "Mentored 15+ junior developers to senior positions",
+    "Successfully delivered projects with $1M+ budgets"
+  ]
+}

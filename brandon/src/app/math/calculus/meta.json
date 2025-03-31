@@ -1,0 +1,88 @@
+{
+  "id": "calculus",
+  "title": "Calculus",
+  "description": "Mathematical study of continuous change, including derivatives, integrals, and their applications",
+  "category": "Math",
+  "subcategory": "Advanced",
+  "type": "math",
+  "difficulty": "advanced",
+  "lastUpdated": "2025-03-31",
+  "icon": "📊",
+  "color": "from-blue-500 to-purple-500",
+  "shape": "square",
+  "enabled": true,
+  "featured": true,
+  "tags": [
+    "calculus",
+    "math",
+    "derivatives",
+    "integrals"
+  ],
+  "keywords": [
+    "calculus",
+    "derivatives",
+    "integrals",
+    "limits",
+    "math"
+  ],
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Solver",
+        "icon": "🧮",
+        "color": {
+          "active": "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Explanation",
+        "icon": "📚",
+        "color": {
+          "active": "bg-purple-500 text-white",
+          "hover": "bg-purple-100 dark:bg-purple-900"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Applications",
+        "icon": "🔧",
+        "color": {
+          "active": "bg-green-500 text-white",
+          "hover": "bg-green-100 dark:bg-green-900"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📖",
+        "color": {
+          "active": "bg-orange-500 text-white",
+          "hover": "bg-orange-100 dark:bg-orange-900"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Mathematics",
+      "path": "/math"
+    },
+    "nextTools": [
+      {
+        "id": "derivatives",
+        "title": "Derivative Calculator",
+        "path": "/math/calculus/derivative-calculator",
+        "icon": "📈"
+      },
+      {
+        "id": "integrals",
+        "title": "Integral Calculator",
+        "path": "/math/calculus/integral-calculator",
+        "icon": "∫"
+      }
+    ]
+  }
+}

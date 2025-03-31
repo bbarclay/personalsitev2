@@ -1,0 +1,83 @@
+{
+  "id": "probability",
+  "title": "Probability",
+  "description": "Mathematical study of randomness and uncertainty",
+  "category": "Math",
+  "subcategory": "Statistics",
+  "type": "math",
+  "difficulty": "intermediate",
+  "lastUpdated": "2025-03-31",
+  "icon": "🎲",
+  "color": "from-blue-500 to-indigo-500",
+  "shape": "square",
+  "enabled": true,
+  "featured": true,
+  "tags": [
+    "probability",
+    "statistics",
+    "math",
+    "randomness"
+  ],
+  "keywords": [
+    "probability",
+    "statistics",
+    "chance",
+    "random",
+    "distribution",
+    "expected value"
+  ],
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Solver",
+        "icon": "🧮",
+        "color": {
+          "active": "bg-blue-500 text-white",
+          "hover": "bg-blue-100 dark:bg-blue-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Explanation",
+        "icon": "📚",
+        "color": {
+          "active": "bg-purple-500 text-white",
+          "hover": "bg-purple-100 dark:bg-purple-900"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Applications",
+        "icon": "🔧",
+        "color": {
+          "active": "bg-green-500 text-white",
+          "hover": "bg-green-100 dark:bg-green-900"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📖",
+        "color": {
+          "active": "bg-orange-500 text-white",
+          "hover": "bg-orange-100 dark:bg-orange-900"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Mathematics",
+      "path": "/math"
+    },
+    "nextTools": [
+      {
+        "id": "probability-calculator",
+        "title": "Probability Calculator",
+        "path": "/math/probability/probability-calculator",
+        "icon": "🎲"
+      }
+    ]
+  }
+}

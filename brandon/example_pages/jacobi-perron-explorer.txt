@@ -1,0 +1,1641 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+const JacobiPerronExplorer = () => {
+  // Core state variables
+  const [darkMode, setDarkMode] = useState(true);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [currentLevel, setCurrentLevel] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [username, setUsername] = useState('');
+  const [showTutorial, setShowTutorial] = useState(true);
+  const [tutorialStep, setTutorialStep] = useState(0);
+  
+  // Algorithm parameters
+  const [inputVector, setInputVector] = useState([1.41421, 1.73205]); // Default: √2, √3
+  const [iterations, setIterations] = useState(10);
+  const [currentIteration, setCurrentIteration] = useState(0);
+  const [showTrace, setShowTrace] = useState(false);
+  const [algorithmTrace, setAlgorithmTrace] = useState([]);
+  const [convergents, setConvergents] = useState([]);
+  const [approximationError, setApproximationError] = useState([]);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const animationRef = useRef(null);
+  
+  // Challenge mode state
+  const [challengeActive, setChallengeActive] = useState(false);
+  const [currentChallenge, setCurrentChallenge] = useState(null);
+  const [userAnswer, setUserAnswer] = useState('');
+  const [answerFeedback, setAnswerFeedback] = useState(null);
+  
+  // Custom vectors
+  const [customVector, setCustomVector] = useState(['', '']);
+  const [savedVectors, setSavedVectors] = useState([
+    { name: "√2 and √3", values: [1.41421, 1.73205] },
+    { name: "Golden ratio and e", values: [1.61803, 2.71828] },
+    { name: "π and √5", values: [3.14159, 2.2360] }
+  ]);
+  
+  // Levels structure
+  const levels = [
+    { 
+      id: 'intro', 
+      name: 'Introduction to Multidimensional Continued Fractions', 
+      description: 'Learn about the basics of continued fractions and their multidimensional extensions.',
+      completed: false 
+    },
+    { 
+      id: 'algorithm', 
+      name: 'The Jacobi-Perron Algorithm', 
+      description: 'Understand how the Jacobi-Perron algorithm works to generate multidimensional continued fractions.',
+      completed: false 
+    },
+    { 
+      id: 'convergence', 
+      name: 'Convergence Properties', 
+      description: 'Explore how the algorithm converges and approximates irrational numbers.',
+      completed: false 
+    },
+    { 
+      id: 'applications', 
+      name: 'Applications and Extensions', 
+      description: 'See real-world applications and extensions of the Jacobi-Perron algorithm.',
+      completed: false 
+    }
+  ];
+  
+  // Challenges for each level
+  const challenges = [
+    // Introduction level challenges
+    [
+      { 
+        id: 'cf_basics', 
+        question: 'If a continued fraction is [2; 1, 2, 3], what decimal number does it represent?', 
+        answer: '2.6', 
+        hint: 'Expand from the innermost term: 2 + 1/(1 + 1/(2 + 1/3))' 
+      },
+      { 
+        id: 'identify_cf', 
+        question: 'Which of these is a valid representation of a 2D Jacobi-Perron sequence? A) [1,2,3] B) [[1,2],[3,4],[5,6]]', 
+        answer: 'B', 
+        hint: 'A 2D Jacobi-Perron expansion consists of a sequence of 2D integer vectors' 
+      },
+    ],
+    // Algorithm level challenges
+    [
+      { 
+        id: 'jp_step', 
+        question: 'If α = 2.5 and β = 1.8, what is a₁ in the first step of the Jacobi-Perron algorithm?', 
+        answer: '2', 
+        hint: 'a₁ is the integer part of α/β' 
+      },
+      { 
+        id: 'next_iteration', 
+        question: 'If we have α = 2.5, β = 1.8, and calculate a₁ = 2, what is the new α for the next iteration?', 
+        answer: '0.9', 
+        hint: 'The new α becomes β, and the new β is α - a₁×β' 
+      }
+    ],
+    // Convergence level challenges
+    [
+      { 
+        id: 'convergent_check', 
+        question: 'True or False: The Jacobi-Perron algorithm always converges for all pairs of real numbers.', 
+        answer: 'True', 
+        hint: 'Consider the mathematical properties of the algorithm for almost all inputs.' 
+      },
+      { 
+        id: 'error_estimate', 
+        question: 'As the number of iterations increases, the approximation error typically: A) Increases B) Decreases C) Remains constant', 
+        answer: 'B', 
+        hint: 'Think about the purpose of continued fraction expansions.' 
+      }
+    ],
+    // Applications level challenges
+    [
+      { 
+        id: 'jp_application', 
+        question: 'Which area does NOT typically use the Jacobi-Perron algorithm? A) Number theory B) Weather forecasting C) Diophantine approximation', 
+        answer: 'B', 
+        hint: 'Consider where approximating irrational numbers simultaneously would be useful.' 
+      },
+      { 
+        id: 'best_approximation', 
+        question: 'What property makes Jacobi-Perron approximations special compared to decimal approximations?', 
+        answer: 'optimality', 
+        hint: 'They provide the "best" rational approximations in some mathematical sense.' 
+      }
+    ]
+  ];
+  
+  // Educational content
+  const levelContent = [
+    // Introduction level content
+    {
+      title: "Introduction to Multidimensional Continued Fractions",
+      sections: [
+        {
+          heading: "What are Continued Fractions?",
+          content: "A continued fraction is a representation of a real number using a sequence of integers. For example, the simple continued fraction for a real number x has the form:\n\nx = a₀ + 1/(a₁ + 1/(a₂ + 1/(a₃ + ...)))\n\nThis is often written as x = [a₀; a₁, a₂, a₃, ...]. Continued fractions provide the best rational approximations to real numbers."
+        },
+        {
+          heading: "Extending to Multiple Dimensions",
+          content: "The Jacobi-Perron algorithm extends this concept to simultaneously approximate multiple real numbers. Instead of working with a single number, we work with a vector of numbers (α₁, α₂, ..., αₙ).\n\nFor the 2D case, we work with two real numbers α and β, creating a sequence of integer vectors that approximate the ratio of these numbers."
+        },
+        {
+          heading: "Why Multiple Dimensions?",
+          content: "Multiple dimensions allow us to simultaneously approximate several irrational numbers and study their relationships. This has applications in number theory, Diophantine approximation, and algebraic number theory."
+        }
+      ]
+    },
+    // Algorithm level content
+    {
+      title: "The Jacobi-Perron Algorithm",
+      sections: [
+        {
+          heading: "Algorithm Definition",
+          content: "For a vector (α, β) of positive real numbers where 0 < β < α, the Jacobi-Perron algorithm produces sequences by iterating:\n\n1. Compute a = ⌊α/β⌋ (integer part of α/β)\n2. Set (α, β) ← (β, α - a×β)\n\nThis generates a sequence of integer vectors (a₁, a₂, a₃, ...) that define the multidimensional continued fraction."
+        },
+        {
+          heading: "Algorithm Iteration",
+          content: "Each step produces an integer a and transforms our vector. The sequence of these integers forms the Jacobi-Perron expansion. Use the interactive tool to see how different inputs generate different sequences."
+        },
+        {
+          heading: "Building Convergents",
+          content: "From the sequence of integers, we can construct 'convergents' - rational approximations to our original numbers. These approximations get progressively better with each iteration."
+        }
+      ]
+    },
+    // Convergence level content
+    {
+      title: "Convergence Properties",
+      sections: [
+        {
+          heading: "Rate of Convergence",
+          content: "The Jacobi-Perron algorithm provides approximations that converge to the true values as the number of iterations increases. The error typically decreases at an exponential rate."
+        },
+        {
+          heading: "Error Analysis",
+          content: "The algorithm gives us pairs of fractions (p₁/q, p₂/q) that approximate our original values (α, β). The approximation error |α - p₁/q| and |β - p₂/q| tends to zero as iterations increase."
+        },
+        {
+          heading: "Optimality Properties",
+          content: "The approximations provided by the Jacobi-Perron algorithm have certain optimality properties in terms of the size of the denominator relative to the approximation error."
+        }
+      ]
+    },
+    // Applications level content
+    {
+      title: "Applications and Extensions",
+      sections: [
+        {
+          heading: "Number Theory Applications",
+          content: "The Jacobi-Perron algorithm is used in the study of algebraic number fields, particularly for finding units in cubic fields and solving certain Diophantine equations."
+        },
+        {
+          heading: "Higher Dimensions",
+          content: "While we've focused on the 2D case, the algorithm extends to higher dimensions to simultaneously approximate n real numbers, with applications in multidimensional Diophantine approximation."
+        },
+        {
+          heading: "Connections to Other Algorithms",
+          content: "The Jacobi-Perron algorithm is related to other multidimensional continued fraction algorithms like Brun's algorithm and the modified Jacobi-Perron algorithm. Each has slightly different convergence properties."
+        }
+      ]
+    }
+  ];
+  
+  // Mathematical facts and principles
+  const mathFacts = [
+    "The regular continued fraction expansion of √2 is [1; 2, 2, 2, ...], an infinite sequence of 2s.",
+    "The Golden Ratio φ = 1.61803... has the simplest possible continued fraction: [1; 1, 1, 1, ...].",
+    "The Jacobi-Perron algorithm was introduced by Carl Gustav Jacob Jacobi and Oskar Perron.",
+    "For rational numbers, the Jacobi-Perron algorithm terminates after a finite number of steps.",
+    "Continued fractions provide the best rational approximations in the sense of minimizing the denominator.",
+    "Multidimensional continued fractions have applications in simultaneous Diophantine approximation.",
+    "The Jacobi-Perron algorithm can be used to find units in cubic number fields.",
+    "The convergents of a continued fraction alternate between overestimating and underestimating the true value.",
+    "For numbers in the same cubic field, the Jacobi-Perron expansion eventually becomes periodic.",
+    "The theory of continued fractions connects to various areas such as ergodic theory and dynamical systems."
+  ];
+  
+  // Tutorial steps
+  const tutorialSteps = [
+    { text: "Welcome to the Jacobi-Perron Algorithm Explorer! I'm Professor Leibniz, your guide to multidimensional continued fractions.", character: "professor" },
+    { text: "This interactive tool will help you understand how the Jacobi-Perron algorithm works and its applications in number theory.", character: "professor" },
+    { text: "You'll learn through a combination of explanations, visualizations, and interactive challenges.", character: "professor" },
+    { text: "We'll start with the basics of continued fractions and gradually move to more complex concepts.", character: "professor" },
+    { text: "Are you ready to explore the fascinating world of multidimensional continued fractions? Enter your name to begin.", character: "professor" }
+  ];
+  
+  // Set up algorithm trace based on input vector
+  useEffect(() => {
+    if (inputVector[0] > 0 && inputVector[1] > 0 && inputVector[0] !== inputVector[1]) {
+      // Ensure α > β
+      let alpha = Math.max(inputVector[0], inputVector[1]);
+      let beta = Math.min(inputVector[0], inputVector[1]);
+      
+      if (inputVector[0] < inputVector[1]) {
+        // Swap them in the input to maintain user's intent
+        setInputVector([inputVector[1], inputVector[0]]);
+      }
+      
+      runJacobiPerronAlgorithm(alpha, beta, iterations);
+    }
+  }, [inputVector, iterations]);
+  
+  // Run the Jacobi-Perron algorithm
+  const runJacobiPerronAlgorithm = (alpha, beta, maxIterations) => {
+    let trace = [];
+    let convs = [];
+    let errors = [];
+    
+    // Initial values
+    let a = [1, 0, 0]; // A₀
+    let b = [0, 1, 0]; // B₀
+    let c = [0, 0, 1]; // C₀
+    
+    // Start with original values
+    let currentAlpha = alpha;
+    let currentBeta = beta;
+    
+    // First convergent (special case)
+    const floorAlpha = Math.floor(currentAlpha);
+    const floorBeta = Math.floor(currentBeta);
+    
+    // Add initial state to trace
+    trace.push({
+      iteration: 0,
+      alpha: currentAlpha,
+      beta: currentBeta,
+      a: floorAlpha,
+      b: floorBeta,
+      nextAlpha: currentBeta,
+      nextBeta: currentAlpha - floorAlpha * currentBeta,
+      matrix: [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+    });
+    
+    // Update for first real iteration
+    currentAlpha = currentBeta;
+    currentBeta = alpha - floorAlpha * currentBeta;
+    
+    // Add first approximation
+    convs.push({
+      iteration: 0,
+      p1: floorAlpha,
+      p2: floorBeta,
+      q: 1,
+      approx1: floorAlpha,
+      approx2: floorBeta
+    });
+    
+    // Calculate initial error
+    errors.push({
+      iteration: 0,
+      error1: Math.abs(alpha - floorAlpha),
+      error2: Math.abs(beta - floorBeta)
+    });
+    
+    // Iterate
+    for (let i = 1; i <= maxIterations; i++) {
+      // Check for termination (rational numbers)
+      if (currentBeta === 0) {
+        break;
+      }
+      
+      // Compute a_i
+      const ai = Math.floor(currentAlpha / currentBeta);
+      
+      // Store current state
+      trace.push({
+        iteration: i,
+        alpha: currentAlpha,
+        beta: currentBeta,
+        a: ai,
+        nextAlpha: currentBeta,
+        nextBeta: currentAlpha - ai * currentBeta,
+        matrix: [a, b, c]
+      });
+      
+      // Update recurrence formulas
+      const newA = [...a];
+      const newB = [...b];
+      const newC = [...c];
+      
+      // Only need to update 2D vectors for 2D case
+      for (let j = 0; j < 3; j++) {
+        a[j] = ai * newB[j] + newA[j];
+        b[j] = newC[j];
+        c[j] = newB[j];
+      }
+      
+      // Compute convergents p₁/q, p₂/q
+      const p1 = a[0] / a[2];
+      const p2 = a[1] / a[2];
+      
+      convs.push({
+        iteration: i,
+        p1: a[0],
+        p2: a[1],
+        q: a[2],
+        approx1: p1,
+        approx2: p2
+      });
+      
+      // Calculate error
+      errors.push({
+        iteration: i,
+        error1: Math.abs(alpha - p1),
+        error2: Math.abs(beta - p2)
+      });
+      
+      // Update for next iteration
+      const nextAlpha = currentBeta;
+      const nextBeta = currentAlpha - ai * currentBeta;
+      
+      currentAlpha = nextAlpha;
+      currentBeta = nextBeta;
+    }
+    
+    setAlgorithmTrace(trace);
+    setConvergents(convs);
+    setApproximationError(errors);
+  };
+  
+  // Animate the algorithm
+  const startAnimation = () => {
+    setIsAnimating(true);
+    setCurrentIteration(0);
+    
+    if (animationRef.current) {
+      clearInterval(animationRef.current);
+    }
+    
+    animationRef.current = setInterval(() => {
+      setCurrentIteration(prev => {
+        if (prev < algorithmTrace.length - 1) {
+          return prev + 1;
+        } else {
+          clearInterval(animationRef.current);
+          setIsAnimating(false);
+          return prev;
+        }
+      });
+    }, 1000);
+  };
+  
+  // Stop animation
+  const stopAnimation = () => {
+    setIsAnimating(false);
+    if (animationRef.current) {
+      clearInterval(animationRef.current);
+    }
+  };
+  
+  // Reset animation
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        clearInterval(animationRef.current);
+      }
+    };
+  }, []);
+  
+  // Start a challenge
+  const startChallenge = () => {
+    const levelChallenges = challenges[currentLevel];
+    if (levelChallenges && levelChallenges.length > 0) {
+      const randomIndex = Math.floor(Math.random() * levelChallenges.length);
+      setCurrentChallenge(levelChallenges[randomIndex]);
+      setChallengeActive(true);
+      setUserAnswer('');
+      setAnswerFeedback(null);
+    }
+  };
+  
+  // Check challenge answer
+  const checkAnswer = () => {
+    if (!currentChallenge) return;
+    
+    // Case insensitive comparison for text answers
+    const isCorrect = userAnswer.toLowerCase().trim() === currentChallenge.answer.toLowerCase().trim();
+    
+    setAnswerFeedback({
+      correct: isCorrect,
+      message: isCorrect 
+        ? "Correct! Well done!" 
+        : `Not quite. The correct answer is: ${currentChallenge.answer}`
+    });
+    
+    if (isCorrect) {
+      // Update progress
+      setProgress(prev => Math.min(prev + 25, 100));
+      
+      // Mark level as completed if progress reaches 100%
+      if (progress + 25 >= 100) {
+        const updatedLevels = [...levels];
+        updatedLevels[currentLevel].completed = true;
+        
+        // Move to next level if available
+        if (currentLevel < levels.length - 1) {
+          setTimeout(() => {
+            setCurrentLevel(currentLevel + 1);
+            setProgress(0);
+            setChallengeActive(false);
+          }, 2000);
+        } else {
+          setTimeout(() => {
+            setChallengeActive(false);
+          }, 2000);
+        }
+      } else {
+        // Close challenge after delay
+        setTimeout(() => {
+          setChallengeActive(false);
+        }, 2000);
+      }
+    }
+  };
+  
+  // Custom input handling
+  const handleCustomVectorChange = (index, value) => {
+    const newVector = [...customVector];
+    
+    // Only allow valid number inputs
+    if (value === '' || /^[0-9]*\.?[0-9]*$/.test(value)) {
+      newVector[index] = value;
+      setCustomVector(newVector);
+    }
+  };
+  
+  const applyCustomVector = () => {
+    const newVector = customVector.map(v => parseFloat(v));
+    if (!isNaN(newVector[0]) && !isNaN(newVector[1]) && newVector[0] > 0 && newVector[1] > 0) {
+      setInputVector(newVector);
+    }
+  };
+  
+  const saveCustomVector = () => {
+    const newVector = customVector.map(v => parseFloat(v));
+    if (!isNaN(newVector[0]) && !isNaN(newVector[1]) && newVector[0] > 0 && newVector[1] > 0) {
+      // Create a name based on the values
+      const name = `[${newVector[0]}, ${newVector[1]}]`;
+      
+      // Add to saved vectors
+      setSavedVectors([...savedVectors, { name, values: newVector }]);
+      
+      // Apply it
+      setInputVector(newVector);
+    }
+  };
+  
+  // UI handlers
+  const toggleTheme = () => setDarkMode(!darkMode);
+  
+  const startGame = () => {
+    if (username.trim() === '') {
+      alert("Please enter your name to begin");
+      return;
+    }
+    setGameStarted(true);
+    setProgress(0);
+  };
+  
+  const nextTutorialStep = () => {
+    if (tutorialStep < tutorialSteps.length - 1) {
+      setTutorialStep(tutorialStep + 1);
+    } else {
+      setShowTutorial(false);
+    }
+  };
+  
+  // Random math fact display
+  const [currentFact, setCurrentFact] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFact(prev => (prev + 1) % mathFacts.length);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div style={{
+      fontFamily: "'Roboto', sans-serif",
+      minHeight: '100vh',
+      backgroundColor: darkMode ? '#1a1a2e' : '#f5f5f5',
+      color: darkMode ? '#e0e0e0' : '#333333',
+      transition: 'background-color 0.3s, color 0.3s',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* CSS for animations and styling */}
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Roboto+Mono&display=swap');
+          
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+          }
+          
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+          }
+          
+          @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          
+          .floating { animation: float 6s ease-in-out infinite; }
+          .pulse { animation: pulse 3s infinite; }
+          .fade-in { animation: fade-in 0.5s ease-out; }
+          
+          .math-button {
+            background-color: ${darkMode ? '#0f3460' : '#4361ee'};
+            color: ${darkMode ? '#e0e0e0' : 'white'};
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+          }
+          
+          .math-button:hover {
+            background-color: ${darkMode ? '#1c59b3' : '#3a56e4'};
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          }
+          
+          .math-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+          }
+          
+          .content-card {
+            background-color: ${darkMode ? '#16213e' : 'white'};
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+          }
+          
+          .content-card:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+          }
+          
+          .level-card {
+            background-color: ${darkMode ? '#0f3460' : '#e7ecff'};
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 4px solid ${darkMode ? '#4361ee' : '#4361ee'};
+          }
+          
+          .level-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          }
+          
+          .level-card.active {
+            background-color: ${darkMode ? '#1a56db' : '#c7d2fe'};
+            border-left: 4px solid ${darkMode ? '#8cb3ff' : '#2d46b9'};
+          }
+          
+          .level-card.completed {
+            border-left: 4px solid ${darkMode ? '#10b981' : '#10b981'};
+          }
+          
+          .math-input {
+            background-color: ${darkMode ? '#0f3460' : 'white'};
+            color: ${darkMode ? '#e0e0e0' : '#333333'};
+            border: 1px solid ${darkMode ? '#4361ee' : '#cbd5e0'};
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-family: 'Roboto Mono', monospace;
+            outline: none;
+            transition: all 0.2s;
+          }
+          
+          .math-input:focus {
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+          }
+          
+          .math-formula {
+            font-family: 'Roboto Mono', monospace;
+            background-color: ${darkMode ? '#1a1a2e' : '#f1f5f9'};
+            padding: 8px 12px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+          }
+          
+          .matrix-display {
+            font-family: 'Roboto Mono', monospace;
+            display: inline-block;
+            margin: 10px 0;
+          }
+          
+          .matrix-row {
+            display: flex;
+            justify-content: center;
+          }
+          
+          .matrix-bracket {
+            font-size: 48px;
+            font-weight: 300;
+            line-height: 1;
+          }
+          
+          .matrix-cell {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+          }
+          
+          .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+          }
+          
+          .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: ${darkMode ? '#0f3460' : '#333'};
+            color: ${darkMode ? '#e0e0e0' : 'white'};
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+          }
+          
+          .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+          }
+          
+          .progress-bar {
+            height: 8px;
+            background-color: ${darkMode ? '#1a1a2e' : '#e2e8f0'};
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+          }
+          
+          .progress-fill {
+            height: 100%;
+            background-color: ${darkMode ? '#4361ee' : '#4361ee'};
+            border-radius: 4px;
+            transition: width 0.3s ease;
+          }
+          
+          .trace-row {
+            display: flex;
+            padding: 8px;
+            border-bottom: 1px solid ${darkMode ? '#2a2a4a' : '#e2e8f0'};
+          }
+          
+          .trace-row:nth-child(even) {
+            background-color: ${darkMode ? '#1c1c36' : '#f8fafc'};
+          }
+          
+          .trace-cell {
+            flex: 1;
+            padding: 4px 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          
+          .vector-card {
+            display: flex;
+            align-items: center;
+            background-color: ${darkMode ? '#0f3460' : '#e7ecff'};
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+          }
+          
+          .vector-card:hover {
+            background-color: ${darkMode ? '#1a56db' : '#c7d2fe'};
+          }
+          
+          .chart-container {
+            background-color: ${darkMode ? '#16213e' : 'white'};
+            border-radius: 8px;
+            padding: 16px;
+            height: 300px;
+          }
+        `}
+      </style>
+      
+      {/* Header */}
+      <header style={{
+        position: 'relative',
+        zIndex: 1,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '1rem',
+        backgroundColor: darkMode ? '#0f3460' : '#4361ee',
+        color: 'white',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)'
+      }}>
+        <h1 style={{
+          fontSize: '1.8rem',
+          fontWeight: 'bold',
+          margin: 0,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}>
+          <span role="img" aria-label="math" style={{ fontSize: '2.2rem' }}>🧮</span>
+          Jacobi-Perron Explorer
+        </h1>
+        
+        {gameStarted && (
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            fontSize: '1rem', 
+            fontWeight: 'bold' 
+          }}>
+            <span>{username}</span>
+            <span style={{ margin: '0 8px' }}>|</span>
+            <span>Level {currentLevel + 1}: {levels[currentLevel].name}</span>
+          </div>
+        )}
+        
+        <button 
+          onClick={toggleTheme} 
+          className="math-button"
+          style={{
+            backgroundColor: 'transparent',
+            border: '1px solid white',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}
+        >
+          {darkMode ? (
+            <>
+              <span role="img" aria-label="light mode">☀️</span>
+              <span>Light</span>
+            </>
+          ) : (
+            <>
+              <span role="img" aria-label="dark mode">🌙</span>
+              <span>Dark</span>
+            </>
+          )}
+        </button>
+      </header>
+      
+      {/* Tutorial Dialog */}
+      {showTutorial && gameStarted && (
+        <div style={{
+          position: 'fixed',
+          bottom: '2rem',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '80%',
+          maxWidth: '600px',
+          backgroundColor: darkMode ? '#16213e' : 'white',
+          borderRadius: '8px',
+          padding: '1.5rem',
+          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+          zIndex: 100,
+          animation: 'float 3s ease-in-out infinite'
+        }}>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+            <div style={{
+              width: '50px',
+              height: '50px',
+              borderRadius: '50%',
+              backgroundColor: darkMode ? '#0f3460' : '#4361ee',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1.8rem'
+            }}>
+              {tutorialSteps[tutorialStep].character === 'professor' ? '👨‍🏫' : '👤'}
+            </div>
+            <div>
+              <div style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: darkMode ? '#4361ee' : '#4361ee' }}>
+                {tutorialSteps[tutorialStep].character === 'professor' ? 'Professor Leibniz' : username}
+              </div>
+              <div style={{ lineHeight: '1.5' }}>{tutorialSteps[tutorialStep].text}</div>
+            </div>
+          </div>
+          
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
+            <button
+              onClick={nextTutorialStep}
+              className="math-button"
+            >
+              {tutorialStep < tutorialSteps.length - 1 ? 'Next' : 'Start Learning'}
+            </button>
+          </div>
+        </div>
+      )}
+      
+      {/* Main Content */}
+      <main style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '2rem 1rem',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        {!gameStarted ? (
+          // Welcome screen
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            minHeight: '60vh'
+          }}>
+            <div className="floating" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+              <div style={{ 
+                fontSize: '5rem', 
+                fontFamily: 'Roboto Mono, monospace',
+                marginBottom: '0.5rem',
+                color: darkMode ? '#4361ee' : '#4361ee'
+              }}>
+                J-P
+              </div>
+              <h2 style={{ 
+                fontSize: '2rem', 
+                fontWeight: 'bold', 
+                marginBottom: '1rem' 
+              }}>
+                Exploring Multidimensional Continued Fractions
+              </h2>
+              <p style={{ 
+                fontSize: '1.2rem', 
+                maxWidth: '600px', 
+                marginBottom: '2rem',
+                lineHeight: '1.6'
+              }}>
+                Discover the fascinating world of the Jacobi-Perron algorithm and learn how it helps us understand the relationships between irrational numbers.
+              </p>
+            </div>
+            
+            <div style={{ 
+              backgroundColor: darkMode ? '#16213e' : 'white',
+              padding: '2rem',
+              borderRadius: '8px',
+              width: '100%',
+              maxWidth: '500px',
+              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
+            }}>
+              <h3 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 'bold', 
+                marginBottom: '1.5rem', 
+                textAlign: 'center',
+                color: darkMode ? '#4361ee' : '#4361ee'
+              }}>
+                Start Your Mathematical Journey
+              </h3>
+              
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ 
+                  display: 'block', 
+                  marginBottom: '0.5rem', 
+                  fontWeight: 'bold' 
+                }}>
+                  Your Name
+                </label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Enter your name"
+                  className="math-input"
+                  style={{ width: '100%', fontSize: '1rem' }}
+                />
+              </div>
+              
+              <button
+                onClick={startGame}
+                className="math-button"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  fontSize: '1rem',
+                  fontWeight: 'bold'
+                }}
+              >
+                Begin Exploration
+              </button>
+            </div>
+            
+            <div style={{ 
+              marginTop: '2rem', 
+              textAlign: 'center',
+              opacity: 0.7,
+              fontSize: '0.9rem'
+            }}>
+              <p>
+                "Number theory is the queen of mathematics." - Carl Friedrich Gauss
+              </p>
+            </div>
+          </div>
+        ) : (
+          // Game Interface - Three column layout
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '2rem'
+          }}>
+            {/* Left Column - Levels and Progress */}
+            <div>
+              <div className="content-card">
+                <h2 style={{ 
+                  fontSize: '1.5rem', 
+                  fontWeight: 'bold', 
+                  marginBottom: '1rem',
+                  color: darkMode ? '#4361ee' : '#4361ee',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <span role="img" aria-label="levels">📚</span> Learning Path
+                </h2>
+                
+                <div style={{ marginBottom: '1rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span style={{ fontWeight: 'bold' }}>Current Progress</span>
+                    <span>{progress}%</span>
+                  </div>
+                  <div className="progress-bar">
+                    <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                  </div>
+                </div>
+                
+                <div>
+                  {levels.map((level, index) => (
+                    <div 
+                      key={index}
+                      className={`level-card ${currentLevel === index ? 'active' : ''} ${level.completed ? 'completed' : ''}`}
+                      onClick={() => {
+                        if (index <= Math.max(0, levels.findIndex(l => !l.completed))) {
+                          setCurrentLevel(index);
+                          setProgress(level.completed ? 100 : 0);
+                        }
+                      }}
+                      style={{
+                        opacity: index <= Math.max(0, levels.findIndex(l => !l.completed)) ? 1 : 0.6,
+                      }}
+                    >
+                      <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between',
+                        alignItems: 'center' 
+                      }}>
+                        <div style={{ fontWeight: 'bold' }}>Level {index + 1}</div>
+                        {level.completed ? (
+                          <span role="img" aria-label="completed" style={{ fontSize: '1.2rem' }}>✅</span>
+                        ) : (
+                          currentLevel === index && (
+                            <div style={{ 
+                              width: '40px',
+                              height: '8px',
+                              backgroundColor: darkMode ? '#16213e' : 'white',
+                              borderRadius: '4px',
+                              overflow: 'hidden'
+                            }}>
+                              <div style={{ 
+                                height: '100%', 
+                                width: `${progress}%`,
+                                backgroundColor: darkMode ? '#4361ee' : '#4361ee',
+                                borderRadius: '4px'
+                              }}></div>
+                            </div>
+                          )
+                        )}
+                      </div>
+                      <div style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>{level.name}</div>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Challenge Button */}
+                <button
+                  onClick={startChallenge}
+                  className="math-button"
+                  style={{
+                    width: '100%',
+                    marginTop: '1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  <span role="img" aria-label="challenge">🧩</span>
+                  Take a Challenge
+                </button>
+                
+                {/* Math Facts */}
+                <div style={{
+                  marginTop: '1.5rem',
+                  backgroundColor: darkMode ? '#0f3460' : '#e7ecff',
+                  padding: '1rem',
+                  borderRadius: '8px',
+                }}>
+                  <p style={{ 
+                    fontWeight: 'bold', 
+                    marginBottom: '0.5rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <span role="img" aria-label="bulb">💡</span> Did You Know?
+                  </p>
+                  <p key={currentFact} className="fade-in" style={{ fontSize: '0.9rem' }}>
+                    {mathFacts[currentFact]}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Middle Column - Current Level Content */}
+            <div>
+              {/* Challenge Modal */}
+              {challengeActive && currentChallenge && (
+                <div className="content-card fade-in" style={{
+                  padding: '1.5rem',
+                  marginBottom: '1.5rem',
+                  border: `2px solid ${darkMode ? '#4361ee' : '#4361ee'}`
+                }}>
+                  <h3 style={{ 
+                    fontSize: '1.3rem', 
+                    fontWeight: 'bold', 
+                    marginBottom: '1rem',
+                    color: darkMode ? '#4361ee' : '#4361ee',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <span role="img" aria-label="challenge">🧩</span> Challenge Question
+                  </h3>
+                  
+                  <p style={{ marginBottom: '1.5rem', lineHeight: '1.5' }}>
+                    {currentChallenge.question}
+                  </p>
+                  
+                  <div style={{ marginBottom: '1rem' }}>
+                    <input
+                      type="text"
+                      value={userAnswer}
+                      onChange={(e) => setUserAnswer(e.target.value)}
+                      placeholder="Your answer"
+                      className="math-input"
+                      style={{ width: '100%' }}
+                    />
+                  </div>
+                  
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem' }}>
+                    <div className="tooltip" style={{ alignSelf: 'center' }}>
+                      <span role="img" aria-label="hint" style={{ fontSize: '1.2rem', cursor: 'help' }}>💡</span>
+                      <span className="tooltiptext">{currentChallenge.hint}</span>
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <button
+                        onClick={() => setChallengeActive(false)}
+                        className="math-button"
+                        style={{
+                          backgroundColor: 'transparent',
+                          border: `1px solid ${darkMode ? '#e0e0e0' : '#333333'}`
+                        }}
+                      >
+                        Skip
+                      </button>
+                      <button
+                        onClick={checkAnswer}
+                        className="math-button"
+                      >
+                        Submit Answer
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {answerFeedback && (
+                    <div style={{
+                      marginTop: '1rem',
+                      padding: '0.75rem',
+                      borderRadius: '4px',
+                      backgroundColor: answerFeedback.correct 
+                        ? (darkMode ? 'rgba(16, 185, 129, 0.2)' : 'rgba(16, 185, 129, 0.1)') 
+                        : (darkMode ? 'rgba(239, 68, 68, 0.2)' : 'rgba(239, 68, 68, 0.1)'),
+                      color: answerFeedback.correct 
+                        ? (darkMode ? '#34d399' : '#10b981') 
+                        : (darkMode ? '#f87171' : '#ef4444'),
+                      fontWeight: 'bold'
+                    }}>
+                      {answerFeedback.message}
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              <div className="content-card">
+                <h2 style={{ 
+                  fontSize: '1.5rem', 
+                  fontWeight: 'bold', 
+                  marginBottom: '1rem',
+                  color: darkMode ? '#4361ee' : '#4361ee',
+                }}>
+                  {levelContent[currentLevel].title}
+                </h2>
+                
+                {levelContent[currentLevel].sections.map((section, index) => (
+                  <div key={index} style={{ marginBottom: '1.5rem' }}>
+                    <h3 style={{ 
+                      fontSize: '1.2rem', 
+                      fontWeight: 'bold', 
+                      marginBottom: '0.75rem',
+                      color: darkMode ? '#8cb3ff' : '#2d46b9',
+                    }}>
+                      {section.heading}
+                    </h3>
+                    <div style={{ 
+                      whiteSpace: 'pre-line', 
+                      lineHeight: '1.6',
+                      fontSize: '0.95rem' 
+                    }}>
+                      {section.content}
+                    </div>
+                  </div>
+                ))}
+                
+                {/* Visual Examples */}
+                {currentLevel === 0 && (
+                  <div style={{ 
+                    backgroundColor: darkMode ? '#0f3460' : '#e7ecff',
+                    padding: '1rem',
+                    borderRadius: '8px',
+                    marginTop: '1rem'
+                  }}>
+                    <h4 style={{ 
+                      fontWeight: 'bold', 
+                      marginBottom: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <span role="img" aria-label="example">🔍</span> Example: Regular Continued Fraction
+                    </h4>
+                    <div className="math-formula">
+                      √2 = 1 + 1/(2 + 1/(2 + 1/(2 + ...)))
+                    </div>
+                    <div style={{ 
+                      fontSize: '0.9rem', 
+                      marginTop: '0.5rem',
+                      fontStyle: 'italic' 
+                    }}>
+                      This is often written as [1; 2, 2, 2, ...] and converges to √2 ≈ 1.414...
+                    </div>
+                  </div>
+                )}
+                
+                {currentLevel === 1 && (
+                  <div style={{ 
+                    backgroundColor: darkMode ? '#0f3460' : '#e7ecff',
+                    padding: '1rem',
+                    borderRadius: '8px',
+                    marginTop: '1rem'
+                  }}>
+                    <h4 style={{ 
+                      fontWeight: 'bold', 
+                      marginBottom: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <span role="img" aria-label="algorithm">⚙️</span> The Jacobi-Perron Iteration
+                    </h4>
+                    <div className="math-formula">
+                      {`For (α, β) with α > β > 0:
+1. Compute a = ⌊α/β⌋
+2. Get new values:
+   α' = β
+   β' = α - a×β
+3. Repeat`}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Right Column - Interactive Algorithm */}
+            <div>
+              <div className="content-card">
+                <h2 style={{ 
+                  fontSize: '1.5rem', 
+                  fontWeight: 'bold', 
+                  marginBottom: '1rem',
+                  color: darkMode ? '#4361ee' : '#4361ee',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <span role="img" aria-label="interactive">🔬</span> Interactive Explorer
+                </h2>
+                
+                {/* Input Parameters */}
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '0.5rem' }}>
+                      Input Vector (α, β)
+                    </label>
+                    
+                    <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                      <input
+                        type="text"
+                        value={customVector[0]}
+                        onChange={(e) => handleCustomVectorChange(0, e.target.value)}
+                        placeholder="α"
+                        className="math-input"
+                        style={{ width: '100%' }}
+                      />
+                      <input
+                        type="text"
+                        value={customVector[1]}
+                        onChange={(e) => handleCustomVectorChange(1, e.target.value)}
+                        placeholder="β"
+                        className="math-input"
+                        style={{ width: '100%' }}
+                      />
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <button
+                        onClick={applyCustomVector}
+                        className="math-button"
+                        style={{ flex: 1 }}
+                      >
+                        Apply
+                      </button>
+                      <button
+                        onClick={saveCustomVector}
+                        className="math-button"
+                        style={{ 
+                          flex: 1,
+                          backgroundColor: darkMode ? '#0f3460' : '#e7ecff',
+                          color: darkMode ? '#e0e0e0' : '#4361ee', 
+                          border: `1px solid ${darkMode ? '#4361ee' : '#4361ee'}` 
+                        }}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Saved Vectors */}
+                  <div>
+                    <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '0.5rem' }}>
+                      Preset Vectors
+                    </label>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      {savedVectors.map((vector, index) => (
+                        <div 
+                          key={index}
+                          className="vector-card"
+                          onClick={() => setInputVector(vector.values)}
+                        >
+                          <div style={{ flex: 1 }}>{vector.name}</div>
+                          <div style={{ 
+                            fontFamily: 'Roboto Mono, monospace',
+                            color: darkMode ? '#8cb3ff' : '#2d46b9'
+                          }}>
+                            [{vector.values.join(', ')}]
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div style={{ marginTop: '1rem' }}>
+                    <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '0.5rem' }}>
+                      Number of Iterations
+                    </label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <input
+                        type="range"
+                        min="1"
+                        max="20"
+                        value={iterations}
+                        onChange={(e) => setIterations(parseInt(e.target.value))}
+                        style={{ flex: 1 }}
+                      />
+                      <span style={{ 
+                        fontFamily: 'Roboto Mono, monospace',
+                        minWidth: '30px',
+                        textAlign: 'center'
+                      }}>{iterations}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Algorithm Controls */}
+                <div style={{ 
+                  display: 'flex', 
+                  marginBottom: '1.5rem',
+                  gap: '0.5rem' 
+                }}>
+                  <button
+                    onClick={startAnimation}
+                    className="math-button"
+                    style={{ flex: 1 }}
+                    disabled={isAnimating}
+                  >
+                    <span style={{ marginRight: '6px' }}>▶</span>
+                    Animate
+                  </button>
+                  <button
+                    onClick={stopAnimation}
+                    className="math-button"
+                    style={{ 
+                      flex: 1,
+                      backgroundColor: darkMode ? 'rgba(239, 68, 68, 0.2)' : 'rgba(239, 68, 68, 0.1)', 
+                      color: darkMode ? '#f87171' : '#ef4444'
+                    }}
+                    disabled={!isAnimating}
+                  >
+                    <span style={{ marginRight: '6px' }}>◼</span>
+                    Stop
+                  </button>
+                  <button
+                    onClick={() => setShowTrace(!showTrace)}
+                    className="math-button"
+                    style={{ 
+                      flex: 1,
+                      backgroundColor: showTrace 
+                        ? (darkMode ? 'rgba(16, 185, 129, 0.2)' : 'rgba(16, 185, 129, 0.1)')
+                        : 'transparent',
+                      color: showTrace
+                        ? (darkMode ? '#34d399' : '#10b981')
+                        : (darkMode ? '#e0e0e0' : '#4361ee'),
+                      border: showTrace
+                        ? 'none'
+                        : `1px solid ${darkMode ? '#4361ee' : '#4361ee'}`
+                    }}
+                  >
+                    <span style={{ marginRight: '6px' }}>📋</span>
+                    {showTrace ? 'Hide Trace' : 'Show Trace'}
+                  </button>
+                </div>
+                
+                {/* Current Step Display */}
+                <div style={{ 
+                  backgroundColor: darkMode ? '#0f3460' : '#e7ecff',
+                  padding: '1rem',
+                  borderRadius: '8px',
+                  marginBottom: '1.5rem'
+                }}>
+                  <h4 style={{ 
+                    fontWeight: 'bold', 
+                    marginBottom: '0.75rem',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <span>Current Iteration</span>
+                    <span style={{ 
+                      fontFamily: 'Roboto Mono, monospace',
+                      backgroundColor: darkMode ? '#16213e' : 'white',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      fontSize: '0.9rem'
+                    }}>
+                      {currentIteration} / {algorithmTrace.length - 1}
+                    </span>
+                  </h4>
+                  
+                  {algorithmTrace.length > 0 && currentIteration < algorithmTrace.length && (
+                    <div>
+                      <div style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: '1fr 1fr', 
+                        gap: '1rem',
+                        marginBottom: '1rem'
+                      }}>
+                        <div>
+                          <div style={{ fontSize: '0.9rem', marginBottom: '0.25rem', opacity: 0.7 }}>α Value</div>
+                          <div style={{ 
+                            fontFamily: 'Roboto Mono, monospace',
+                            fontWeight: 'bold',
+                            fontSize: '1.1rem'
+                          }}>
+                            {algorithmTrace[currentIteration].alpha.toFixed(6)}
+                          </div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.9rem', marginBottom: '0.25rem', opacity: 0.7 }}>β Value</div>
+                          <div style={{ 
+                            fontFamily: 'Roboto Mono, monospace',
+                            fontWeight: 'bold',
+                            fontSize: '1.1rem'
+                          }}>
+                            {algorithmTrace[currentIteration].beta.toFixed(6)}
+                          </div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.9rem', marginBottom: '0.25rem', opacity: 0.7 }}>Coefficient a</div>
+                          <div style={{ 
+                            fontFamily: 'Roboto Mono, monospace',
+                            fontWeight: 'bold',
+                            fontSize: '1.1rem'
+                          }}>
+                            {algorithmTrace[currentIteration].a}
+                          </div>
+                        </div>
+                        {currentIteration > 0 && (
+                          <div>
+                            <div style={{ fontSize: '0.9rem', marginBottom: '0.25rem', opacity: 0.7 }}>Approximation</div>
+                            <div style={{ 
+                              fontFamily: 'Roboto Mono, monospace',
+                              fontSize: '0.9rem',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '2px'
+                            }}>
+                              <div>α ≈ {convergents[currentIteration-1]?.approx1.toFixed(6)}</div>
+                              <div>β ≈ {convergents[currentIteration-1]?.approx2.toFixed(6)}</div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <div style={{ fontSize: '0.9rem', marginBottom: '0.25rem', opacity: 0.7 }}>Next Iteration</div>
+                        <div style={{ 
+                          fontFamily: 'Roboto Mono, monospace',
+                          backgroundColor: darkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.7)',
+                          padding: '8px',
+                          borderRadius: '4px',
+                          fontSize: '0.9rem'
+                        }}>
+                          α' = β = {algorithmTrace[currentIteration].beta.toFixed(6)}<br/>
+                          β' = α - a×β = {algorithmTrace[currentIteration].nextBeta?.toFixed(6) || 'N/A'}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Results */}
+                <div>
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    marginBottom: '0.75rem'
+                  }}>
+                    <h4 style={{ fontWeight: 'bold' }}>Approximation Error</h4>
+                    <div className="tooltip">
+                      <span role="img" aria-label="info" style={{ fontSize: '1rem', cursor: 'help' }}>ℹ️</span>
+                      <span className="tooltiptext">
+                        This shows how the error decreases as iterations increase.
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="chart-container">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={approximationError}
+                        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#2a2a4a' : '#e2e8f0'} />
+                        <XAxis 
+                          dataKey="iteration" 
+                          stroke={darkMode ? '#e0e0e0' : '#333333'} 
+                          label={{ 
+                            value: 'Iteration', 
+                            position: 'insideBottom', 
+                            offset: -5,
+                            fill: darkMode ? '#e0e0e0' : '#333333'
+                          }}
+                        />
+                        <YAxis 
+                          stroke={darkMode ? '#e0e0e0' : '#333333'} 
+                          scale="log"
+                          domain={['auto', 'auto']}
+                          label={{ 
+                            value: 'Error (log scale)', 
+                            angle: -90, 
+                            position: 'insideLeft',
+                            fill: darkMode ? '#e0e0e0' : '#333333'
+                          }}
+                        />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: darkMode ? '#16213e' : 'white',
+                            borderColor: darkMode ? '#0f3460' : '#e2e8f0',
+                            color: darkMode ? '#e0e0e0' : '#333333'
+                          }}
+                          formatter={(value) => [value.toExponential(4), 'Error']}
+                        />
+                        <Legend />
+                        <Line 
+                          type="monotone" 
+                          dataKey="error1" 
+                          name="α Error" 
+                          stroke="#4361ee" 
+                          activeDot={{ r: 8 }} 
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="error2" 
+                          name="β Error" 
+                          stroke="#f72585" 
+                          activeDot={{ r: 8 }} 
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                
+                {/* Algorithm Trace */}
+                {showTrace && (
+                  <div style={{ marginTop: '1.5rem' }}>
+                    <h4 style={{ 
+                      fontWeight: 'bold', 
+                      marginBottom: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <span role="img" aria-label="trace">📋</span> Algorithm Trace
+                    </h4>
+                    
+                    <div style={{ 
+                      backgroundColor: darkMode ? '#16213e' : 'white',
+                      border: `1px solid ${darkMode ? '#0f3460' : '#e2e8f0'}`,
+                      borderRadius: '8px',
+                      maxHeight: '300px',
+                      overflowY: 'auto',
+                      fontSize: '0.9rem',
+                      fontFamily: 'Roboto Mono, monospace'
+                    }}>
+                      <div className="trace-row" style={{ fontWeight: 'bold' }}>
+                        <div className="trace-cell">Iter</div>
+                        <div className="trace-cell">α</div>
+                        <div className="trace-cell">β</div>
+                        <div className="trace-cell">a</div>
+                      </div>
+                      
+                      {algorithmTrace.map((step, index) => (
+                        <div 
+                          key={index} 
+                          className="trace-row"
+                          style={{
+                            backgroundColor: index === currentIteration 
+                              ? (darkMode ? 'rgba(67, 97, 238, 0.2)' : 'rgba(67, 97, 238, 0.1)')
+                              : undefined
+                          }}
+                        >
+                          <div className="trace-cell">{step.iteration}</div>
+                          <div className="trace-cell">{step.alpha.toFixed(6)}</div>
+                          <div className="trace-cell">{step.beta.toFixed(6)}</div>
+                          <div className="trace-cell">{step.a}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default JacobiPerronExplorer;

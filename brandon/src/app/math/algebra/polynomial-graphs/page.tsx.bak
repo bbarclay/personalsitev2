@@ -1,0 +1,49 @@
+"use client";
+
+import React from 'react';
+import { ToolPageLayout, withActiveTab } from '@/components/layouts/ToolPageLayout';
+import dynamic from 'next/dynamic';
+import metaJson from './meta.json';
+import { ToolMeta, ToolComponentProps } from '@/types/tool-types';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// Cast and validate the meta data
+const meta: ToolMeta = {
+  ...metaJson,
+  type: 'math' as const,
+  difficulty: metaJson.difficulty.toLowerCase() as 'beginner' | 'intermediate' | 'advanced'
+};
+
+// Dynamically import components
+const GrapherPanel = dynamic(() => import('./components/GrapherPanel'), { ssr: false });
+const ExplanationPanel = dynamic(() => import('./components/ExplanationPanel'), { ssr: false });
+const ApplicationsPanel = dynamic(() => import('./components/ApplicationsPanel'), { ssr: false });
+const ResourcesPanel = dynamic(() => import('./components/ResourcesPanel'), { ssr: false });
+
+const PolynomialGraphsContent = withActiveTab(function PolynomialGraphsContent({ activeTab }: ToolComponentProps) {
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={activeTab}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md p-6 rounded-2xl shadow-lg"
+      >
+        {activeTab === 'solver' && <GrapherPanel />}
+        {activeTab === 'explanation' && <ExplanationPanel explanation={meta.description} />}
+        {activeTab === 'applications' && <ApplicationsPanel />}
+        {activeTab === 'resources' && <ResourcesPanel />}
+      </motion.div>
+    </AnimatePresence>
+  );
+});
+
+export default function PolynomialGraphsPage() {
+  return (
+    <ToolPageLayout meta={meta}>
+      <PolynomialGraphsContent activeTab="solver" />
+    </ToolPageLayout>
+  );
+}

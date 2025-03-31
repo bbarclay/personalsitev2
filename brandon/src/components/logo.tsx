@@ -1,11 +1,20 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 
 export function Logo({ className = '', width = 40, height = 40 }: { className?: string; width?: number; height?: number }) {
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark';
+  // Use state to track if component has mounted
+  const [mounted, setMounted] = useState(false);
+  
+  // After hydration, we can show the theme-dependent UI
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Use default light theme values for initial render to avoid hydration mismatch
+  const isDark = mounted ? resolvedTheme === 'dark' : false;
 
   return (
     <svg

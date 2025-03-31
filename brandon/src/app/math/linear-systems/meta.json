@@ -1,0 +1,76 @@
+{
+  "id": "linear-systems",
+  "title": "Linear Systems Calculator",
+  "description": "Solve systems of linear equations with step-by-step solutions",
+  "category": "Math",
+  "subcategory": "Algebra",
+  "type": "math",
+  "difficulty": "intermediate",
+  "lastUpdated": "2024-03-31",
+  "icon": "📊",
+  "color": "from-blue-500 to-indigo-500",
+  "shape": "square",
+  "enabled": true,
+  "featured": true,
+  "tags": [
+    "linear algebra",
+    "systems of equations",
+    "matrices",
+    "algebra"
+  ],
+  "keywords": [
+    "linear systems",
+    "systems of equations",
+    "matrices",
+    "algebra",
+    "solving equations"
+  ],
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Solver",
+        "icon": "calculator",
+        "color": {
+          "active": "bg-blue-500",
+          "hover": "bg-blue-600"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Explanation",
+        "icon": "book",
+        "color": {
+          "active": "bg-blue-500",
+          "hover": "bg-blue-600"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Applications",
+        "icon": "lightbulb",
+        "color": {
+          "active": "bg-blue-500",
+          "hover": "bg-blue-600"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "bookmark",
+        "color": {
+          "active": "bg-blue-500",
+          "hover": "bg-blue-600"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": "Math",
+    "path": "/math/linear-systems",
+    "next": {
+      "title": "Statistics",
+      "path": "/math/statistics"
+    }
+  }
+}

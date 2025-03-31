@@ -1,0 +1,74 @@
+---
+title: "Linear Solvers"
+description: "An introduction to linear solvers and their applications"
+---
+
+import { Callout } from 'nextra/components'
+
+# Linear Solvers
+
+<Callout type="info">
+  A linear solver is an algorithm or method used to find a solution to a system of linear equations.
+</Callout>
+
+## Introduction
+
+Linear solvers are fundamental tools in computational mathematics and scientific computing. They are used to find solutions to systems of linear equations, which can be represented in the form:
+
+$$Ax = b$$
+
+Where:
+- $A$ is an $m \times n$ matrix of coefficients
+- $x$ is an $n \times 1$ vector of unknowns
+- $b$ is an $m \times 1$ vector of constants
+
+## Types of Linear Solvers
+
+Linear solvers can be broadly categorized into two types:
+
+1. **Direct Methods** - These methods provide an exact solution (up to machine precision) in a finite number of steps
+   - [Gaussian Elimination](/linear-solver/direct-methods/gaussian-elimination)
+   - [LU Decomposition](/linear-solver/direct-methods/lu-decomposition)
+   - [Cholesky Decomposition](/linear-solver/direct-methods/cholesky-decomposition)
+
+2. **Iterative Methods** - These methods start with an initial guess and iteratively improve the solution
+   - [Jacobi Method](/linear-solver/iterative-methods/jacobi)
+   - [Gauss-Seidel Method](/linear-solver/iterative-methods/gauss-seidel)
+   - [Conjugate Gradient Method](/linear-solver/iterative-methods/conjugate-gradient)
+
+## Applications
+
+Linear solvers have applications in various fields including:
+
+- Structural analysis
+- Circuit analysis
+- Image processing
+- Machine learning and data science
+- Computational fluid dynamics
+- Financial modeling
+
+## Mathematical Foundation
+
+The study of linear solvers is closely tied to [Linear Algebra](/linear-solver/concepts/linear-algebra) and the properties of matrices such as:
+
+- [Matrix Operations](/linear-solver/concepts/matrix-operations)
+- [Matrix Decompositions](/linear-solver/concepts/matrix-decompositions)
+- [Eigenvalues and Eigenvectors](/linear-solver/concepts/eigenvalues)
+- [Matrix Conditioning](/linear-solver/concepts/conditioning)
+
+## Computational Considerations
+
+When implementing linear solvers, several factors need to be considered:
+
+- [Numerical Stability](/linear-solver/computational/numerical-stability)
+- [Computational Complexity](/linear-solver/computational/complexity)
+- [Sparse Matrix Techniques](/linear-solver/computational/sparse-matrices)
+- [Parallel Computing Approaches](/linear-solver/computational/parallel-computing)
+
+## Interactive Demonstrations
+
+Explore our interactive demonstrations to gain a better understanding of linear solvers:
+
+- [Visualizing Gaussian Elimination](/linear-solver/demos/gaussian-elimination)
+- [Convergence of Iterative Methods](/linear-solver/demos/iterative-convergence)
+- [Solving Your Own System](/linear-solver/demos/custom-solver)

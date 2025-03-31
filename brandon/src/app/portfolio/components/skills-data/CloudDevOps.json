@@ -1,0 +1,26 @@
+{
+  "name": "Cloud & DevOps",
+  "category": "cloud-devops",
+  "proficiency": 95,
+  "experience": "8+ years",
+  "description": "Expert in cloud infrastructure and DevOps practices, specializing in AWS and GCP services. Extensive experience with containerization, orchestration, and cloud-native development.",
+  "relatedTech": [
+    "AWS SageMaker",
+    "AWS Bedrock",
+    "GCP VertexAI",
+    "Kubernetes",
+    "Docker",
+    "AWS Lambda",
+    "AWS S3",
+    "GCP BigQuery",
+    "RESTful APIs",
+    "GraphQL"
+  ],
+  "icon": "Cloud",
+  "achievements": [
+    "Improved system uptime by 15% through infrastructure optimization",
+    "Reduced content delivery timelines by 40% using Kubernetes",
+    "Deployed scalable ML models on AWS and GCP platforms",
+    "Engineered resilient cloud infrastructures for high-availability systems"
+  ]
+}

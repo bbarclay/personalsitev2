@@ -1,0 +1,1144 @@
+Here's the complete implementation of **StarVoyager**, a space exploration game built as a single React component file, matching the complexity and length of NetRunner with a fresh space theme. This game includes star systems, missions, ship upgrades, a grid-based minigame, terminal, achievements, and a polished UI with space-inspired styling.
+
+```jsx
+import React, { useState, useEffect, useCallback } from 'react';
+
+const StarVoyager = () => {
+  // Core state variables
+  const [darkMode, setDarkMode] = useState(true);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [activeSystem, setActiveSystem] = useState(0);
+  const [reputation, setReputation] = useState(0);
+  const [credits, setCredits] = useState(0);
+  const [username, setUsername] = useState('');
+  const [avatar, setAvatar] = useState('explorer');
+  const [shipHealth, setShipHealth] = useState(100);
+  const [shipFuel, setShipFuel] = useState(100);
+  const [missionActive, setMissionActive] = useState(false);
+  const [currentMission, setCurrentMission] = useState(null);
+  const [missionGrid, setMissionGrid] = useState([]);
+  const [gridSize] = useState(8);
+  const [shipPosition, setShipPosition] = useState({ row: 0, col: 0 });
+
+  // UI state
+  const [showTerminal, setShowTerminal] = useState(false);
+  const [terminalInput, setTerminalInput] = useState('');
+  const [terminalHistory, setTerminalHistory] = useState([
+    { timestamp: getCurrentTime(), text: 'StarVoyager v1.0 initialized...' },
+    { timestamp: getCurrentTime(), text: 'Type "help" for commands.' },
+  ]);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [showTutorial, setShowTutorial] = useState(true);
+  const [tutorialStep, setTutorialStep] = useState(0);
+  const [showGlitchEffect, setShowGlitchEffect] = useState(false);
+
+  // Game state
+  const [systemsVisited, setSystemsVisited] = useState([0]);
+  const [missionTimeout, setMissionTimeout] = useState(null);
+
+  // Ship modules
+  const [shipModules, setShipModules] = useState([
+    { id: 'engine', name: 'Engine', level: 1, description: 'Increases movement speed', unlocked: true, cost: 200 },
+    { id: 'cargoBay', name: 'Cargo Bay', level: 1, description: 'Increases cargo capacity', unlocked: true, cost: 200 },
+    { id: 'fuelTank', name: 'Fuel Tank', level: 1, description: 'Increases fuel capacity', unlocked: false, cost: 300 },
+    { id: 'weapons', name: 'Weapons', level: 1, description: 'Improves combat effectiveness', unlocked: false, cost: 300 },
+    { id: 'shields', name: 'Shields', level: 1, description: 'Reduces damage taken', unlocked: false, cost: 300 },
+  ]);
+
+  // Achievements
+  const [achievements, setAchievements] = useState([
+    { id: 'first_mission', name: 'First Contact', description: 'Complete your first mission', unlocked: false },
+    { id: 'system_explorer', name: 'System Explorer', description: 'Visit all star systems', unlocked: false },
+    { id: 'module_master', name: 'Tech Savvy', description: 'Unlock all ship modules', unlocked: false },
+    { id: 'legendary_captain', name: 'Legendary Captain', description: 'Reach reputation level 100', unlocked: false },
+  ]);
+
+  // Star systems
+  const systems = [
+    { name: 'Alpha Centauri', color: '#00ccff', description: 'A nearby system with basic missions.', icon: '🌟', repRequired: 0 },
+    { name: 'Sirius', color: '#ffcc00', description: 'A bright system with trade routes.', icon: '✨', repRequired: 50 },
+    { name: 'Vega', color: '#ff3366', description: 'A hostile system with combat zones.', icon: '💥', repRequired: 100 },
+    { name: 'Andromeda', color: '#9933ff', description: 'A distant system with mysteries.', icon: '🌌', repRequired: 150 },
+  ];
+
+  // Missions for each system
+  const [missions, setMissions] = useState([
+    // Alpha Centauri
+    [
+      { id: 'delivery_1', name: 'Cargo Delivery', type: 'delivery', difficulty: 'Easy', repReward: 10, creditReward: 50, cargoRequired: 50, completed: false },
+      { id: 'rescue_1', name: 'Pilot Rescue', type: 'rescue', difficulty: 'Medium', repReward: 20, creditReward: 100, cargoRequired: 0, completed: false },
+    ],
+    // Sirius
+    [
+      { id: 'trade_1', name: 'Trade Route', type: 'delivery', difficulty: 'Medium', repReward: 30, creditReward: 150, cargoRequired: 100, completed: false },
+      { id: 'combat_1', name: 'Pirate Skirmish', type: 'combat', difficulty: 'Hard', repReward: 40, creditReward: 200, cargoRequired: 0, completed: false },
+    ],
+    // Vega
+    [
+      { id: 'combat_2', name: 'Fleet Assault', type: 'combat', difficulty: 'Hard', repReward: 50, creditReward: 250, cargoRequired: 0, completed: false },
+      { id: 'rescue_2', name: 'Stranded Crew', type: 'rescue', difficulty: 'Very Hard', repReward: 60, creditReward: 300, cargoRequired: 0, completed: false },
+    ],
+    // Andromeda
+    [
+      { id: 'explore_1', name: 'Deep Scan', type: 'exploration', difficulty: 'Very Hard', repReward: 70, creditReward: 350, cargoRequired: 0, completed: false },
+      { id: 'delivery_2', name: 'Artifact Transport', type: 'delivery', difficulty: 'Extreme', repReward: 100, creditReward: 500, cargoRequired: 150, completed: false },
+    ],
+  ]);
+
+  // Space safety tips
+  const safetyTips = [
+    'Always check your fuel levels before a mission.',
+    'Upgrade your shields to survive combat encounters.',
+    'Keep an eye on your cargo capacity for delivery missions.',
+    'Avoid asteroid fields to preserve ship health.',
+    'Invest in weapons to handle pirate threats.',
+    'Plan your route to conserve fuel.',
+    'Scan systems for hidden resources.',
+    'Repair your ship regularly to maintain performance.',
+    'Monitor your reputation to unlock new systems.',
+    'Use the terminal for quick status updates.',
+  ];
+
+  // Tutorial steps
+  const tutorialSteps = [
+    { text: 'Welcome to StarVoyager, captain. I’m your onboard AI.', character: 'ai' },
+    { text: 'Your reputation and credits will define your legacy. Complete missions to earn both.', character: 'ai' },
+    { text: 'Start in Alpha Centauri, then explore other systems as you grow stronger.', character: 'ai' },
+    { text: 'Upgrade your ship’s modules to tackle tougher missions.', character: 'ai' },
+    { text: 'Ready to chart the stars? Enter your captain’s name to launch.', character: 'ai' },
+  ];
+
+  // Background starfield
+  const starfield = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    top: Math.random() * 100,
+    left: Math.random() * 100,
+    size: Math.random() * 4 + 1,
+    opacity: Math.random() * 0.5 + 0.2,
+    speed: Math.random() * 5 + 2,
+  }));
+
+  // Initialize mission grid
+  useEffect(() => {
+    if (currentMission) {
+      generateMissionGrid();
+      setShipPosition({ row: 0, col: 0 });
+      setShipHealth(100);
+      setShipFuel(getFuelCapacity());
+    }
+  }, [currentMission]);
+
+  // Track visited systems
+  useEffect(() => {
+    if (!systemsVisited.includes(activeSystem)) {
+      setSystemsVisited([...systemsVisited, activeSystem]);
+      setReputation((prev) => prev + 10);
+      showNotificationMessage(`Discovered ${systems[activeSystem].name}! +10 reputation`);
+      if (systemsVisited.length + 1 === systems.length) {
+        unlockAchievement('system_explorer');
+      }
+    }
+  }, [activeSystem]);
+
+  // Check module unlocks
+  useEffect(() => {
+    checkModuleUnlocks();
+  }, [reputation]);
+
+  // Rotate safety tips
+  const [currentTip, setCurrentTip] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTip((prev) => (prev + 1) % safetyTips.length);
+    }, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Utility functions
+  function getCurrentTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+
+  function getCargoCapacity() {
+    return shipModules.find((m) => m.id === 'cargoBay').level * 50;
+  }
+
+  function getFuelCapacity() {
+    return shipModules.find((m) => m.id === 'fuelTank').level * 100;
+  }
+
+  function getDifficultyLevel(difficultyText) {
+    const levels = { Easy: 1, Medium: 2, Hard: 3, 'Very Hard': 4, Extreme: 5 };
+    return levels[difficultyText] || 1;
+  }
+
+  function generateMissionGrid() {
+    const difficulty = getDifficultyLevel(currentMission.difficulty);
+    const newGrid = Array(gridSize).fill().map(() => Array(gridSize).fill({ type: 'empty', revealed: false }));
+    
+    // Place player at start
+    newGrid[0][0] = { type: 'player', revealed: true };
+    
+    // Place goal/target based on mission type
+    if (currentMission.type === 'delivery' || currentMission.type === 'exploration') {
+      newGrid[gridSize - 1][gridSize - 1] = { type: 'goal', revealed: false };
+    } else if (currentMission.type === 'rescue') {
+      const row = Math.floor(Math.random() * (gridSize - 2)) + 1;
+      const col = Math.floor(Math.random() * (gridSize - 2)) + 1;
+      newGrid[row][col] = { type: 'target', revealed: false };
+    }
+
+    // Place enemies and resources
+    const enemyCount = Math.floor(difficulty * 1.5);
+    const resourceCount = difficulty;
+    for (let i = 0; i < enemyCount; i++) {
+      placeRandomGridItem(newGrid, 'enemy', difficulty);
+    }
+    for (let i = 0; i < resourceCount; i++) {
+      placeRandomGridItem(newGrid, 'resource');
+    }
+
+    if (currentMission.type === 'exploration') {
+      const scanPoints = difficulty + 1;
+      for (let i = 0; i < scanPoints; i++) {
+        placeRandomGridItem(newGrid, 'scan');
+      }
+    }
+
+    setMissionGrid(newGrid);
+  }
+
+  function placeRandomGridItem(grid, type, strength = 1) {
+    let placed = false;
+    while (!placed) {
+      const row = Math.floor(Math.random() * gridSize);
+      const col = Math.floor(Math.random() * gridSize);
+      if (grid[row][col].type === 'empty') {
+        grid[row][col] = { type, revealed: false, strength: type === 'enemy' ? strength * 5 : undefined };
+        placed = true;
+      }
+    }
+  }
+
+  // Game mechanics
+  const toggleTheme = () => setDarkMode(!darkMode);
+
+  const startGame = () => {
+    if (username.trim() === '') {
+      showNotificationMessage('Enter a captain’s name to launch.');
+      return;
+    }
+    setGameStarted(true);
+    setReputation(10);
+    setCredits(100);
+    setShipFuel(getFuelCapacity());
+    showNotificationMessage('Engines online. Welcome to the stars.');
+    addTerminalEntry('System initialized. Starship ready.');
+    addTerminalEntry(`Welcome, Captain ${username}. Alpha Centauri awaits.`);
+  };
+
+  const selectAvatar = (type) => setAvatar(type);
+
+  const showNotificationMessage = (message) => {
+    setNotificationMessage(message);
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 3000);
+  };
+
+  const unlockAchievement = (id) => {
+    const updatedAchievements = achievements.map((a) =>
+      a.id === id ? { ...a, unlocked: true } : a
+    );
+    if (!achievements.find((a) => a.id === id).unlocked) {
+      setAchievements(updatedAchievements);
+      showNotificationMessage(`Achievement Unlocked: ${achievements.find((a) => a.id === id).name}`);
+      setReputation((prev) => prev + 15);
+      triggerGlitchEffect();
+    }
+    if (id !== 'legendary_captain' && reputation >= 100) {
+      unlockAchievement('legendary_captain');
+    }
+  };
+
+  const checkModuleUnlocks = () => {
+    const updatedModules = [...shipModules];
+    let changed = false;
+
+    if (reputation >= 30 && !updatedModules[2].unlocked) {
+      updatedModules[2].unlocked = true;
+      showNotificationMessage('Fuel Tank module unlocked!');
+      changed = true;
+    }
+    if (reputation >= 50 && !updatedModules[3].unlocked) {
+      updatedModules[3].unlocked = true;
+      showNotificationMessage('Weapons module unlocked!');
+      changed = true;
+    }
+    if (reputation >= 70 && !updatedModules[4].unlocked) {
+      updatedModules[4].unlocked = true;
+      showNotificationMessage('Shields module unlocked!');
+      changed = true;
+    }
+
+    if (changed) {
+      setShipModules(updatedModules);
+      if (updatedModules.every((m) => m.unlocked)) {
+        unlockAchievement('module_master');
+      }
+    }
+  };
+
+  const addTerminalEntry = (text) => {
+    setTerminalHistory((prev) => [...prev, { timestamp: getCurrentTime(), text }]);
+  };
+
+  const handleTerminalCommand = useCallback(() => {
+    if (!terminalInput.trim()) return;
+    const command = terminalInput.trim().toLowerCase();
+    setTerminalHistory((prev) => [...prev, { timestamp: getCurrentTime(), text: `> ${terminalInput}`, isCommand: true }]);
+
+    switch (command) {
+      case 'help':
+        addTerminalEntry('Commands: help, clear, status, modules, missions, exit');
+        break;
+      case 'clear':
+        setTerminalHistory([{ timestamp: getCurrentTime(), text: 'Terminal cleared.' }]);
+        break;
+      case 'status':
+        addTerminalEntry(`Captain: ${username} | Reputation: ${reputation} | Credits: ${credits}`);
+        addTerminalEntry(`System: ${systems[activeSystem].name} | Health: ${shipHealth} | Fuel: ${shipFuel}`);
+        break;
+      case 'modules':
+        addTerminalEntry('Ship Modules:');
+        shipModules.forEach((m) =>
+          m.unlocked && addTerminalEntry(`· ${m.name} (Lvl ${m.level}): ${m.description}`)
+        );
+        break;
+      case 'missions':
+        addTerminalEntry(`Missions in ${systems[activeSystem].name}:`);
+        missions[activeSystem].forEach((m, i) =>
+          addTerminalEntry(`${i + 1}. ${m.name} - ${m.difficulty} [${m.completed ? 'COMPLETED' : 'AVAILABLE'}]`)
+        );
+        break;
+      case 'exit':
+        setShowTerminal(false);
+        break;
+      default:
+        if (command.startsWith('start ')) {
+          const target = command.substring(6);
+          const mission = missions[activeSystem].find((m) =>
+            m.name.toLowerCase().includes(target) || m.id.toLowerCase().includes(target)
+          );
+          if (mission) {
+            if (mission.completed) {
+              addTerminalEntry(`Mission already completed: ${mission.name}`);
+            } else if (mission.cargoRequired > getCargoCapacity()) {
+              addTerminalEntry(`Insufficient cargo capacity for ${mission.name}`);
+            } else {
+              addTerminalEntry(`Launching mission: ${mission.name}`);
+              startMission(mission);
+            }
+          } else {
+            addTerminalEntry(`Mission not found: ${target}`);
+          }
+        } else {
+          addTerminalEntry(`Unknown command: ${command}`);
+        }
+    }
+    setTerminalInput('');
+  }, [terminalInput, activeSystem, username, reputation, credits, shipHealth, shipFuel, missions, shipModules]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter' && showTerminal) handleTerminalCommand();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleTerminalCommand, showTerminal]);
+
+  const startMission = (mission) => {
+    setCurrentMission(mission);
+    setMissionActive(true);
+    const timeLimit = 30 + getDifficultyLevel(mission.difficulty) * 10;
+    if (missionTimeout) clearTimeout(missionTimeout);
+    const timeout = setTimeout(() => {
+      if (missionActive) {
+        setMissionActive(false);
+        showNotificationMessage('Mission timed out!');
+        addTerminalEntry('Mission failed: Time limit exceeded.');
+        triggerGlitchEffect();
+      }
+    }, timeLimit * 1000);
+    setMissionTimeout(timeout);
+  };
+
+  const completeMission = (mission) => {
+    const updatedMissions = [...missions];
+    updatedMissions[activeSystem] = missions[activeSystem].map((m) =>
+      m.id === mission.id ? { ...m, completed: true } : m
+    );
+    setMissions(updatedMissions);
+    setReputation((prev) => prev + mission.repReward);
+    setCredits((prev) => prev + mission.creditReward);
+    setMissionActive(false);
+    setCurrentMission(null);
+    if (missionTimeout) {
+      clearTimeout(missionTimeout);
+      setMissionTimeout(null);
+    }
+    showNotificationMessage(`Mission Success! +${mission.repReward} REP, +${mission.creditReward} CR`);
+    addTerminalEntry(`Mission completed: ${mission.name}`);
+    if (!achievements.find((a) => a.id === 'first_mission').unlocked) {
+      unlockAchievement('first_mission');
+    }
+  };
+
+  const handleGridMove = (row, col) => {
+    if (!missionActive || shipFuel <= 0 || shipHealth <= 0) return;
+    const { row: currRow, col: currCol } = shipPosition;
+    if (Math.abs(row - currRow) + Math.abs(col - currCol) !== 1) return;
+
+    const newGrid = [...missionGrid];
+    const targetCell = newGrid[row][col];
+    const engineLevel = shipModules.find((m) => m.id === 'engine').level;
+    const fuelCost = 5 / engineLevel;
+
+    // Reveal adjacent cells
+    for (let r = Math.max(0, row - 1); r <= Math.min(gridSize - 1, row + 1); r++) {
+      for (let c = Math.max(0, col - 1); c <= Math.min(gridSize - 1, col + 1); c++) {
+        newGrid[r][c].revealed = true;
+      }
+    }
+
+    if (targetCell.type === 'enemy') {
+      const weaponLevel = shipModules.find((m) => m.id === 'weapons').level;
+      const shieldLevel = shipModules.find((m) => m.id === 'shields').level;
+      const roll = Math.floor(Math.random() * 10) + 1 + weaponLevel;
+      if (roll >= targetCell.strength) {
+        showNotificationMessage('Enemy defeated!');
+        newGrid[row][col] = { type: 'empty', revealed: true };
+      } else {
+        const damage = Math.max(1, targetCell.strength - shieldLevel);
+        setShipHealth((prev) => Math.max(0, prev - damage));
+        showNotificationMessage(`Took ${damage} damage!`);
+      }
+    } else if (targetCell.type === 'resource') {
+      setCredits((prev) => prev + 50);
+      showNotificationMessage('+50 Credits collected!');
+      newGrid[row][col] = { type: 'empty', revealed: true };
+    } else if (targetCell.type === 'goal' && (currentMission.type === 'delivery' || currentMission.type === 'exploration')) {
+      if (currentMission.type === 'exploration' && !allScanPointsVisited(newGrid)) {
+        showNotificationMessage('Scan all points before reaching the goal!');
+      } else {
+        completeMission(currentMission);
+      }
+      return;
+    } else if (targetCell.type === 'target' && currentMission.type === 'rescue') {
+      completeMission(currentMission);
+      return;
+    } else if (targetCell.type === 'scan' && currentMission.type === 'exploration') {
+      newGrid[row][col].scanned = true;
+      showNotificationMessage('Scan point completed!');
+    }
+
+    newGrid[currRow][currCol] = { type: 'empty', revealed: true };
+    newGrid[row][col] = { type: 'player', revealed: true };
+    setMissionGrid(newGrid);
+    setShipPosition({ row, col });
+    setShipFuel((prev) => Math.max(0, prev - fuelCost));
+
+    if (currentMission.type === 'combat' && !gridHasEnemies(newGrid)) {
+      completeMission(currentMission);
+    }
+
+    if (shipFuel - fuelCost <= 0) {
+      setMissionActive(false);
+      showNotificationMessage('Out of fuel! Mission failed.');
+      addTerminalEntry('Mission failed: Fuel depleted.');
+    } else if (shipHealth <= 0) {
+      setMissionActive(false);
+      showNotificationMessage('Ship destroyed! Mission failed.');
+      addTerminalEntry('Mission failed: Critical damage sustained.');
+    }
+  };
+
+  const allScanPointsVisited = (grid) => {
+    return grid.flat().filter((cell) => cell.type === 'scan').every((cell) => cell.scanned);
+  };
+
+  const gridHasEnemies = (grid) => {
+    return grid.flat().some((cell) => cell.type === 'enemy');
+  };
+
+  const upgradeModule = (id) => {
+    const module = shipModules.find((m) => m.id === id);
+    if (!module.unlocked || credits < module.cost * module.level) {
+      showNotificationMessage(`Not enough credits to upgrade ${module.name}`);
+      return;
+    }
+    setShipModules((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, level: m.level + 1 } : m))
+    );
+    setCredits((prev) => prev - module.cost * module.level);
+    showNotificationMessage(`${module.name} upgraded to level ${module.level + 1}`);
+    addTerminalEntry(`Module ${module.name} upgraded to level ${module.level + 1}`);
+    if (id === 'fuelTank') setShipFuel(getFuelCapacity());
+  };
+
+  const nextTutorialStep = () => {
+    if (tutorialStep < tutorialSteps.length - 1) {
+      setTutorialStep(tutorialStep + 1);
+    } else {
+      setShowTutorial(false);
+    }
+  };
+
+  const triggerGlitchEffect = () => {
+    setShowGlitchEffect(true);
+    setTimeout(() => setShowGlitchEffect(false), 1000);
+  };
+
+  // UI Components
+  const renderAvatar = (type, size = 40) => {
+    const avatars = {
+      explorer: '👨‍🚀',
+      robot: '🤖',
+      alien: '👽',
+      ship: '🚀',
+    };
+    return (
+      <div
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          borderRadius: '50%',
+          backgroundColor: darkMode ? '#1a1a1a' : '#e0e0e0',
+          border: `2px solid ${type === avatar ? '#00ccff' : 'transparent'}`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: `${size / 2}px`,
+          cursor: 'pointer',
+          transition: 'all 0.2s ease',
+          opacity: type === avatar ? 1 : 0.7,
+        }}
+        onClick={() => selectAvatar(type)}
+        className={type === avatar ? 'pulse-glow' : ''}
+      >
+        {avatars[type]}
+      </div>
+    );
+  };
+
+  return (
+    <div
+      style={{
+        fontFamily: "'Orbitron', sans-serif",
+        minHeight: '100vh',
+        backgroundColor: darkMode ? '#0a0a1a' : '#f0f0f0',
+        color: darkMode ? '#00ccff' : '#121212',
+        transition: 'background-color 0.3s, color 0.3s',
+        position: 'relative',
+        overflow: 'hidden',
+        backgroundImage: darkMode ? 'radial-gradient(circle, rgba(0,20,40,0.2) 0%, rgba(0,0,20,0.8) 100%)' : 'none',
+      }}
+    >
+      {/* CSS Styling */}
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+          
+          @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 5px #00ccff; }
+            50% { box-shadow: 0 0 20px #00ccff; }
+          }
+          
+          @keyframes star-twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.8; }
+          }
+          
+          @keyframes terminal-cursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+          }
+          
+          @keyframes starfield {
+            0% { transform: translateY(-100vh); }
+            100% { transform: translateY(100vh); }
+          }
+          
+          @keyframes glitch {
+            0% { transform: translate(0); text-shadow: -2px 0 #ff3366, 2px 0 #00ccff; }
+            20% { transform: translate(-3px, 3px); text-shadow: 2px 0 #ff3366, -2px 0 #00ccff; }
+            40% { transform: translate(-3px, -3px); text-shadow: 2px 0 #00ccff, -2px 0 #ff3366; }
+            60% { transform: translate(3px, 3px); text-shadow: -2px 0 #00ccff, 2px 0 #ff3366; }
+            80% { transform: translate(3px, -3px); text-shadow: -2px 0 #ff3366, 2px 0 #00ccff; }
+            100% { transform: translate(0); text-shadow: -2px 0 #ff3366, 2px 0 #00ccff; }
+          }
+          
+          .glitch { animation: glitch 0.3s infinite; }
+          .pulse-glow { animation: pulse-glow 2s infinite; }
+          .star-twinkle { animation: star-twinkle ${Math.random() * 2 + 1}s infinite; }
+          .terminal-cursor { animation: terminal-cursor 1s infinite; }
+          .starfield { animation: starfield var(--star-speed) linear infinite; }
+          
+          .hover-effect:hover {
+            text-shadow: 0 0 8px #00ccff;
+            transform: scale(1.05);
+            transition: all 0.2s ease;
+          }
+          
+          .grid-cell {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+          }
+          
+          .grid-cell:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 8px rgba(0, 204, 255, 0.5);
+          }
+          
+          .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.1);
+          }
+          
+          .progress-bar-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+          }
+          
+          .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(${gridSize}, 30px);
+            gap: 2px;
+          }
+          
+          .terminal-window {
+            background-color: rgba(0, 0, 20, 0.9);
+            color: #00ccff;
+            border: 1px solid #00ccff;
+            border-radius: 4px;
+            padding: 1rem;
+            overflow-y: auto;
+            max-height: 400px;
+          }
+          
+          .terminal-input {
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid #00ccff;
+            color: #00ccff;
+            font-family: 'Orbitron', sans-serif;
+            padding: 0.5rem;
+            width: 100%;
+            outline: none;
+          }
+          
+          .terminal-input:focus {
+            box-shadow: 0 0 5px rgba(0, 204, 255, 0.5);
+          }
+          
+          .neo-button {
+            background-color: rgba(0, 0, 20, 0.8);
+            color: #00ccff;
+            border: 1px solid #00ccff;
+            padding: 0.5rem 1rem;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+          }
+          
+          .neo-button:hover {
+            background-color: rgba(0, 204, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+          }
+          
+          .neo-button:active {
+            transform: translateY(2px);
+          }
+          
+          .neo-card {
+            background-color: rgba(0, 0, 20, 0.8);
+            border: 1px solid #00ccff;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 10px rgba(0, 204, 255, 0.2);
+            transition: all 0.2s ease;
+          }
+          
+          .neo-card:hover {
+            box-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
+          }
+        `}
+      </style>
+
+      {/* Starfield Background */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 0, overflow: 'hidden' }}>
+        {starfield.map((star) => (
+          <div
+            key={star.id}
+            className="starfield star-twinkle"
+            style={{
+              position: 'absolute',
+              top: `${star.top}%`,
+              left: `${star.left}%`,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              backgroundColor: '#fff',
+              borderRadius: '50%',
+              opacity: star.opacity,
+              '--star-speed': `${star.speed}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Header */}
+      <header
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '1rem',
+          borderBottom: '1px solid #00ccff',
+          backgroundColor: darkMode ? 'rgba(0, 0, 20, 0.7)' : 'rgba(240, 240, 240, 0.8)',
+          backdropFilter: 'blur(5px)',
+        }}
+      >
+        <h1
+          style={{
+            fontSize: '2.5rem',
+            fontWeight: 'bold',
+            margin: 0,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            textShadow: darkMode ? '0 0 10px #00ccff' : 'none',
+          }}
+        >
+          <span className={showGlitchEffect ? 'glitch' : ''}>STAR_VOYAGER</span>
+          <span style={{ fontSize: '1rem', opacity: 0.7 }}>v1.0</span>
+        </h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {gameStarted && (
+            <>
+              <div className="pulse-glow" style={{ padding: '0.5rem 1rem', border: '1px solid #00ccff' }}>
+                REP: {reputation}
+              </div>
+              <div style={{ padding: '0.5rem 1rem', border: '1px solid #ffcc00' }}>
+                CR: {credits}
+              </div>
+            </>
+          )}
+          <button onClick={toggleTheme} className="neo-button" style={{ width: '40px', height: '40px' }}>
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+        </div>
+      </header>
+
+      {/* Notification */}
+      {showNotification && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'rgba(0, 0, 20, 0.9)',
+            color: '#00ccff',
+            padding: '1rem 2rem',
+            borderRadius: '4px',
+            zIndex: 100,
+            textAlign: 'center',
+            fontSize: '1.5rem',
+            border: '1px solid #00ccff',
+            boxShadow: '0 0 20px rgba(0, 204, 255, 0.5)',
+            animation: 'pulse-glow 2s infinite',
+          }}
+        >
+          {notificationMessage}
+        </div>
+      )}
+
+      {/* Main Content */}
+      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1rem', position: 'relative', zIndex: 1 }}>
+        {/* Tutorial */}
+        {showTutorial && gameStarted && (
+          <div
+            style={{
+              position: 'fixed',
+              bottom: '2rem',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '80%',
+              maxWidth: '600px',
+              backgroundColor: 'rgba(0, 0, 20, 0.9)',
+              borderRadius: '4px',
+              padding: '1.5rem',
+              border: '1px solid #00ccff',
+              boxShadow: '0 0 15px rgba(0, 204, 255, 0.3)',
+              zIndex: 100,
+            }}
+          >
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+              <div style={{ fontSize: '1.8rem' }}>{tutorialSteps[tutorialStep].character === 'ai' ? '🤖' : '👨‍🚀'}</div>
+              <div>
+                <div style={{ marginBottom: '0.5rem', opacity: 0.7 }}>
+                  {tutorialSteps[tutorialStep].character === 'ai' ? 'AI' : username.toUpperCase()}
+                </div>
+                <div>{tutorialSteps[tutorialStep].text}</div>
+              </div>
+            </div>
+            <button onClick={nextTutorialStep} className="neo-button" style={{ marginTop: '1rem', alignSelf: 'flex-end' }}>
+              {tutorialStep < tutorialSteps.length - 1 ? 'NEXT' : 'LAUNCH'}
+            </button>
+          </div>
+        )}
+
+        {!gameStarted ? (
+          // Login Screen
+          <div style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto' }}>
+            <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', textTransform: 'uppercase' }}>
+              StarVoyager Command
+            </h2>
+            <p style={{ fontSize: '1rem', marginBottom: '2rem', opacity: 0.7 }}>
+              EXPLORE THE COSMOS AT YOUR PERIL.<br />
+              ALL ACTIONS ARE LOGGED BY THE GALACTIC COUNCIL.
+            </p>
+            <div className="neo-card">
+              <h3 style={{ marginBottom: '1rem' }}>Captain Registration</h3>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Captain’s Name"
+                style={{
+                  backgroundColor: 'rgba(0, 0, 20, 0.7)',
+                  color: '#00ccff',
+                  border: '1px solid #00ccff',
+                  padding: '0.75rem',
+                  width: '100%',
+                  marginBottom: '1rem',
+                  fontSize: '1.2rem',
+                  textAlign: 'center',
+                }}
+                maxLength={15}
+              />
+              <div style={{ marginBottom: '1.5rem' }}>
+                <p style={{ marginBottom: '1rem' }}>Select Avatar</p>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+                  {renderAvatar('explorer', 50)}
+                  {renderAvatar('robot', 50)}
+                  {renderAvatar('alien', 50)}
+                  {renderAvatar('ship', 50)}
+                </div>
+              </div>
+              <button onClick={startGame} className="neo-button" style={{ padding: '0.75rem 2rem', fontSize: '1.25rem' }}>
+                Launch Starship
+              </button>
+            </div>
+          </div>
+        ) : (
+          // Game Interface
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
+            {/* System Selection */}
+            <div className="neo-card">
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span>🌌</span> Star Systems
+              </h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {systems.map((system, index) => (
+                  <button
+                    key={index}
+                    onClick={() => reputation >= system.repRequired && setActiveSystem(index)}
+                    className={`hover-effect ${index === activeSystem ? 'pulse-glow' : ''}`}
+                    style={{
+                      backgroundColor: index === activeSystem ? 'rgba(0, 0, 20, 0.8)' : 'transparent',
+                      color: reputation >= system.repRequired ? system.color : '#666',
+                      border: `1px solid ${system.color}`,
+                      padding: '0.75rem',
+                      fontWeight: 'bold',
+                      cursor: reputation >= system.repRequired ? 'pointer' : 'not-allowed',
+                      opacity: reputation >= system.repRequired ? 1 : 0.5,
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <span>{system.icon}</span>
+                        <span>{system.name}</span>
+                      </div>
+                      <span>{systemsVisited.includes(index) ? '✓' : ''}</span>
+                    </div>
+                    <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
+                      {system.description} {reputation < system.repRequired ? `(Requires ${system.repRequired} REP)` : ''}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <div style={{ marginTop: '1rem', padding: '0.75rem', border: '1px solid #00ccff' }}>
+                <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>💡 Safety Tip:</p>
+                <p>{safetyTips[currentTip]}</p>
+              </div>
+            </div>
+
+            {/* Active System Content */}
+            <div className="neo-card">
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: systems[activeSystem].color, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span>{systems[activeSystem].icon}</span> {systems[activeSystem].name}
+              </h2>
+              {missionActive ? (
+                <div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                      <div>Mission: <span style={{ color: systems[activeSystem].color }}>{currentMission.name}</span></div>
+                      <div>{currentMission.difficulty}</div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '0.8rem', marginBottom: '0.25rem' }}>Fuel</div>
+                        <div className="progress-bar">
+                          <div className="progress-bar-fill" style={{ width: `${(shipFuel / getFuelCapacity()) * 100}%`, backgroundColor: '#00ccff' }}></div>
+                        </div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '0.8rem', marginBottom: '0.25rem' }}>Health</div>
+                        <div className="progress-bar">
+                          <div className="progress-bar-fill" style={{ width: `${shipHealth}%`, backgroundColor: '#ff3366' }}></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mission-grid">
+                      {missionGrid.map((row, rowIndex) =>
+                        row.map((cell, colIndex) => (
+                          <div
+                            key={`${rowIndex}-${colIndex}`}
+                            className="grid-cell"
+                            style={{
+                              backgroundColor: cell.revealed ? (cell.type === 'player' ? 'rgba(0, 204, 255, 0.3)' : 'rgba(0, 0, 20, 0.7)') : '#111',
+                              color: cell.type === 'enemy' ? '#ff3366' : cell.type === 'resource' ? '#ffcc00' : '#fff',
+                            }}
+                            onClick={() => handleGridMove(rowIndex, colIndex)}
+                          >
+                            {cell.revealed ? (
+                              cell.type === 'player' ? '🚀' :
+                              cell.type === 'goal' ? '🏁' :
+                              cell.type === 'target' ? '👨‍🚀' :
+                              cell.type === 'enemy' ? '💥' :
+                              cell.type === 'resource' ? '$' :
+                              cell.type === 'scan' ? (cell.scanned ? '✓' : '?') : ''
+                            ) : '?'}
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setMissionActive(false);
+                      if (missionTimeout) clearTimeout(missionTimeout);
+                      addTerminalEntry('Mission aborted.');
+                    }}
+                    className="neo-button"
+                    style={{ width: '100%', backgroundColor: 'rgba(255, 51, 102, 0.1)', borderColor: '#ff3366', color: '#ff3366' }}
+                  >
+                    Abort Mission
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div style={{ padding: '1rem', border: '1px solid #00ccff', marginBottom: '1rem' }}>
+                    <p>{systems[activeSystem].description}</p>
+                  </div>
+                  <h3 style={{ marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span>🎯</span> Missions
+                  </h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {missions[activeSystem].map((mission) => (
+                      <div key={mission.id} className="neo-card" style={{ opacity: mission.completed ? 0.7 : 1 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                          <div style={{ fontWeight: 'bold', color: systems[activeSystem].color }}>{mission.name}</div>
+                          <div style={{ fontSize: '0.8rem', backgroundColor: 'rgba(0, 0, 20, 0.5)', padding: '0.25rem 0.5rem', borderRadius: '4px' }}>
+                            {mission.difficulty}
+                          </div>
+                        </div>
+                        <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem', opacity: 0.7 }}>
+                          {mission.type === 'delivery' ? `Deliver cargo (${mission.cargoRequired} units)` :
+                           mission.type === 'rescue' ? 'Rescue stranded personnel' :
+                           mission.type === 'combat' ? 'Engage enemy forces' :
+                           'Scan uncharted sectors'}
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div style={{ fontSize: '0.8rem' }}>
+                            Rewards: <span style={{ color: '#00ccff' }}>{mission.repReward} REP</span>, <span style={{ color: '#ffcc00' }}>{mission.creditReward} CR</span>
+                          </div>
+                          {mission.completed ? (
+                            <div style={{ color: '#00ccff' }}>✓ COMPLETED</div>
+                          ) : (
+                            <button
+                              onClick={() => mission.cargoRequired <= getCargoCapacity() && startMission(mission)}
+                              className="neo-button"
+                              style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem', opacity: mission.cargoRequired > getCargoCapacity() ? 0.5 : 1 }}
+                              disabled={mission.cargoRequired > getCargoCapacity()}
+                            >
+                              START
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <button onClick={() => setShowTerminal(true)} className="neo-button" style={{ marginTop: '1rem', width: '100%' }}>
+                    TERMINAL
+                  </button>
+                </div>
+              )}
+
+              {/* Terminal */}
+              {showTerminal && (
+                <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 0, 20, 0.9)', zIndex: 50, padding: '2rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', borderBottom: '1px solid #00ccff' }}>
+                    <div>TERMINAL@{username.toUpperCase()}</div>
+                    <button onClick={() => setShowTerminal(false)} className="neo-button" style={{ backgroundColor: 'transparent', borderColor: '#ff3366', color: '#ff3366' }}>
+                      CLOSE
+                    </button>
+                  </div>
+                  <div className="terminal-window" style={{ flex: 1 }}>
+                    {terminalHistory.map((entry, i) => (
+                      <div key={i} style={{ marginBottom: '0.25rem', color: entry.isCommand ? '#ff3366' : '#00ccff' }}>
+                        <span style={{ opacity: 0.7 }}>[{entry.timestamp}]</span> {entry.text}
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div>$</div>
+                    <input
+                      type="text"
+                      value={terminalInput}
+                      onChange={(e) => setTerminalInput(e.target.value)}
+                      className="terminal-input"
+                      autoFocus
+                      style={{ flex: 1 }}
+                    />
+                    <span className="terminal-cursor">█</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Ship & Stats */}
+            <div className="neo-card">
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span>🚀</span> Ship Modules
+              </h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {shipModules.map((module) => (
+                  <div key={module.id} className="neo-card" style={{ opacity: module.unlocked ? 1 : 0.5 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                      <div style={{ fontWeight: 'bold' }}>{module.name}</div>
+                      <div style={{ fontSize: '0.8rem', backgroundColor: 'rgba(0, 0, 20, 0.5)', padding: '0.25rem 0.5rem' }}>
+                        Lvl {module.level}
+                      </div>
+                    </div>
+                    <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem', opacity: 0.7 }}>{module.description}</div>
+                    {module.unlocked ? (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ fontSize: '0.8rem' }}>Cost: {module.cost * module.level} CR</div>
+                        <button
+                          onClick={() => upgradeModule(module.id)}
+                          className="neo-button"
+                          style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem', opacity: credits >= module.cost * module.level ? 1 : 0.5 }}
+                          disabled={credits < module.cost * module.level}
+                        >
+                          UPGRADE
+                        </button>
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: '0.8rem', color: '#ff3366' }}>LOCKED - Gain more reputation</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span>🏆</span> Achievements
+              </h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {achievements.map((achievement) => (
+                  <div
+                    key={achievement.id}
+                    style={{
+                      backgroundColor: achievement.unlocked ? 'rgba(0, 204, 255, 0.1)' : 'rgba(0, 0, 20, 0.5)',
+                      padding: '0.75rem',
+                      borderRadius: '4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      opacity: achievement.unlocked ? 1 : 0.6,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        backgroundColor: achievement.unlocked ? '#00ccff' : '#333',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {achievement.unlocked ? '✓' : '?'}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 'bold' }}>{achievement.name}</div>
+                      <div style={{ fontSize: '0.8rem' }}>{achievement.description}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default StarVoyager;
+```
+
+### Game Overview: StarVoyager
+**StarVoyager** is a space exploration game where players take on the role of a starship captain, exploring star systems, completing missions, and upgrading their ship. The game features:
+
+- **Star Systems:** Four systems (Alpha Centauri, Sirius, Vega, Andromeda) with increasing difficulty and reputation requirements.
+- **Missions:** Types include delivery (reach a goal), rescue (find a target), combat (defeat enemies), and exploration (scan points), each with rewards in reputation and credits.
+- **Ship Modules:** Engine, cargo bay, fuel tank, weapons, and shields, unlockable and upgradable with credits, affecting gameplay (e.g., cargo capacity, fuel efficiency).
+- **Minigame:** An 8x8 grid where players move their ship ('🚀'), encountering enemies ('💥'), resources ('$'), or mission-specific objectives, with fuel and health mechanics.
+- **Terminal:** Command interface for status, modules, and missions.
+- **Achievements:** Unlockable milestones like "First Contact" and "Legendary Captain."
+- **Styling:** Space-themed with a starfield background, Orbitron font, and neon effects.
+
+### How to Play
+1. **Start:** Enter a captain’s name and choose an avatar to begin with 10 reputation and 100 credits.
+2. **Explore Systems:** Select a system (unlocked by reputation) and view available missions.
+3. **Complete Missions:** Start a mission, navigate the grid, manage fuel and health, and achieve objectives (e.g., reach the goal, defeat enemies).
+4. **Upgrade Ship:** Spend credits to enhance modules, improving capabilities like cargo capacity or combat strength.
+5. **Earn Achievements:** Unlock rewards by hitting milestones.
+
+This implementation delivers a rich, engaging experience comparable to NetRunner, all within a single file, with a distinct space exploration twist. Enjoy charting the stars!

@@ -1,0 +1,20 @@
+{
+  "name": "Cybersecurity",
+  "category": "security",
+  "proficiency": 90,
+  "experience": "5+ years",
+  "description": "Expert in cybersecurity and system hardening, with recognition in Google's Hall of Fame for Application Security. Specialized in cloud security architecture and vulnerability assessment.",
+  "relatedTech": [
+    "Ethical Hacking", "Cloud Security",
+    "Vulnerability Assessment", "Security Protocols",
+    "Application Security", "S3 Bucket Security",
+    "Shodan.io", "Security Auditing"
+  ],
+  "icon": "Shield",
+  "achievements": [
+    "Recognized in Google Hall of Fame for security contributions",
+    "Improved security posture by 30% across systems",
+    "Protected over $5M in digital assets",
+    "Reduced security incidents by 25% through proactive measures"
+  ]
+}

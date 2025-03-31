@@ -1,0 +1,89 @@
+{
+  "id": "polynomial-graphs",
+  "title": "Polynomial Graphs",
+  "description": "Plot and analyze polynomial functions with interactive graphing tools",
+  "category": "Algebra",
+  "subcategory": "Graphing",
+  "difficulty": "intermediate",
+  "lastUpdated": "2023-03-29",
+  "icon": "📈",
+  "color": "from-blue-600 to-indigo-700",
+  "shape": "circle",
+  "enabled": true,
+  "featured": false,
+  "type": "math",
+  "tags": [
+    "polynomials",
+    "graphing",
+    "visualization",
+    "functions",
+    "algebra"
+  ],
+  "keywords": [
+    "graph",
+    "polynomial",
+    "plot",
+    "function",
+    "visualization"
+  ],
+  "navigation": {
+    "category": {
+      "title": "Algebra",
+      "path": "/math/algebra"
+    },
+    "nextTools": [
+      {
+        "id": "factorization",
+        "title": "Polynomial Factorization",
+        "icon": "🧩",
+        "path": "/math/algebra/factorization"
+      },
+      {
+        "id": "equation-solver",
+        "title": "Equation Solver",
+        "icon": "➗",
+        "path": "/math/algebra/equation-solver"
+      }
+    ]
+  },
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Solver",
+        "icon": "🧮",
+        "color": {
+          "active": "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "🔍",
+        "color": {
+          "active": "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "🌐",
+        "color": {
+          "active": "bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  }
+}

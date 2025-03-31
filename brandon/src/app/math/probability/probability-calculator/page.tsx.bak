@@ -1,0 +1,24 @@
+"use client";
+
+import React from 'react';
+import { ProbabilityCalculator } from './components/ProbabilityCalculator';
+import { ToolLayout } from '@/components/shared/ToolLayout';
+import meta from './meta.json';
+
+export default function ProbabilityCalculatorPage() {
+  return (
+    <ToolLayout
+      title={meta.title}
+      icon={meta.icon}
+      category={meta.category}
+      subcategory={meta.subcategory}
+      difficulty={meta.difficulty as "beginner" | "intermediate" | "advanced"}
+      description={meta.description}
+      type="math"
+    >
+      <div className="p-6">
+        <ProbabilityCalculator />
+      </div>
+    </ToolLayout>
+  );
+}

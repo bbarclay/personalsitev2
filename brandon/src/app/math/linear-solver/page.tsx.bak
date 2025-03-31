@@ -1,0 +1,64 @@
+"use client";
+
+import React from 'react';
+import { ToolPageLayout, createDynamicPanelComponent } from '@/components/layouts/ToolPageLayout';
+import dynamic from 'next/dynamic';
+import { ToolMeta, DEFAULT_SIDEBAR_TABS } from '@/types/tool-types';
+
+// Dynamic imports for panels
+const SolverPanel = dynamic(() => import('./components/SolverPanel'));
+const ExplanationPanel = dynamic(() => import('./components/ExplanationPanel'));
+const ApplicationsPanel = dynamic(() => import('./components/ApplicationsPanel'));
+const ResourcesPanel = dynamic(() => import('./components/ResourcesPanel'));
+
+// Import and validate metadata
+import metaJson from './meta.json';
+
+// Ensure color is a string for the ToolMeta type
+const colorString = typeof metaJson.color === 'string' 
+  ? metaJson.color 
+  : (typeof metaJson.color === 'object' && metaJson.color !== null && 'gradient' in metaJson.color
+    ? (metaJson.color as any).gradient 
+    : 'from-blue-500 to-purple-500');
+
+// Cast and validate the meta data
+const meta: ToolMeta = {
+  ...metaJson,
+  id: metaJson.id || 'linear-solver',
+  title: metaJson.title || 'Linear System Solver',
+  description: metaJson.description || 'Solve systems of linear equations',
+  category: metaJson.category || 'Math',
+  type: 'math' as const,
+  icon: metaJson.icon || '📊',
+  difficulty: metaJson.difficulty?.toLowerCase() as 'beginner' | 'intermediate' | 'advanced' || 'intermediate',
+  lastUpdated: metaJson.lastUpdated || new Date().toISOString().split('T')[0],
+  color: colorString,
+  enabled: metaJson.enabled !== false,
+  tags: metaJson.tags || ['linear algebra', 'matrix', 'equations'],
+  keywords: metaJson.keywords || ['linear system', 'solver', 'gaussian elimination'],
+  sidebar: metaJson.sidebar || {
+    tabs: DEFAULT_SIDEBAR_TABS
+  },
+  navigation: metaJson.navigation || {
+    category: {
+      title: 'Mathematics',
+      path: '/math'
+    }
+  }
+};
+
+// Create dynamic panel component
+const LinearSolverContent = createDynamicPanelComponent({
+  solver: SolverPanel,
+  explanation: ExplanationPanel,
+  applications: ApplicationsPanel,
+  resources: ResourcesPanel
+});
+
+export default function LinearSolverPage() {
+  return (
+    <ToolPageLayout meta={meta}>
+      <LinearSolverContent />
+    </ToolPageLayout>
+  );
+} 

@@ -1,0 +1,19 @@
+{
+  "name": "Large Language Models",
+  "category": "ai-machine-learning",
+  "proficiency": 95,
+  "experience": "3+ years",
+  "description": "Expert in developing and deploying Large Language Models, specializing in fine-tuning state-of-the-art models for eCommerce and content generation. Advanced expertise in RAG, LoRA custom training, and NLP implementations.",
+  "relatedTech": [
+    "BERT", "GPT-4", "LLaMA", "Transformers",
+    "Hugging Face", "OpenAI API", "AWS Bedrock",
+    "RAG", "LoRA", "Anthropic", "Cohere", "Gemini"
+  ],
+  "icon": "Brain",
+  "achievements": [
+    "Led NLP implementations improving SEO across 50 million articles",
+    "Developed custom LLaMA models for specialized content generation",
+    "Integrated advanced AI models reducing delivery timelines by 40%",
+    "Implemented RAG and LoRA for enhanced model performance"
+  ]
+}
