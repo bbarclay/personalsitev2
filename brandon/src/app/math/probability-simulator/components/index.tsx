@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { Slider } from "@components/ui/slider";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Dices, Coins, Play, Pause, RefreshCw, Spade } from 'lucide-react'; // Changed SpadeIcon to Spade
 
@@ -412,3 +412,6 @@ export const ProbabilitySimulator = () => {
     </Card>
   );
 };
+
+
+export default ProbabilitySimulator;

@@ -42,3 +42,6 @@ export const FactorialCalculator = () => {
         </div>
     );
 };
+
+
+export default FactorialCalculator;

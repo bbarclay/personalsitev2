@@ -9,8 +9,8 @@ import {
   ArrowRight,
   Gift
 } from 'lucide-react';
-import { Card } from '@components/ui/card';
-import { Button } from '@components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const floatingAnimation = {
   y: [0, -10, 0],

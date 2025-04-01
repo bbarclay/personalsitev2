@@ -1,10 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { LinearSystemsHeader } from './components/LinearSystemsHeader';
+import LinearSystemsHeader from './components/LinearSystemsHeader';
 import { EnhancedSolverPanel } from './components/EnhancedSolverPanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { SiteFooter } from '@/components/site-footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -399,8 +398,6 @@ export default function LinearSystemsPage() {
           </div>
         </div>
       )}
-      
-      <SiteFooter className="py-6" />
     </div>
   );
 }

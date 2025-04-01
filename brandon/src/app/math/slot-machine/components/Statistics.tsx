@@ -6,7 +6,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from '@components/ui/card';
+} from '@/components/ui/card';
 import { useGameState } from './GameState';
 
 interface StatProps {

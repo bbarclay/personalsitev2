@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Bot, Brain, AlertTriangle } from 'lucide-react';
-import { TooltipProvider } from '@components/ui/tooltip';
-import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   InfoBoxes,
   TrainingStatus,

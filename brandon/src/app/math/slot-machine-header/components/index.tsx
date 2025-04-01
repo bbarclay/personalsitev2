@@ -1,6 +1,6 @@
 'use client';
 
-import { CardHeader, CardTitle } from '@components/ui/card';
+import { CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, Music, Volume2, VolumeX } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
@@ -47,3 +47,5 @@ export const SlotMachineHeader: React.FC = () => {
     </CardHeader>
   );
 };
+
+export default SlotMachineHeader;

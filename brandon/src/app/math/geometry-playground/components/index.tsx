@@ -2,14 +2,13 @@
 
 import React, { useState } from 'react';
 import { useTheme } from 'next-themes';
-import { Alert, AlertDescription } from '@components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 
 import ShapeSelector from './ShapeSelector';
 import ShapeControls from './ShapeControls';
 import ShapeCanvas from './ShapeCanvas';
 import { useGeometryPlayground } from './hooks/useGeometryPlayground';
-import '../math-components.css';
 
 const GeometryPlayground = () => {
   const [mounted, setMounted] = useState(false);

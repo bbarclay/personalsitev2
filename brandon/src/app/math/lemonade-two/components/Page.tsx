@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 // Dynamically import the LemonadeGame component
 const LemonadeGame = dynamic(
-  () => import('@components/math/lemonade_two/LemonadeGame'),
+  () => import('@/components/math/lemonade_two/LemonadeGame'),
   {
     loading: () => (
       <div className="min-h-screen flex items-center justify-center">

@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Button } from '@components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertCircle, Play, Pause, RotateCcw, Dice1, Copy, Wand2 } from 'lucide-react';
 import './styles.css';
-import { Alert, AlertDescription } from '@components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 type Matrix = number[][];
 type Operation = 'add' | 'multiply' | 'subtract' | 'transpose';

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Alert, AlertDescription, Button } from '@components/ui';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 import ClientOnly from '../../components/ClientOnly';
 import ClientIcon from '../../components/ClientIcon';

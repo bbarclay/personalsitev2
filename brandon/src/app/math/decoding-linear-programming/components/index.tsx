@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw, CheckCircle, Info, AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   LineChart,
   Line,

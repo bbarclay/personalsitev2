@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { generateAndAnalyzePrimes } from './RandomPrimeUtils';
-import MathButton from '@components/elements/MathButton';
-import MathInput from '@components/elements/MathInput';
+import MathButton from '@/components/elements/MathButton';
+import MathInput from '@/components/elements/MathInput';
 import RandomPrimeReport from './RandomPrimeReport';
 import AOS from 'aos';
 import 'aos/dist/aos.css';

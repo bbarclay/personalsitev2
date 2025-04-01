@@ -2,7 +2,7 @@
 
 import React, { Suspense } from 'react';
 import { LazyBoundary } from '../types/lazyBoundary';
-import { Alert, AlertTitle, AlertDescription } from "@components/ui/alert";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { ErrorBoundary } from './ErrorBoundary';
 
 export const LazyBoundaryComponent: React.FC<LazyBoundary> = ({

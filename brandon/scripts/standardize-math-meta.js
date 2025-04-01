@@ -31,6 +31,72 @@ const toolMappings = {
     icon: '3n+1',
     color: 'from-purple-500 to-pink-500'
   },
+  'collatz-advanced': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '🔄',
+    color: 'from-purple-500 to-pink-500'
+  },
+  'collatz-analysis': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '📊',
+    color: 'from-purple-500 to-pink-500'
+  },
+  'collatz-calculator': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '🧮',
+    color: 'from-purple-500 to-pink-500'
+  },
+  'collatz-network': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '🕸️',
+    color: 'from-purple-500 to-pink-500'
+  },
+  'collatz-proof': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '✅',
+    color: 'from-purple-500 to-pink-500'
+  },
+  'cryptography-basics': {
+    category: 'Mathematics',
+    subcategory: 'Cryptography',
+    icon: '🔐',
+    color: 'from-gray-500 to-slate-500'
+  },
+  'decoding-linear-programming': {
+    category: 'Mathematics',
+    subcategory: 'Optimization',
+    icon: '📈',
+    color: 'from-green-500 to-emerald-500'
+  },
+  'factorial-calculator': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '!',
+    color: 'from-violet-500 to-purple-500'
+  },
+  'fibonacci-display': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '🌀',
+    color: 'from-yellow-500 to-amber-500'
+  },
+  'fibonacci-explorer': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '🔍',
+    color: 'from-yellow-500 to-amber-500'
+  },
+  'fractal-funhouse': {
+    category: 'Mathematics',
+    subcategory: 'Fractals',
+    icon: '🌿',
+    color: 'from-emerald-500 to-green-500'
+  },
   'fraction-calculator': {
     category: 'Mathematics',
     subcategory: 'Arithmetic',
@@ -43,31 +109,228 @@ const toolMappings = {
     icon: '➗',
     color: 'from-orange-500 to-red-500'
   },
-  'geometry': {
+  'genetic-algorithm-biology': {
+    category: 'Mathematics',
+    subcategory: 'Applied Mathematics',
+    icon: '🧬',
+    color: 'from-green-500 to-teal-500'
+  },
+  'genetic-drift-explorer': {
+    category: 'Mathematics',
+    subcategory: 'Applied Mathematics',
+    icon: '🧬',
+    color: 'from-green-500 to-teal-500'
+  },
+  'geometry-playground': {
     category: 'Mathematics',
     subcategory: 'Geometry',
     icon: '📐',
     color: 'from-yellow-500 to-orange-500'
   },
-  'linear-algebra': {
+  'geometry-visualizer': {
+    category: 'Mathematics',
+    subcategory: 'Geometry',
+    icon: '📐',
+    color: 'from-yellow-500 to-orange-500'
+  },
+  'graph-theory-explorer': {
+    category: 'Mathematics',
+    subcategory: 'Graph Theory',
+    icon: '🕸️',
+    color: 'from-blue-500 to-purple-500'
+  },
+  'hermites-proof': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '📝',
+    color: 'from-purple-500 to-pink-500'
+  },
+  'lemonade-two': {
+    category: 'Mathematics',
+    subcategory: 'Game Theory',
+    icon: '🍋',
+    color: 'from-yellow-500 to-amber-500'
+  },
+  'linear-algebra-visualizer': {
     category: 'Mathematics',
     subcategory: 'Linear Algebra',
     icon: '🔢',
     color: 'from-teal-500 to-green-500'
   },
-  'probability': {
+  'linear-solver': {
+    category: 'Mathematics',
+    subcategory: 'Linear Algebra',
+    icon: '⚡',
+    color: 'from-teal-500 to-green-500'
+  },
+  'linear-systems': {
+    category: 'Mathematics',
+    subcategory: 'Linear Algebra',
+    icon: '📊',
+    color: 'from-teal-500 to-green-500'
+  },
+  'machine-learning': {
+    category: 'Mathematics',
+    subcategory: 'Applied Mathematics',
+    icon: '🤖',
+    color: 'from-cyan-500 to-blue-500'
+  },
+  'matrix-completion': {
+    category: 'Mathematics',
+    subcategory: 'Linear Algebra',
+    icon: '🔲',
+    color: 'from-teal-500 to-green-500'
+  },
+  'matrix-operations': {
+    category: 'Mathematics',
+    subcategory: 'Linear Algebra',
+    icon: '🔢',
+    color: 'from-teal-500 to-green-500'
+  },
+  'multiplication-explorer': {
+    category: 'Mathematics',
+    subcategory: 'Arithmetic',
+    icon: '✖️',
+    color: 'from-orange-500 to-red-500'
+  },
+  'neural-network-viz': {
+    category: 'Mathematics',
+    subcategory: 'Applied Mathematics',
+    icon: '🧠',
+    color: 'from-cyan-500 to-blue-500'
+  },
+  'number-base-converter': {
+    category: 'Mathematics',
+    subcategory: 'Number Systems',
+    icon: '🔄',
+    color: 'from-blue-500 to-purple-500'
+  },
+  'p-adic': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '|·|p',
+    color: 'from-violet-500 to-purple-500'
+  },
+  'pattern-explorer': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '🔍',
+    color: 'from-indigo-500 to-purple-500'
+  },
+  'polynomial': {
+    category: 'Mathematics',
+    subcategory: 'Algebra',
+    icon: '📈',
+    color: 'from-blue-500 to-indigo-500'
+  },
+  'prime-constellations-v2': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '✨',
+    color: 'from-purple-500 to-pink-500'
+  },
+  'prime-numbers-display': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '🔢',
+    color: 'from-purple-500 to-pink-500'
+  },
+  'prime-observatory': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '🔭',
+    color: 'from-purple-500 to-pink-500'
+  },
+  'prime-spiral': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '🌀',
+    color: 'from-purple-500 to-pink-500'
+  },
+  'prime-viz': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '📊',
+    color: 'from-purple-500 to-pink-500'
+  },
+  'probability-simulator': {
     category: 'Mathematics',
     subcategory: 'Probability',
     icon: '🎲',
     color: 'from-red-500 to-pink-500'
   },
-  'statistics': {
+  'pyramid-builders': {
+    category: 'Mathematics',
+    subcategory: 'Geometry',
+    icon: '🔺',
+    color: 'from-yellow-500 to-orange-500'
+  },
+  'pythagorean-calculator': {
+    category: 'Mathematics',
+    subcategory: 'Geometry',
+    icon: '📐',
+    color: 'from-yellow-500 to-orange-500'
+  },
+  'pythagorean-explorer': {
+    category: 'Mathematics',
+    subcategory: 'Geometry',
+    icon: '🔍',
+    color: 'from-yellow-500 to-orange-500'
+  },
+  'pythagorean-tool': {
+    category: 'Mathematics',
+    subcategory: 'Geometry',
+    icon: '📐',
+    color: 'from-yellow-500 to-orange-500'
+  },
+  'quadratic-solver': {
+    category: 'Mathematics',
+    subcategory: 'Algebra',
+    icon: '⚡',
+    color: 'from-blue-500 to-indigo-500'
+  },
+  'riemann': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: 'ζ',
+    color: 'from-violet-500 to-purple-500'
+  },
+  'sequence-explorer': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '🔢',
+    color: 'from-indigo-500 to-purple-500'
+  },
+  'simple-erdos': {
+    category: 'Mathematics',
+    subcategory: 'Graph Theory',
+    icon: '🕸️',
+    color: 'from-blue-500 to-purple-500'
+  },
+  'sir-epidemic-model-simulator': {
+    category: 'Mathematics',
+    subcategory: 'Applied Mathematics',
+    icon: '🦠',
+    color: 'from-green-500 to-teal-500'
+  },
+  'slot-machine': {
+    category: 'Mathematics',
+    subcategory: 'Probability',
+    icon: '🎰',
+    color: 'from-red-500 to-pink-500'
+  },
+  'statistics-analyzer': {
     category: 'Mathematics',
     subcategory: 'Statistics',
     icon: '📊',
     color: 'from-indigo-500 to-purple-500'
+  },
+  'ultimate-collatz-explorer': {
+    category: 'Mathematics',
+    subcategory: 'Number Theory',
+    icon: '🚀',
+    color: 'from-purple-500 to-pink-500'
   }
-  // Add mappings for other tools...
 };
 
 // Default sidebar configuration

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Gift } from 'lucide-react';
 import React from 'react';
 
@@ -38,3 +38,5 @@ export const BonusGame: React.FC<BonusGameProps> = ({ freeSpins, onClose }) => {
     </div>
   );
 };
+
+export default BonusGame;

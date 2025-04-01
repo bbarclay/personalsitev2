@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-// import { Card, CardContent } from '@components/ui/*';
-import { Card, CardContent } from '@components/ui/card';
+// import { Card, CardContent } from '@/components/ui/*';
+import { Card, CardContent } from '@/components/ui/card';
 import { SlotMachineHeader } from './SlotMachineHeader';
 import { GameDisplay } from './GameDisplay';
 import { Controls } from './Controls';

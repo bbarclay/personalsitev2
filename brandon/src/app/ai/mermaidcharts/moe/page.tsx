@@ -5,10 +5,8 @@ import MoeClient from './components/MoeClient';
 
 const meta = loadToolMeta(import.meta.url);
 
-export const metadata = {
-  title: meta.title,
-  description: meta.description,
-};
+// Metadata should be exported from a separate file when using 'use client'
+// Remove the metadata export from here
 
 export default function MoePage() {
   return <MoeClient meta={meta} />;

@@ -1,8 +1,8 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React from 'react';
-import { useGameState } from '@components/math/slot-machine/GameState';
+import { useGameState } from '@/components/math/slot-machine/GameState';
 
 interface StatProps {
   label: string;

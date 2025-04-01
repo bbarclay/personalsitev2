@@ -9,9 +9,9 @@ import {
   Camera,
   Share2
 } from 'lucide-react';
-import { Card } from '@components/ui/card';
-import { Button } from '@components/ui/button';
-import { Alert, AlertDescription } from '@components/ui/alert';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface DonationStep {
   title: string;

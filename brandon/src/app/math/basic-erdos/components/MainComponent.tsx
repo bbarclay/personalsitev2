@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '@components/ui/button';
+import { Button } from '@/components/ui/button';
 
 const BasicErdos = () => {
   const [sequence] = useState([1, -1, 1, 1, -1, 1, -1, 1, 1, -1]);

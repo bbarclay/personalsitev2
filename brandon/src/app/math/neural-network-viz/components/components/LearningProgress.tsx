@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScanSearch } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ui/tooltip';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface LearningProgressProps {
   loss: number[];

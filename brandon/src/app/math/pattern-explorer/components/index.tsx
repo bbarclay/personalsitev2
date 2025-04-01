@@ -1,15 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
-import { Alert, AlertDescription } from '@components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 
 import PatternControls from './PatternControls';
 import PatternDisplay from './PatternDisplay';
 import PatternTypeSelector from './PatternTypeSelector';
 import { usePatternGenerator } from './hooks/usePatternGenerator';
-import '../math-components.css';
 
 const PatternExplorer = () => {
   const [mounted, setMounted] = useState(false);

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import RandomPrimeCharts from './RandomPrimeCharts';
 import { MathJax, MathJaxContext } from 'better-react-mathjax';
-import MathTable from '@components/elements/MathTable';
+import MathTable from '@/components/elements/MathTable';
 import ReportCard from '@components/ReportCard';
 import { ColumnDef } from '@tanstack/react-table';
 

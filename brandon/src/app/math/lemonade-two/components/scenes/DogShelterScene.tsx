@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Dog, DollarSign, HelpCircle, AlertTriangle, ChevronDown } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert';
-import { Button } from '@components/ui/button';
-import { Card } from '@components/ui/card';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 interface ProblemSceneProps {
   onComplete: () => void;

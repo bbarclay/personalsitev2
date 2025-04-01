@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Button } from '@components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableRow } from '@components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableRow } from '@/components/ui/table';
 import { Info, Play, Pause, RefreshCw, Plus, Minus } from 'lucide-react';
-import { Alert, AlertDescription } from '@components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 // Define types
 type Sequence = Array<1 | -1>;

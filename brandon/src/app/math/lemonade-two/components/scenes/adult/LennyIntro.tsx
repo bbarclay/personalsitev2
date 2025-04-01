@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Alert, AlertDescription } from '@components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import ClientOnly from '../../components/ClientOnly';
 import ClientIcon from '../../components/ClientIcon';
 import LennyImage from '../../components/LennyImage';
-import { Button } from '@components/ui/button';
-import { Card } from '@components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { ArrowRight } from 'lucide-react';
 
 interface SceneProps {

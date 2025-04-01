@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { Slider } from "@components/ui/slider";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
 
 interface TableCell {
   multiplicand: number;

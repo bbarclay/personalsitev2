@@ -11,11 +11,11 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from '@components/ui/card';
-import { Button } from '@components/ui/button';
-import { Input } from '@components/ui/input';
-import { Slider } from '@components/ui/slider';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@components/ui/tabs';
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Slider } from '@/components/ui/slider';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Play,
   Pause,

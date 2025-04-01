@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TrainingPhase } from '../types';
 import { MESSAGES } from '../constants';
 

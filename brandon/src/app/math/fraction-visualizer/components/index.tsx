@@ -9,7 +9,6 @@ import FractionDisplay from './FractionDisplay';
 import FractionControls from './FractionControls';
 import FractionOperations from './FractionOperations';
 import { useFractionCalculator } from './hooks/useFractionCalculator';
-import '../../../math-components.css';
 
 const FractionVisualizer = () => {
   const [mounted, setMounted] = useState(false);

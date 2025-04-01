@@ -188,3 +188,5 @@ export const SequenceExplorer = () => {
         </div>
     );
 };
+
+export default SequenceExplorer;

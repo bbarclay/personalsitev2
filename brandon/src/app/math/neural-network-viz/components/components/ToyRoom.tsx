@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 import { Boxes, ToyBrick, Bot } from 'lucide-react';
 import { TeddyBear } from './icons/TeddyBear';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ui/tooltip';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { DataPoint } from '../types';
 import { useVisualizationData } from '../hooks';
 

@@ -6,7 +6,7 @@ import {
   Alert,
   AlertTitle,
   AlertDescription,
-} from "@components/ui/alert";
+} from "@/components/ui/alert";
 import { MathematicalInsight } from './components/MathematicalInsight';
 import { MatrixGrid } from './components/MatrixGrid';
 import { SingularValueSpectrum } from './components/SingularValueSpectrum';

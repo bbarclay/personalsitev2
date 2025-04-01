@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Button } from '@components/ui/button';
-import { Slider } from '@components/ui/slider';
-import { Card, CardContent } from '@components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
+import { Card, CardContent } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 // Define the type for a data point

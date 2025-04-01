@@ -3,8 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Eye, Link as LinkIcon, DollarSign } from 'lucide-react';
-import { Card } from '@components/ui/card';
-import { Button } from '@components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 // ClientOnly Component to prevent server-side rendering issues
 type ClientOnlyProps = {

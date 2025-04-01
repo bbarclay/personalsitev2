@@ -3,14 +3,14 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { AlertCircle, BrainCircuit } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import * as THREE from 'three';
 import _ from 'lodash';
 
 // Import shadcn/ui components
-import { Slider } from '@components/ui/slider';
-import { Label } from '@components/ui/label';
+import { Slider } from '@/components/ui/slider';
+import { Label } from '@/components/ui/label';
 
 // Define interfaces for data points and weights
 interface DataPoint {

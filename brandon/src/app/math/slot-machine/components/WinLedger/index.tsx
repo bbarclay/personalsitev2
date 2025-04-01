@@ -1,9 +1,9 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React from 'react';
-import { SymbolIcon } from '@components/math/slot-machine/SymbolIcon';
-import type { WinRecord } from '@components/math/slot-machine/types';
+import { SymbolIcon } from '@/components/math/slot-machine/SymbolIcon';
+import type { WinRecord } from '@/components/math/slot-machine/types';
 
 interface WinLedgerProps {
   winRecords: WinRecord[];

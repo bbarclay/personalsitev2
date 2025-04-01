@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-import { PAdicExpansion } from './PAdicExpansion';
-import { NormCalculator } from './NormCalculator';
+import PAdicExpansion from './PAdicExpansion';
+import NormCalculator from './NormCalculator';
 
 export default function SolverPanel() {
   return (

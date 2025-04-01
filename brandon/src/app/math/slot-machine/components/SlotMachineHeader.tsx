@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Music, Volume2, VolumeX, DollarSign } from 'lucide-react';
-import { CardHeader, CardTitle } from '@components/ui/card';
+import { CardHeader, CardTitle } from '@/components/ui/card';
 
 export const SlotMachineHeader: React.FC = () => {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {

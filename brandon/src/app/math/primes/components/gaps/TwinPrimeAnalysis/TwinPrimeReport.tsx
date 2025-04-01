@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import TwinPrimeCharts from './TwinPrimeCharts';
-import MathTable from '@components/elements/MathTable';
+import MathTable from '@/components/elements/MathTable';
 import ReportCard from '@components/ReportCard';
 import { ColumnDef } from '@tanstack/react-table';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { symbols } from '@components/math/slot-machine/utils';
+import { symbols } from '@/app/math/utils/symbols';
 
 interface SymbolIconProps {
   symbolId: number;
@@ -32,3 +32,6 @@ export const SymbolIcon: React.FC<SymbolIconProps> = ({
     </div>
   );
 };
+
+
+export default SymbolIcon;

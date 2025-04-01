@@ -7,7 +7,7 @@ import {
   Alert,
   AlertTitle,
   AlertDescription,
-} from "@components/ui/alert";
+} from "@/components/ui/alert";
 import { FractalRenderer, FractalControls, ColorSchemeSwitcher, ErrorBoundary } from './components';
 import { useFractal } from './hooks/useFractal';
 import { UI_CONFIG } from './constants';

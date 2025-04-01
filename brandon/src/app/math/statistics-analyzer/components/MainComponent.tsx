@@ -123,3 +123,6 @@ export const StatisticsAnalyzer = () => {
         </div>
     );
 };
+
+
+export default StatisticsAnalyzer;
