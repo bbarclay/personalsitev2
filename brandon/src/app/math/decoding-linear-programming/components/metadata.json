@@ -1,0 +1,20 @@
+
+{
+  "name": "Decoding Linear Programming",
+  "title": "Decoding by Linear Programming",
+  "status": "published",
+  "description": "Explore Terence Tao and Emmanuel Candès' groundbreaking work on error correction using convex optimization techniques.",
+  "path": "/math/decoding-linear-programming",
+  "categories": ["math", "education"],
+  "sub_categories": "linear programming, error correction, optimization",
+  "category_pages": "education",
+  "order": 7,
+  "featured": false,
+  "createdDate": "2024-01-20",
+  "icon": "📉",
+  "tags": ["linear programming", "error correction", "optimization", "education"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 7
+  }
+}

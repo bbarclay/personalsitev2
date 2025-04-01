@@ -1,0 +1,19 @@
+{
+  "name": "PatternExplorer",
+  "title": "Mathematical Pattern Explorer",
+  "status": "published",
+  "description": "Discover and explore various mathematical patterns through an interactive interface. Learn about arithmetic sequences, geometric sequences, Fibonacci numbers, and more with dynamic visualizations.",
+  "path": "/math/patterns",
+  "categories": ["math", "education", "sequence"],
+  "sub_categories": ["patterns", "sequences", "interactive"],
+  "category_pages": "education",
+  "order": 10,
+  "featured": true,
+  "createdDate": "2024-02-25",
+  "icon": "🔢",
+  "tags": ["patterns", "sequences", "Fibonacci", "arithmetic", "geometric", "interactive", "education"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 10
+  }
+}

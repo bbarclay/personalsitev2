@@ -1,0 +1,69 @@
+{
+  "id": "templates",
+  "title": "AI Templates",
+  "description": "Collection of AI templates for various purposes",
+  "type": "ai",
+  "category": "AI",
+  "difficulty": "beginner",
+  "lastUpdated": "2023-04-01",
+  "icon": "📄",
+  "color": "from-orange-500 to-pink-500",
+  "enabled": true,
+  "tags": [
+    "templates",
+    "ai",
+    "models"
+  ],
+  "keywords": [
+    "templates",
+    "ai",
+    "models",
+    "prompts"
+  ],
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Templates",
+        "icon": "📄",
+        "color": {
+          "active": "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "💡",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "AI Tools",
+      "path": "/ai"
+    }
+  }
+}

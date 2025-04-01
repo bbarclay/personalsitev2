@@ -1,0 +1,258 @@
+/* Core animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes glow {
+  0% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7)); }
+  50% { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9)); }
+  100% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7)); }
+}
+
+@keyframes collect {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.8; }
+  100% { transform: scale(0); opacity: 0; }
+}
+
+@keyframes celebrate {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.2) rotate(-5deg); }
+  50% { transform: scale(1.2) rotate(5deg); }
+  75% { transform: scale(1.1) rotate(-3deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-20px); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Game-specific animations */
+@keyframes jump {
+  0% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-100px) rotate(-5deg); }
+  50% { transform: translateY(-120px) rotate(0deg); }
+  75% { transform: translateY(-60px) rotate(5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+@keyframes run {
+  0% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-5px) scaleY(0.95); }
+  100% { transform: translateY(0) scaleY(1); }
+}
+
+@keyframes groundMove {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+@keyframes cloudFloat {
+  from { transform: translateX(0); }
+  to { transform: translateX(-200%); }
+}
+
+@keyframes sparkle {
+  0% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0); }
+}
+
+/* Crystal styles */
+.crystal {
+  animation: float 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.crystal.easy {
+  animation: float 3s ease-in-out infinite, glow 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 5px #4CAF50);
+}
+
+.crystal.medium {
+  animation: float 3s ease-in-out infinite, glow 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 5px #FFC107);
+}
+
+.crystal.hard {
+  animation: float 3s ease-in-out infinite, glow 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 5px #F44336);
+}
+
+.crystal.collecting {
+  animation: collect 0.5s ease-out forwards;
+}
+
+/* Dino animations */
+.dino {
+  transition: transform 0.1s ease-out;
+}
+
+.dino.jumping {
+  animation: jump 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dino.running {
+  animation: run 0.3s linear infinite;
+}
+
+.dino.celebrating {
+  animation: celebrate 1s ease-out;
+}
+
+/* Environment animations */
+.ground {
+  animation: groundMove 20s linear infinite;
+}
+
+.cloud {
+  animation: cloudFloat 30s linear infinite;
+}
+
+.sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  animation: sparkle 1s ease-out infinite;
+}
+
+/* UI animations */
+.challenge-popup {
+  animation: fadeIn 0.3s ease-out;
+  transform-origin: center;
+}
+
+.challenge-popup.closing {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+.score-text {
+  transition: transform 0.2s ease-out;
+}
+
+.score-text.increasing {
+  animation: bounce 0.5s ease-out;
+}
+
+.answer-option {
+  transition: transform 0.15s ease-out;
+}
+
+.answer-option:hover {
+  transform: scale(1.05);
+}
+
+.answer-option.correct {
+  animation: celebrate 0.5s ease-out;
+}
+
+.answer-option.wrong {
+  animation: shake 0.3s ease-in-out;
+}
+
+/* Progress elements */
+.progress-bar {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50, #81C784);
+  transition: width 0.3s ease-out;
+  transform-origin: left;
+}
+
+/* Loading elements */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #4CAF50;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Transition effects */
+.era-transition-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.era-transition-overlay.closing {
+  animation: fadeOut 0.5s ease-out forwards;
+}
+
+.era-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  animation: celebrate 1s ease-out;
+}
+
+/* Global transitions */
+.dark-mode-transition {
+  transition: all 0.3s ease-out;
+}
+
+/* Achievement notification */
+.achievement-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  z-index: 50;
+  animation: fadeIn 0.3s ease-out;
+  transform-origin: top right;
+}
+
+.achievement-popup.closing {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+/* Responsive animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

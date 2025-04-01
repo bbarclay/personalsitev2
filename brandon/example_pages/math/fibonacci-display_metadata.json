@@ -1,0 +1,19 @@
+{
+  "name": "Fibonacci Display",
+  "title": "Fibonacci Sequence Visualizer",
+  "status": "published",
+  "description": "Visual exploration of the Fibonacci sequence and its mathematical properties",
+  "path": "/math/fibonacci-display",
+  "categories": ["math", "number-theory", "education"],
+  "sub_categories": "sequences, visualization, number theory",
+  "category_pages": "education",
+  "order": 3,
+  "featured": false,
+  "createdDate": "2024-01-20",
+  "icon": "🌀",
+  "tags": ["fibonacci", "sequences", "visualization", "education"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 3
+  }
+}

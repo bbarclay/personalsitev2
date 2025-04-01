@@ -1,0 +1,20 @@
+
+{
+  "name": "BasicErdos",
+  "title": "Basic Erdos Sequence Explorer",
+  "status": "published",
+  "description": "An interactive tool to explore Erdős conjectures with visual aids and dynamic tables.",
+  "path": "/math/basic-erdos",
+  "categories": ["math", "education", "sequence"],
+  "sub_categories": ["Erdos", "interactive", "visualization"],
+  "category_pages": "education",
+  "order": 7,
+  "featured": false,
+  "createdDate": "2024-02-20",
+  "icon": "📚",
+  "tags": ["Erdos", "sequence exploration", "interactive", "tables", "education"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 7
+  }
+}

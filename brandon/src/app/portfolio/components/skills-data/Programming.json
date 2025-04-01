@@ -1,0 +1,19 @@
+{
+  "name": "Programming & Development",
+  "category": "programming",
+  "proficiency": 95,
+  "experience": "15+ years",
+  "description": "Full-stack development expert with extensive experience across multiple languages and frameworks. Specialized in building scalable applications and integrating advanced technologies.",
+  "relatedTech": [
+    "Python", "PHP Laravel", "JavaScript", "TypeScript",
+    "React", "Node.js", "Ruby", "C++", "VueJS",
+    "GraphQL", "REST APIs", "Livewire"
+  ],
+  "icon": "Code",
+  "achievements": [
+    "Built scalable eCommerce platforms processing millions of transactions",
+    "Developed full PHP Laravel system improving operational efficiency",
+    "Created distributed scrapers and data pipelines",
+    "Engineered monitoring systems for 250,000+ stores"
+  ]
+}

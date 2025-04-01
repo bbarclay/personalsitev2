@@ -1,0 +1,19 @@
+{
+  "name": "Prime Observatory",
+  "title": "Prime Number Observatory",
+  "status": "published",
+  "description": "Interactive visualization tool for exploring prime numbers and their patterns",
+  "path": "/math/prime-observatory",
+  "categories": ["math", "number-theory"],
+  "sub_categories": "primes, visualization, number theory",
+  "category_pages": "number-theory",
+  "order": 2,
+  "featured": false,
+  "createdDate": "2024-01-20",
+  "icon": "🔢",
+  "tags": ["primes", "visualization", "number theory", "interactive"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 2
+  }
+}

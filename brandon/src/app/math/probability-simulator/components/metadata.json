@@ -1,0 +1,19 @@
+{
+  "name": "Probability Simulator",
+  "title": "Interactive Probability Demonstrations",
+  "status": "published",
+  "description": "Interactive simulations of probability concepts and experiments",
+  "path": "/math/probability-simulator",
+  "categories": ["math", "education"],
+  "sub_categories": "probability, statistics, simulation",
+  "category_pages": "education",
+  "order": 6,
+  "featured": false,
+  "createdDate": "2024-01-20",
+  "icon": "🎲",
+  "tags": ["probability", "statistics", "simulation", "education"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 6
+  }
+}

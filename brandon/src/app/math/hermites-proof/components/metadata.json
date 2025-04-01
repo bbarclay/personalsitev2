@@ -1,0 +1,10 @@
+{
+  "name": "Hermite's Problem: Cubic Irrational Periodicity",
+  "description": "An interactive visualization demonstrating the solution to Hermite's 170-year-old problem on classifying cubic irrationals through periodicity in projective space.",
+  "featured": true,
+  "reviewed": true,
+  "category": {
+    "name": "Number Theory",
+    "priority": 10
+  }
+}

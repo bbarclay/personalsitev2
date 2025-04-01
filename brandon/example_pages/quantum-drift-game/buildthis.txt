@@ -1,0 +1,1850 @@
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+
+const QuantumDrift = () => {
+  // Core state variables
+  const [darkMode, setDarkMode] = useState(true);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [activeEra, setActiveEra] = useState(0);
+  const [timelineStability, setTimelineStability] = useState(0);
+  const [agentName, setAgentName] = useState('');
+  const [appearance, setAppearance] = useState('scientist');
+  const [paradoxLevel, setParadoxLevel] = useState(0);
+  const [missionActive, setMissionActive] = useState(false);
+  const [currentMission, setCurrentMission] = useState(null);
+  
+  // UI state
+  const [showCommunicator, setShowCommunicator] = useState(false);
+  const [communicatorInput, setCommunicatorInput] = useState('');
+  const [communicatorHistory, setCommunicatorHistory] = useState([
+    { timestamp: getCurrentTime(), text: 'Quantum Communicator initialized...' },
+    { timestamp: getCurrentTime(), text: 'Type "help" for commands.' }
+  ]);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [showTutorial, setShowTutorial] = useState(true);
+  const [tutorialStep, setTutorialStep] = useState(0);
+  const [showTimeShift, setShowTimeShift] = useState(false);
+  
+  // Game state
+  const [quantumSignatures, setQuantumSignatures] = useState([]);
+  const [sequenceMatrix, setSequenceMatrix] = useState([]);
+  const [matrixSize, setMatrixSize] = useState(5);
+  const [erasVisited, setErasVisited] = useState([0]);
+  const [missionTimeout, setMissionTimeout] = useState(null);
+  const [artifactCollected, setArtifactCollected] = useState(false);
+  
+  // Puzzle state
+  const [currentPuzzle, setCurrentPuzzle] = useState(null);
+  const [puzzleSequence, setPuzzleSequence] = useState([]);
+  const [userSequence, setUserSequence] = useState([]);
+  const [puzzleTimeLeft, setPuzzleTimeLeft] = useState(0);
+  const puzzleTimerRef = useRef(null);
+  
+  // Progress tracking
+  const [timeGadgets, setTimeGadgets] = useState([
+    { id: 'chrono_scanner', name: 'Chrono Scanner', level: 1, description: 'Detects timeline disruptions', unlocked: true, cooldown: 0 },
+    { id: 'paradox_dampener', name: 'Paradox Dampener', level: 1, description: 'Reduces paradox buildup during missions', unlocked: false, cooldown: 0 },
+    { id: 'quantum_stabilizer', name: 'Quantum Stabilizer', level: 1, description: 'Increases timeline stability', unlocked: false, cooldown: 0 },
+    { id: 'time_dilator', name: 'Time Dilator', level: 1, description: 'Slows down time to extend mission duration', unlocked: false, cooldown: 0 },
+  ]);
+  
+  const [achievements, setAchievements] = useState([
+    { id: 'first_mission', name: 'Time Jumper', description: 'Complete your first time mission', unlocked: false },
+    { id: 'era_explorer', name: 'Temporal Tourist', description: 'Visit all time eras', unlocked: false },
+    { id: 'gadget_collector', name: 'Quantum Engineer', description: 'Unlock all time gadgets', unlocked: false },
+    { id: 'master_agent', name: 'Master of Spacetime', description: 'Reach stability level 50', unlocked: false },
+  ]);
+  
+  // Time eras
+  const eras = [
+    { name: "Quantum Hub", color: "#00e5ff", description: "Your home base in the time agency.", icon: "⚛️" },
+    { name: "Ancient Civilization", color: "#ffd700", description: "The dawn of human civilization, 3000 BCE.", icon: "🏺" },
+    { name: "Renaissance Era", color: "#9c27b0", description: "A period of artistic and scientific rebirth.", icon: "🎭" },
+    { name: "Future Metropolis", color: "#ff3d00", description: "A high-tech society from the 23rd century.", icon: "🚀" }
+  ];
+  
+  // Missions for each era
+  const [missions, setMissions] = useState([
+    // Quantum Hub Missions
+    [
+      { id: 'calibration', name: 'Time Core Calibration', difficulty: 'Easy', reward: 10, completed: false, description: 'Calibrate the quantum core to stabilize future jumps.' },
+      { id: 'energy_alignment', name: 'Energy Stream Alignment', difficulty: 'Easy', reward: 15, completed: false, description: 'Align the energy streams to maintain temporal coherence.' },
+      { id: 'drift_calculation', name: 'Drift Calculations', difficulty: 'Medium', reward: 20, completed: false, description: 'Calculate quantum drift ratios for upcoming era jumps.' },
+    ],
+    // Ancient Civilization Missions
+    [
+      { id: 'temple_artifact', name: 'Temple Artifact Recovery', difficulty: 'Medium', reward: 25, completed: false, description: 'Recover a misplaced futuristic device from an ancient temple.' },
+      { id: 'star_chart', name: 'Star Chart Correction', difficulty: 'Medium', reward: 30, completed: false, description: 'Fix anachronistic astronomical data in ancient records.' },
+      { id: 'king_advisor', name: 'Royal Advisor Impersonation', difficulty: 'Hard', reward: 40, completed: false, description: 'Temporarily replace an advisor who disappeared from the timeline.' },
+    ],
+    // Renaissance Era Missions
+    [
+      { id: 'invention_protection', name: 'Invention Protection', difficulty: 'Hard', reward: 45, completed: false, description: 'Ensure a critical inventor completes their work despite interference.' },
+      { id: 'art_restoration', name: 'Art Restoration', difficulty: 'Hard', reward: 50, completed: false, description: 'Restore a masterpiece painting that was never completed in this timeline.' },
+      { id: 'plague_containment', name: 'Plague Containment', difficulty: 'Very Hard', reward: 60, completed: false, description: 'Contain an anachronistic pathogen before it alters history.' },
+    ],
+    // Future Metropolis Missions
+    [
+      { id: 'ai_malfunction', name: 'AI Core Malfunction', difficulty: 'Very Hard', reward: 65, completed: false, description: 'Fix a timeline where AI development took a catastrophic turn.' },
+      { id: 'quantum_entanglement', name: 'Quantum Entanglement Crisis', difficulty: 'Extreme', reward: 80, completed: false, description: 'Disentangle overlapping timelines causing reality distortion.' },
+      { id: 'paradox_engine', name: 'Paradox Engine Shutdown', difficulty: 'Extreme', reward: 100, completed: false, description: 'Disable a machine designed to intentionally create temporal paradoxes.' },
+    ],
+  ]);
+  
+  // Time travel facts and warnings
+  const timeFacts = [
+    "Changing the past could create a 'grandfather paradox' where you erase your own existence.",
+    "The 'butterfly effect' suggests even tiny changes in the past can drastically alter the future.",
+    "The 'bootstrap paradox' occurs when an object or information has no origin but exists in a time loop.",
+    "According to Einstein's theory of relativity, time passes more slowly in stronger gravitational fields.",
+    "Quantum entanglement suggests possible instant communication across any distance, potentially enabling time signals.",
+    "The 'chronology protection conjecture' proposes that the laws of physics prevent time travel paradoxes.",
+    "Some quantum physicists believe time might not be linear but rather exists all at once.",
+    "The 'many-worlds interpretation' suggests that for every possible outcome of any event, there exists a timeline where it occurred.",
+    "Time dilation means that time passes differently for objects moving at different speeds or in different gravitational fields.",
+    "The 'Novikov self-consistency principle' suggests that any attempt to change the past will always fail to create a paradox."
+  ];
+  
+  // Tutorial steps
+  const tutorialSteps = [
+    { text: "Welcome to Quantum Drift. I'm Director Nova, head of the Temporal Preservation Agency.", character: "director" },
+    { text: "Our mission is to maintain the stability of the timeline by fixing anomalies throughout history.", character: "director" },
+    { text: "You'll start in our Quantum Hub. From there, you'll jump to different eras to complete missions.", character: "director" },
+    { text: "Use your time gadgets to solve temporal puzzles and avoid causing paradoxes that damage the timeline.", character: "director" },
+    { text: "Are you ready to become a Chrono Agent? Enter your codename to begin your training.", character: "director" }
+  ];
+  
+  // Generate temporal anomalies for background effects
+  const timeAnomalies = Array.from({ length: 15 }, (_, i) => ({
+    id: i,
+    top: Math.random() * 100,
+    left: Math.random() * 100,
+    speed: Math.random() * 5 + 2,
+    size: Math.random() * 100 + 50,
+    opacity: Math.random() * 0.3 + 0.05,
+    delay: Math.random() * 2,
+    color: eras[i % eras.length].color,
+  }));
+  
+  // Initialize sequence matrix for time puzzles
+  useEffect(() => {
+    if (currentMission) {
+      generateSequenceMatrix();
+    }
+  }, [currentMission]);
+  
+  // Track visited eras
+  useEffect(() => {
+    if (!erasVisited.includes(activeEra)) {
+      setErasVisited([...erasVisited, activeEra]);
+      // Add stability for exploring a new era
+      setTimelineStability(prev => prev + 5);
+      showNotificationMessage(`You've discovered ${eras[activeEra].name}! +5 stability`);
+      
+      // Check for Temporal Tourist achievement
+      if (erasVisited.length + 1 === eras.length) {
+        unlockAchievement('era_explorer');
+      }
+    }
+  }, [activeEra]);
+  
+  // Check for gadget unlocks when stability changes
+  useEffect(() => {
+    checkGadgetUnlocks();
+  }, [timelineStability]);
+  
+  // Random time fact display
+  const [currentFact, setCurrentFact] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFact(prev => (prev + 1) % timeFacts.length);
+    }, 15000);
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Handle puzzle timer
+  useEffect(() => {
+    if (puzzleTimeLeft > 0 && currentPuzzle) {
+      puzzleTimerRef.current = setTimeout(() => {
+        setPuzzleTimeLeft(prev => prev - 1);
+      }, 1000);
+      
+      return () => clearTimeout(puzzleTimerRef.current);
+    } else if (puzzleTimeLeft === 0 && currentPuzzle) {
+      // Time ran out for puzzle
+      failMission("Time ran out for the quantum alignment.");
+    }
+  }, [puzzleTimeLeft, currentPuzzle]);
+  
+  // Utility functions
+  function getCurrentTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+  
+  function generateSequenceMatrix() {
+    const difficulty = getDifficultyLevel(currentMission.difficulty);
+    const sequenceLength = 3 + difficulty; // More steps for harder difficulties
+    
+    // Generate a random sequence of colors
+    const colors = ['#00e5ff', '#ffd700', '#9c27b0', '#ff3d00', '#76ff03'];
+    const newSequence = [];
+    
+    for (let i = 0; i < sequenceLength; i++) {
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      newSequence.push(randomColor);
+    }
+    
+    setPuzzleSequence(newSequence);
+    setUserSequence([]);
+    
+    // Set time limit based on difficulty
+    const timeLimit = 15 + (sequenceLength * 2);
+    setPuzzleTimeLeft(timeLimit);
+    
+    return newSequence;
+  }
+  
+  function getDifficultyLevel(difficultyText) {
+    const levels = { 'Easy': 1, 'Medium': 2, 'Hard': 3, 'Very Hard': 4, 'Extreme': 5 };
+    return levels[difficultyText] || 1;
+  }
+  
+  // Game mechanics functions
+  const toggleTheme = () => setDarkMode(!darkMode);
+  
+  const startGame = () => {
+    if (agentName.trim() === '') {
+      showNotificationMessage("You need a codename to join the agency");
+      return;
+    }
+    setGameStarted(true);
+    setTimelineStability(10);
+    showNotificationMessage("Temporal induction complete. Welcome, Agent.");
+    addCommunicatorEntry("Temporal Preservation Agency systems online.");
+    addCommunicatorEntry(`Welcome, Agent ${agentName}. You have been granted access to the Quantum Hub.`);
+  };
+  
+  const selectAppearance = (type) => {
+    setAppearance(type);
+  };
+  
+  const showNotificationMessage = (message) => {
+    setNotificationMessage(message);
+    setShowNotification(true);
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
+  };
+  
+  const unlockAchievement = (id) => {
+    const updatedAchievements = achievements.map(achievement => 
+      achievement.id === id ? { ...achievement, unlocked: true } : achievement
+    );
+    
+    if (!achievements.find(a => a.id === id).unlocked) {
+      setAchievements(updatedAchievements);
+      showNotificationMessage(`Achievement Unlocked: ${achievements.find(a => a.id === id).name}`);
+      
+      // Add stability for unlocking an achievement
+      setTimelineStability(prev => prev + 10);
+      triggerTimeShift();
+    }
+    
+    // Check for master agent achievement
+    if (id !== 'master_agent' && timelineStability >= 50) {
+      unlockAchievement('master_agent');
+    }
+  };
+  
+  const checkGadgetUnlocks = () => {
+    const updatedGadgets = [...timeGadgets];
+    let changed = false;
+    
+    // Unlock Paradox Dampener at 20 stability
+    if (timelineStability >= 20 && !timeGadgets[1].unlocked) {
+      updatedGadgets[1].unlocked = true;
+      showNotificationMessage("New gadget unlocked: Paradox Dampener");
+      addCommunicatorEntry("SYSTEM: Paradox Dampener prototype configured. Type 'gadgets' to view details.");
+      changed = true;
+    }
+    
+    // Unlock Quantum Stabilizer at 35 stability
+    if (timelineStability >= 35 && !timeGadgets[2].unlocked) {
+      updatedGadgets[2].unlocked = true;
+      showNotificationMessage("New gadget unlocked: Quantum Stabilizer");
+      addCommunicatorEntry("SYSTEM: Quantum Stabilizer now available. Type 'gadgets' to view details.");
+      changed = true;
+    }
+    
+    // Unlock Time Dilator at 50 stability
+    if (timelineStability >= 50 && !timeGadgets[3].unlocked) {
+      updatedGadgets[3].unlocked = true;
+      showNotificationMessage("New gadget unlocked: Time Dilator");
+      addCommunicatorEntry("SYSTEM: Time Dilator prototype ready. Type 'gadgets' to view details.");
+      changed = true;
+    }
+    
+    if (changed) {
+      setTimeGadgets(updatedGadgets);
+      
+      // Check if all gadgets are unlocked
+      if (updatedGadgets.every(gadget => gadget.unlocked)) {
+        unlockAchievement('gadget_collector');
+      }
+    }
+    
+    return changed;
+  };
+  
+  const addCommunicatorEntry = (text) => {
+    const newEntry = { timestamp: getCurrentTime(), text };
+    setCommunicatorHistory(prev => [...prev, newEntry]);
+  };
+  
+  const handleCommunicatorCommand = useCallback(() => {
+    if (!communicatorInput.trim()) return;
+    
+    const command = communicatorInput.trim().toLowerCase();
+    setCommunicatorHistory(prev => [...prev, { timestamp: getCurrentTime(), text: `> ${communicatorInput}`, isCommand: true }]);
+    
+    // Process command
+    switch (command) {
+      case 'help':
+        addCommunicatorEntry("Available commands: help, clear, status, gadgets, scan, exit");
+        break;
+      case 'clear':
+        setCommunicatorHistory([{ timestamp: getCurrentTime(), text: 'Communicator cleared. Type "help" for commands.' }]);
+        break;
+      case 'status':
+        addCommunicatorEntry(`Agent: ${agentName} | Timeline Stability: ${timelineStability} | Paradox Level: ${paradoxLevel}%`);
+        addCommunicatorEntry(`Current location: ${eras[activeEra].name}`);
+        break;
+      case 'gadgets':
+        addCommunicatorEntry("Temporal gadgets in inventory:");
+        timeGadgets.forEach(gadget => {
+          if (gadget.unlocked) {
+            addCommunicatorEntry(`· ${gadget.name} (Lvl ${gadget.level}): ${gadget.description}`);
+          }
+        });
+        break;
+      case 'scan':
+        addCommunicatorEntry(`Scanning ${eras[activeEra].name} timestream...`);
+        setTimeout(() => {
+          addCommunicatorEntry("Detected temporal anomalies:");
+          missions[activeEra].forEach((mission, i) => {
+            addCommunicatorEntry(`${i+1}. ${mission.name} - ${mission.difficulty} [${mission.completed ? 'RESOLVED' : 'ACTIVE'}]`);
+          });
+        }, 1000);
+        break;
+      case 'exit':
+        setShowCommunicator(false);
+        break;
+      default:
+        if (command.startsWith('mission ')) {
+          const target = command.substring(8);
+          const targetMission = missions[activeEra].find(m => 
+            m.name.toLowerCase().includes(target) || m.id.toLowerCase().includes(target)
+          );
+          
+          if (targetMission) {
+            if (targetMission.completed) {
+              addCommunicatorEntry(`Already resolved: ${targetMission.name}`);
+            } else {
+              addCommunicatorEntry(`Initiating temporal mission: ${targetMission.name}`);
+              startTimeMission(targetMission);
+            }
+          } else {
+            addCommunicatorEntry(`Mission not found: ${target}`);
+          }
+        } else {
+          addCommunicatorEntry(`Command not recognized: ${command}`);
+        }
+    }
+    
+    setCommunicatorInput('');
+  }, [communicatorInput, activeEra, timeGadgets, agentName, timelineStability, paradoxLevel, missions]);
+  
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter' && showCommunicator) {
+        handleCommunicatorCommand();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleCommunicatorCommand, showCommunicator]);
+  
+  const startTimeMission = (mission) => {
+    setCurrentMission(mission);
+    setMissionActive(true);
+    setParadoxLevel(0);
+    setArtifactCollected(false);
+    
+    // Set up the appropriate puzzle type based on mission and era
+    setCurrentPuzzle('sequence');
+    
+    // Initialize mission timeout based on difficulty
+    const timeLimit = 60 + (30 * getDifficultyLevel(mission.difficulty));
+    
+    if (missionTimeout) {
+      clearTimeout(missionTimeout);
+    }
+    
+    // Apply Time Dilator effect if available
+    const timeDilatorLevel = timeGadgets.find(g => g.id === 'time_dilator')?.level || 0;
+    const adjustedTimeLimit = timeDilatorLevel > 0 ? timeLimit * (1 + (0.2 * timeDilatorLevel)) : timeLimit;
+    
+    const timeout = setTimeout(() => {
+      if (missionActive) {
+        // Mission failed due to timeout
+        failMission("Temporal connection destabilized. Mission aborted.");
+      }
+    }, adjustedTimeLimit * 1000);
+    
+    setMissionTimeout(timeout);
+    
+    // Start with showing the sequence puzzle
+    generateSequenceMatrix();
+  };
+  
+  const completeMission = (mission) => {
+    // Update missions
+    const updatedMissions = [...missions];
+    updatedMissions[activeEra] = missions[activeEra].map(m => 
+      m.id === mission.id ? { ...m, completed: true } : m
+    );
+    setMissions(updatedMissions);
+    
+    // Add stability
+    setTimelineStability(prev => prev + mission.reward);
+    
+    // Clear mission state
+    setMissionActive(false);
+    setCurrentMission(null);
+    setCurrentPuzzle(null);
+    if (missionTimeout) {
+      clearTimeout(missionTimeout);
+      setMissionTimeout(null);
+    }
+    
+    // Show notification and update communicator
+    showNotificationMessage(`Mission successful! +${mission.reward} timeline stability`);
+    addCommunicatorEntry(`Mission completed: ${mission.name}`);
+    addCommunicatorEntry(`Timeline stabilized. Stability increased by ${mission.reward} points.`);
+    
+    // Check for first mission achievement
+    if (!achievements.find(a => a.id === 'first_mission').unlocked) {
+      unlockAchievement('first_mission');
+    }
+  };
+  
+  const failMission = (reason) => {
+    // Clear mission state
+    setMissionActive(false);
+    setCurrentMission(null);
+    setCurrentPuzzle(null);
+    if (missionTimeout) {
+      clearTimeout(missionTimeout);
+      setMissionTimeout(null);
+    }
+    if (puzzleTimerRef.current) {
+      clearTimeout(puzzleTimerRef.current);
+    }
+    
+    // Show notification and update communicator
+    showNotificationMessage("Mission failed! Timeline instability detected.");
+    addCommunicatorEntry(`Mission failed: ${reason}`);
+    
+    // Increase paradox level slightly as penalty
+    setParadoxLevel(prev => Math.min(prev + 10, 100));
+    
+    triggerTimeShift();
+  };
+  
+  const handleSequenceInput = (color) => {
+    if (!missionActive || !currentPuzzle) return;
+    
+    // Add color to user sequence
+    const newUserSequence = [...userSequence, color];
+    setUserSequence(newUserSequence);
+    
+    // Check if the user's sequence matches the puzzle sequence so far
+    const isCorrectSoFar = newUserSequence.every((c, i) => c === puzzleSequence[i]);
+    
+    if (!isCorrectSoFar) {
+      // Wrong sequence
+      showNotificationMessage("Incorrect sequence! Temporal disruption detected.");
+      
+      // Apply Paradox Dampener effect if available
+      const dampenerLevel = timeGadgets.find(g => g.id === 'paradox_dampener')?.level || 0;
+      const paradoxIncrease = dampenerLevel > 0 ? 15 / dampenerLevel : 15;
+      
+      setParadoxLevel(prev => Math.min(prev + paradoxIncrease, 100));
+      
+      // Reset user sequence
+      setUserSequence([]);
+      triggerTimeShift();
+      
+      // Check if paradox level is too high
+      if (paradoxLevel + paradoxIncrease >= 100) {
+        failMission("Critical paradox level reached. Timeline integrity compromised.");
+      }
+    } else if (newUserSequence.length === puzzleSequence.length) {
+      // Completed sequence successfully
+      showNotificationMessage("Quantum sequence aligned successfully!");
+      
+      if (!artifactCollected) {
+        // Move to artifact collection phase
+        setArtifactCollected(true);
+        setCurrentPuzzle('artifact');
+        addCommunicatorEntry("Quantum sequence aligned. Locate and retrieve the temporal artifact.");
+      } else {
+        // Complete the mission
+        completeMission(currentMission);
+      }
+    }
+  };
+  
+  const handleArtifactCollection = () => {
+    if (!missionActive || currentPuzzle !== 'artifact') return;
+    
+    completeMission(currentMission);
+  };
+  
+  const upgradeGadgetLevel = (gadgetId) => {
+    const gadget = timeGadgets.find(g => g.id === gadgetId);
+    
+    // Check if gadget exists and is unlocked
+    if (!gadget || !gadget.unlocked) return;
+    
+    // Cost increases with each level
+    const upgradeCost = gadget.level * 15;
+    
+    // Check if enough stability
+    if (timelineStability < upgradeCost) {
+      showNotificationMessage(`Not enough stability to upgrade ${gadget.name}`);
+      return;
+    }
+    
+    // Upgrade gadget
+    const updatedGadgets = timeGadgets.map(g => 
+      g.id === gadgetId ? { ...g, level: g.level + 1 } : g
+    );
+    
+    setTimeGadgets(updatedGadgets);
+    setTimelineStability(prev => prev - upgradeCost);
+    
+    showNotificationMessage(`${gadget.name} upgraded to level ${gadget.level + 1}`);
+    addCommunicatorEntry(`SYSTEM: ${gadget.name} upgraded to version ${gadget.level + 1}.0`);
+  };
+  
+  const nextTutorialStep = () => {
+    if (tutorialStep < tutorialSteps.length - 1) {
+      setTutorialStep(tutorialStep + 1);
+    } else {
+      setShowTutorial(false);
+    }
+  };
+  
+  const triggerTimeShift = () => {
+    setShowTimeShift(true);
+    setTimeout(() => {
+      setShowTimeShift(false);
+    }, 1000);
+  };
+  
+  // UI Components
+  const renderAvatar = (type, size = 40) => {
+    const avatars = {
+      'scientist': '👩‍🔬',
+      'agent': '🕵️',
+      'explorer': '🧠',
+      'quantum': '👤'
+    };
+    
+    return (
+      <div style={{ 
+        width: `${size}px`, 
+        height: `${size}px`, 
+        borderRadius: '50%', 
+        backgroundColor: darkMode ? '#1a1a1a' : '#e0e0e0',
+        border: `2px solid ${type === appearance ? '#00e5ff' : 'transparent'}`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: `${size/2}px`,
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        opacity: type === appearance ? 1 : 0.7
+      }}
+      onClick={() => selectAppearance(type)}
+      className={type === appearance ? 'pulse-effect' : ''}
+      >
+        {avatars[type]}
+      </div>
+    );
+  };
+  
+  return (
+    <div style={{
+      fontFamily: "'Orbitron', sans-serif",
+      minHeight: '100vh',
+      backgroundColor: darkMode ? '#090a1a' : '#e6f7ff',
+      color: darkMode ? '#00e5ff' : '#003366',
+      transition: 'background-color 0.3s, color 0.3s',
+      position: 'relative',
+      overflow: 'hidden',
+      backgroundImage: darkMode ? 'radial-gradient(circle at 50% 50%, rgba(25, 25, 45, 1) 0%, rgba(9, 10, 26, 1) 100%)' : 'none',
+    }}>
+      {/* CSS for animations and styling */}
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+          
+          @keyframes pulse-effect {
+            0%, 100% { box-shadow: 0 0 5px #00e5ff; }
+            50% { box-shadow: 0 0 20px #00e5ff; }
+          }
+          
+          @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+          }
+          
+          @keyframes terminal-cursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+          }
+          
+          @keyframes time-particles {
+            0% { transform: scale(0) translateY(0); opacity: 1; }
+            100% { transform: scale(1.5) translateY(-50px); opacity: 0; }
+          }
+          
+          @keyframes time-shift {
+            0% {
+              transform: scale(1);
+              filter: hue-rotate(0deg) blur(0px);
+            }
+            50% {
+              transform: scale(1.05);
+              filter: hue-rotate(180deg) blur(5px);
+            }
+            100% {
+              transform: scale(1);
+              filter: hue-rotate(360deg) blur(0px);
+            }
+          }
+          
+          @keyframes clock-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          
+          @keyframes quantum-flicker {
+            0%, 100% { opacity: 1; }
+            25% { opacity: 0.7; }
+            50% { opacity: 0.3; }
+            75% { opacity: 0.7; }
+          }
+          
+          @keyframes ripple {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+          }
+          
+          .time-shift {
+            animation: time-shift 0.5s ease-in-out;
+          }
+          
+          .pulse-effect {
+            animation: pulse-effect 2s infinite;
+          }
+          
+          .float {
+            animation: float 10s ease-in-out infinite;
+          }
+          
+          .quantum-flicker {
+            animation: quantum-flicker 2s infinite;
+          }
+          
+          .terminal-cursor {
+            animation: terminal-cursor 1s infinite;
+          }
+          
+          .clock-spin {
+            animation: clock-spin 10s linear infinite;
+          }
+          
+          .hover-effect:hover {
+            text-shadow: 0 0 8px #00e5ff;
+            transform: scale(1.05);
+            transition: all 0.2s ease;
+          }
+          
+          .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            background: rgba(0, 229, 255, 0.2);
+            animation: ripple 1s linear;
+          }
+          
+          .timeline-card {
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00e5ff;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+            transition: all 0.2s ease;
+          }
+          
+          .timeline-card:hover {
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+          }
+          
+          .time-button {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #00e5ff;
+            border: 1px solid #00e5ff;
+            padding: 0.5rem 1rem;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+          
+          .time-button:hover {
+            background-color: rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+          }
+          
+          .time-button:active {
+            transform: translateY(2px);
+          }
+          
+          .sequence-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+          }
+          
+          .sequence-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+          }
+          
+          .artifact-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            cursor: pointer;
+          }
+          
+          .artifact {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: #ffd700;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #ffd700;
+            animation: pulse-effect 2s infinite;
+          }
+          
+          .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.1);
+          }
+          
+          .progress-bar-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+          }
+          
+          .communicator-window {
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #00e5ff;
+            border: 1px solid #00e5ff;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            padding: 1rem;
+            overflow-y: auto;
+            max-height: 400px;
+          }
+          
+          .communicator-input {
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid #00e5ff;
+            color: #00e5ff;
+            font-family: 'Orbitron', sans-serif;
+            padding: 0.5rem;
+            width: 100%;
+            outline: none;
+          }
+          
+          .communicator-input:focus {
+            box-shadow: 0 0 5px rgba(0, 229, 255, 0.5);
+          }
+        `}
+      </style>
+      
+      {/* Time shift overlay */}
+      {showTimeShift && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'transparent',
+          zIndex: 999,
+          pointerEvents: 'none'
+        }} className="time-shift"></div>
+      )}
+      
+      {/* Background temporal anomalies */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 0, overflow: 'hidden' }}>
+        {timeAnomalies.map((item) => (
+          <div 
+            key={item.id}
+            className="float"
+            style={{
+              position: 'absolute',
+              width: `${item.size}px`,
+              height: `${item.size}px`,
+              borderRadius: '50%',
+              border: `1px solid ${item.color}`,
+              opacity: item.opacity,
+              top: `${item.top}%`,
+              left: `${item.left}%`,
+              animationDelay: `${item.delay}s`,
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Time particles */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div 
+            key={i}
+            style={{
+              position: 'absolute',
+              width: '5px',
+              height: '5px',
+              backgroundColor: eras[i % eras.length].color,
+              borderRadius: '50%',
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animation: `time-particles ${Math.random() * 3 + 2}s ease-out infinite`,
+              animationDelay: `${Math.random() * 5}s`,
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Clockface effect in background */}
+      <div style={{ 
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '600px',
+        height: '600px',
+        borderRadius: '50%',
+        border: '1px solid rgba(0, 229, 255, 0.1)',
+        opacity: 0.2,
+        zIndex: 0,
+        pointerEvents: 'none'
+      }} className="clock-spin">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <div 
+            key={i}
+            style={{
+              position: 'absolute',
+              width: '10px',
+              height: '2px',
+              backgroundColor: '#00e5ff',
+              top: '50%',
+              left: '50%',
+              transform: `translateY(-50%) translateX(-50%) rotate(${i * 30}deg) translateX(300px)`,
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Header */}
+      <header style={{
+        position: 'relative',
+        zIndex: 1,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '1rem',
+        borderBottom: '1px solid #00e5ff',
+        backgroundColor: darkMode ? 'rgba(9, 10, 26, 0.8)' : 'rgba(230, 247, 255, 0.8)',
+        backdropFilter: 'blur(5px)'
+      }}>
+        <h1 style={{
+          fontSize: '2.5rem',
+          fontWeight: 'bold',
+          margin: 0,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          textShadow: darkMode ? '0 0 10px #00e5ff' : 'none',
+          letterSpacing: '2px'
+        }}>
+          <span className={showTimeShift ? 'time-shift' : ''}>QUANTUM</span>
+          <span className="quantum-flicker">DRIFT</span>
+        </h1>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {gameStarted && (
+            <div className="pulse-effect" style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              color: '#00e5ff',
+              padding: '0.5rem 1rem',
+              borderRadius: '8px',
+              border: '1px solid #00e5ff',
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              <span style={{ fontSize: '1.2rem' }}>STABILITY:</span>
+              <span>{timelineStability}</span>
+            </div>
+          )}
+          
+          <button 
+            onClick={toggleTheme} 
+            className="hover-effect"
+            style={{
+              backgroundColor: 'transparent',
+              color: darkMode ? '#00e5ff' : '#003366',
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              border: `1px solid ${darkMode ? '#00e5ff' : '#003366'}`,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1.2rem'
+            }}
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+        </div>
+      </header>
+      
+      {/* Notification */}
+      {showNotification && (
+        <div style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
+          color: '#00e5ff',
+          padding: '1rem 2rem',
+          borderRadius: '8px',
+          zIndex: 100,
+          textAlign: 'center',
+          fontSize: '1.5rem',
+          fontWeight: 'bold',
+          border: '1px solid #00e5ff',
+          boxShadow: '0 0 20px rgba(0, 229, 255, 0.5)',
+          animation: 'pulse-effect 2s infinite'
+        }}>
+          {notificationMessage}
+        </div>
+      )}
+      
+      {/* Main Content */}
+      <main style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '2rem 1rem',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        {/* Tutorial Dialog */}
+        {showTutorial && gameStarted && (
+          <div style={{
+            position: 'fixed',
+            bottom: '2rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '80%',
+            maxWidth: '600px',
+            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+            borderRadius: '8px',
+            padding: '1.5rem',
+            border: '1px solid #00e5ff',
+            boxShadow: '0 0 15px rgba(0, 229, 255, 0.3)',
+            zIndex: 100,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
+            animation: 'float 3s ease-in-out infinite'
+          }}>
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+              <div style={{
+                minWidth: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.8rem',
+                textShadow: '0 0 5px #00e5ff'
+              }}>
+                {tutorialSteps[tutorialStep].character === 'director' ? '👩‍🔬' : '👤'}
+              </div>
+              <div>
+                <div style={{ marginBottom: '0.5rem', color: '#00e5ff', opacity: 0.7 }}>
+                  {tutorialSteps[tutorialStep].character === 'director' ? 'DIRECTOR NOVA' : agentName.toUpperCase()}
+                </div>
+                <div style={{ lineHeight: '1.5' }}>{tutorialSteps[tutorialStep].text}</div>
+              </div>
+            </div>
+            
+            <button
+              onClick={nextTutorialStep}
+              className="time-button"
+              style={{
+                alignSelf: 'flex-end',
+                marginTop: '0.5rem'
+              }}
+            >
+              {tutorialStep < tutorialSteps.length - 1 ? 'NEXT' : 'BEGIN'}
+            </button>
+          </div>
+        )}
+        
+        {!gameStarted ? (
+          // Login Screen
+          <div style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto' }}>
+            <div className="pulse-effect" style={{ 
+              fontSize: '6rem', 
+              marginBottom: '1.5rem',
+              textShadow: '0 0 20px #00e5ff'
+            }}>
+              <span style={{ color: '#00e5ff' }}>⌛</span>
+            </div>
+            <h2 style={{ 
+              fontSize: '2.5rem', 
+              fontWeight: 'bold', 
+              marginBottom: '1rem',
+              textTransform: 'uppercase',
+              letterSpacing: '3px'
+            }}>
+              Temporal Agent Induction
+            </h2>
+            <p style={{ 
+              fontSize: '1rem', 
+              marginBottom: '2rem',
+              opacity: 0.7,
+              letterSpacing: '1px',
+              lineHeight: '1.6'
+            }}>
+              TIMELINE INTEGRITY AT RISK.<br/>
+              AUTHORIZED AGENTS ONLY BEYOND THIS POINT.
+            </p>
+            
+            {/* Agent Name Input */}
+            <div style={{ 
+              marginBottom: '2rem',
+              padding: '2rem',
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              borderRadius: '8px',
+              border: '1px solid #00e5ff',
+              boxShadow: '0 0 15px rgba(0, 229, 255, 0.2)'
+            }}>
+              <h3 style={{ marginBottom: '1rem' }}>Enter Your Codename</h3>
+              <input
+                type="text"
+                value={agentName}
+                onChange={(e) => setAgentName(e.target.value)}
+                placeholder="Temporal Agent ID"
+                style={{
+                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  color: '#00e5ff',
+                  border: '1px solid #00e5ff',
+                  padding: '0.75rem',
+                  width: '100%',
+                  marginBottom: '1rem',
+                  fontSize: '1.2rem',
+                  textAlign: 'center',
+                  outline: 'none',
+                  fontFamily: "'Orbitron', sans-serif",
+                }}
+                maxLength={15}
+              />
+              
+              <div style={{ marginBottom: '1.5rem' }}>
+                <p style={{ marginBottom: '1rem' }}>Choose Your Appearance</p>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'center',
+                  gap: '1rem',
+                  flexWrap: 'wrap'
+                }}>
+                  {renderAvatar('scientist', 50)}
+                  {renderAvatar('agent', 50)}
+                  {renderAvatar('explorer', 50)}
+                  {renderAvatar('quantum', 50)}
+                </div>
+              </div>
+              
+              <button
+                onClick={startGame}
+                className="time-button"
+                style={{
+                  padding: '0.75rem 2rem',
+                  fontSize: '1.25rem',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                Initiate Temporal Induction
+              </button>
+            </div>
+            
+            <div style={{
+              color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
+              fontSize: '0.8rem',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              lineHeight: '1.5'
+            }}>
+              <p>
+                Warning: Unauthorized time travel is strictly prohibited.<br/>
+                All temporal jumps are logged and monitored.
+              </p>
+            </div>
+          </div>
+        ) : (
+          // Game Interface
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+            gap: '1.5rem'
+          }}>
+            {/* Era Selection */}
+            <div className="timeline-card">
+              <h2 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 'bold', 
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                borderBottom: '1px solid rgba(0, 229, 255, 0.3)',
+                paddingBottom: '0.5rem',
+                letterSpacing: '1px'
+              }}>
+                <span>🌀</span> TIME ERAS
+              </h2>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {eras.map((era, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveEra(index)}
+                    className={`hover-effect ${index === activeEra ? 'pulse-effect' : ''}`}
+                    style={{
+                      backgroundColor: index === activeEra ? 'rgba(0, 0, 0, 0.8)' : 'transparent',
+                      color: index === activeEra ? era.color : darkMode ? '#00e5ff' : '#003366',
+                      border: `1px solid ${era.color}`,
+                      borderRadius: '8px',
+                      padding: '0.75rem',
+                      fontSize: '1rem',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'all 0.2s',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'space-between',
+                      position: 'relative',
+                      zIndex: 2
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span>{era.icon}</span>
+                        <span>{era.name}</span>
+                      </div>
+                      <div>
+                        {erasVisited.includes(index) ? '✓' : ''}
+                        {index === activeEra && <span style={{ marginLeft: '0.5rem', opacity: 0.7 }}>ACTIVE</span>}
+                      </div>
+                    </div>
+                    <div style={{ fontSize: '0.8rem', marginTop: '0.25rem', opacity: 0.7 }}>
+                      {era.description}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              
+              {/* Time Travel Facts */}
+              <div style={{
+                marginTop: '1.5rem',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                padding: '0.75rem',
+                borderRadius: '8px',
+                border: '1px solid rgba(0, 229, 255, 0.3)',
+                fontSize: '0.9rem',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                <p style={{ fontWeight: 'bold', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span>💡</span> Temporal Theory:
+                </p>
+                <p key={currentFact} style={{ opacity: 0.8 }}>{timeFacts[currentFact]}</p>
+              </div>
+            </div>
+            
+            {/* Active Era Content */}
+            <div className="timeline-card">
+              <h2 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 'bold', 
+                marginBottom: '1rem', 
+                color: eras[activeEra].color,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                borderBottom: '1px solid rgba(0, 229, 255, 0.3)',
+                paddingBottom: '0.5rem',
+                letterSpacing: '1px'
+              }}>
+                <span>{eras[activeEra].icon}</span> {eras[activeEra].name}
+              </h2>
+              
+              {/* Mission Interface */}
+              {missionActive ? (
+                <div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <div>Mission: <span style={{ color: eras[activeEra].color }}>{currentMission.name}</span></div>
+                      <div>Difficulty: <span style={{ color: getDifficultyLevel(currentMission.difficulty) > 3 ? '#ff3d00' : '#00e5ff' }}>{currentMission.difficulty}</span></div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '0.8rem', marginBottom: '0.25rem', opacity: 0.7 }}>Timeline Stability</div>
+                        <div className="progress-bar">
+                          <div 
+                            className="progress-bar-fill" 
+                            style={{ 
+                              width: `${100 - paradoxLevel}%`,
+                              backgroundColor: '#00e5ff'
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '0.8rem', marginBottom: '0.25rem', opacity: 0.7 }}>Paradox Level</div>
+                        <div className="progress-bar">
+                          <div 
+                            className="progress-bar-fill" 
+                            style={{ 
+                              width: `${paradoxLevel}%`,
+                              backgroundColor: '#ff3d00'
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Sequence Puzzle */}
+                    {currentPuzzle === 'sequence' && (
+                      <div>
+                        <div style={{ marginBottom: '1rem', fontSize: '0.9rem', textAlign: 'center' }}>
+                          <p>Align the quantum sequence to stabilize the timestream.</p>
+                          <p style={{ fontSize: '0.8rem', opacity: 0.7 }}>Time Remaining: {puzzleTimeLeft}s</p>
+                        </div>
+                        
+                        <div style={{ 
+                          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                          border: '1px solid rgba(0, 229, 255, 0.3)',
+                          borderRadius: '8px',
+                          padding: '1rem',
+                          marginBottom: '1rem'
+                        }}>
+                          <div style={{ marginBottom: '1rem' }}>
+                            <p style={{ fontSize: '0.8rem', marginBottom: '0.5rem', opacity: 0.7 }}>Target Sequence:</p>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '5px' }}>
+                              {puzzleSequence.map((color, index) => (
+                                <div 
+                                  key={index}
+                                  style={{
+                                    width: '30px',
+                                    height: '30px',
+                                    backgroundColor: color,
+                                    borderRadius: '50%',
+                                    border: '2px solid rgba(255, 255, 255, 0.5)'
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <p style={{ fontSize: '0.8rem', marginBottom: '0.5rem', opacity: 0.7 }}>Your Input:</p>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', height: '30px', marginBottom: '1rem' }}>
+                              {userSequence.map((color, index) => (
+                                <div 
+                                  key={index}
+                                  style={{
+                                    width: '30px',
+                                    height: '30px',
+                                    backgroundColor: color,
+                                    borderRadius: '50%',
+                                    border: '2px solid rgba(255, 255, 255, 0.5)'
+                                  }}
+                                />
+                              ))}
+                              {Array(puzzleSequence.length - userSequence.length).fill(null).map((_, i) => (
+                                <div 
+                                  key={i}
+                                  style={{
+                                    width: '30px',
+                                    height: '30px',
+                                    borderRadius: '50%',
+                                    border: '1px dashed rgba(255, 255, 255, 0.3)'
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                          
+                          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+                            <button 
+                              className="sequence-button" 
+                              style={{ backgroundColor: '#00e5ff' }}
+                              onClick={() => handleSequenceInput('#00e5ff')}
+                            ></button>
+                            <button 
+                              className="sequence-button" 
+                              style={{ backgroundColor: '#ffd700' }}
+                              onClick={() => handleSequenceInput('#ffd700')}
+                            ></button>
+                            <button 
+                              className="sequence-button" 
+                              style={{ backgroundColor: '#9c27b0' }}
+                              onClick={() => handleSequenceInput('#9c27b0')}
+                            ></button>
+                            <button 
+                              className="sequence-button" 
+                              style={{ backgroundColor: '#ff3d00' }}
+                              onClick={() => handleSequenceInput('#ff3d00')}
+                            ></button>
+                            <button 
+                              className="sequence-button" 
+                              style={{ backgroundColor: '#76ff03' }}
+                              onClick={() => handleSequenceInput('#76ff03')}
+                            ></button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Artifact Collection */}
+                    {currentPuzzle === 'artifact' && (
+                      <div>
+                        <div style={{ marginBottom: '1rem', fontSize: '0.9rem', textAlign: 'center' }}>
+                          <p>Locate and retrieve the temporal artifact to complete the mission.</p>
+                        </div>
+                        
+                        <div style={{ 
+                          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                          border: '1px solid rgba(0, 229, 255, 0.3)',
+                          borderRadius: '8px',
+                          padding: '1rem',
+                          marginBottom: '1rem',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: '1rem'
+                        }}>
+                          <div className="artifact-container" onClick={handleArtifactCollection}>
+                            <div className="artifact"></div>
+                            {Array.from({ length: 3 }).map((_, i) => (
+                              <div
+                                key={i}
+                                style={{
+                                  position: 'absolute',
+                                  top: '50%',
+                                  left: '50%',
+                                  transform: 'translate(-50%, -50%)',
+                                  width: `${100 + i * 20}%`,
+                                  height: `${100 + i * 20}%`,
+                                  borderRadius: '50%',
+                                  border: '1px solid #ffd700',
+                                  opacity: 0.5 - i * 0.1
+                                }}
+                              />
+                            ))}
+                          </div>
+                          
+                          <div style={{ fontSize: '0.8rem', opacity: 0.7, textAlign: 'center' }}>
+                            Click on the artifact to retrieve it
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <button
+                      onClick={() => {
+                        setMissionActive(false);
+                        if (missionTimeout) {
+                          clearTimeout(missionTimeout);
+                          setMissionTimeout(null);
+                        }
+                        if (puzzleTimerRef.current) {
+                          clearTimeout(puzzleTimerRef.current);
+                        }
+                        addCommunicatorEntry("Mission manually aborted.");
+                      }}
+                      className="time-button"
+                      style={{
+                        width: '100%',
+                        backgroundColor: 'rgba(255, 62, 62, 0.1)',
+                        borderColor: '#ff3d00',
+                        color: '#ff3d00'
+                      }}
+                    >
+                      Abort Mission
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div style={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    padding: '1rem',
+                    borderRadius: '8px',
+                    marginBottom: '1rem',
+                    border: '1px solid rgba(0, 229, 255, 0.3)'
+                  }}>
+                    <p style={{ marginBottom: '0.5rem' }}>
+                      Paradox Level: <span style={{ color: paradoxLevel > 50 ? '#ff3d00' : '#00e5ff' }}>{paradoxLevel}%</span>
+                    </p>
+                    <p>
+                      {activeEra === 0 ? 
+                        "This is your base of operations. Begin by completing training missions to increase timeline stability." :
+                        `${eras[activeEra].name} timeline has several anomalies that need correction.`
+                      }
+                    </p>
+                  </div>
+                  
+                  <h3 style={{ 
+                    marginBottom: '0.75rem',
+                    fontSize: '1.2rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    letterSpacing: '1px'
+                  }}>
+                    <span>⚠️</span> TEMPORAL ANOMALIES
+                  </h3>
+                  
+                  <div style={{ 
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.75rem',
+                    marginBottom: '1.5rem'
+                  }}>
+                    {missions[activeEra].map((mission, index) => (
+                      <div
+                        key={index}
+                        className="timeline-card hover-effect"
+                        style={{
+                          marginBottom: 0,
+                          opacity: mission.completed ? 0.7 : 1,
+                          padding: '0.75rem',
+                          position: 'relative',
+                          overflow: 'hidden'
+                        }}
+                      >
+                        <div style={{ 
+                          display: 'flex', 
+                          justifyContent: 'space-between', 
+                          alignItems: 'center',
+                          marginBottom: '0.25rem'
+                        }}>
+                          <div style={{ fontWeight: 'bold', color: eras[activeEra].color }}>
+                            {mission.name}
+                          </div>
+                          <div style={{ 
+                            fontSize: '0.8rem', 
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            padding: '0.25rem 0.5rem',
+                            borderRadius: '4px',
+                            color: getDifficultyLevel(mission.difficulty) > 3 ? '#ff3d00' : '#00e5ff'
+                          }}>
+                            {mission.difficulty}
+                          </div>
+                        </div>
+                        
+                        <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem', opacity: 0.8 }}>
+                          {mission.description}
+                        </div>
+                        
+                        <div style={{ 
+                          display: 'flex', 
+                          justifyContent: 'space-between', 
+                          alignItems: 'center'
+                        }}>
+                          <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
+                            Reward: <span style={{ color: '#00e5ff' }}>{mission.reward} STABILITY</span>
+                          </div>
+                          
+                          {mission.completed ? (
+                            <div style={{ 
+                              fontSize: '0.8rem', 
+                              color: '#00e5ff',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.25rem'
+                            }}>
+                              <span>✓</span> RESOLVED
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => startTimeMission(mission)}
+                              className="time-button"
+                              style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }}
+                            >
+                              INITIATE
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    gap: '0.5rem'
+                  }}>
+                    <button
+                      onClick={() => setShowCommunicator(true)}
+                      className="time-button"
+                      style={{ flex: 1 }}
+                    >
+                      COMMUNICATOR
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        // Simulate a temporal scan
+                        showNotificationMessage(`Scanning ${eras[activeEra].name} timestream...`);
+                        setTimeout(() => {
+                          // Random chance to discover a quantum signature
+                          if (Math.random() < 0.3 && !quantumSignatures.includes(activeEra)) {
+                            setQuantumSignatures([...quantumSignatures, activeEra]);
+                            showNotificationMessage("Quantum signature detected!");
+                            addCommunicatorEntry(`SCANNER: Quantum signature identified in ${eras[activeEra].name}.`);
+                            setTimelineStability(prev => prev + 3);
+                          } else {
+                            showNotificationMessage("No new quantum signatures found.");
+                            addCommunicatorEntry(`SCANNER: No significant temporal distortions detected in ${eras[activeEra].name}.`);
+                          }
+                        }, 1500);
+                      }}
+                      className="time-button"
+                      style={{ flex: 1 }}
+                    >
+                      SCAN
+                    </button>
+                  </div>
+                </div>
+              )}
+              
+              {/* Communicator Overlay */}
+              {showCommunicator && (
+                <div style={{
+                  position: 'fixed',
+                  inset: 0,
+                  backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                  zIndex: 50,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '2rem'
+                }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    marginBottom: '1rem',
+                    borderBottom: '1px solid #00e5ff',
+                    paddingBottom: '0.5rem'
+                  }}>
+                    <div style={{ fontSize: '1.2rem', color: '#00e5ff' }}>
+                      QUANTUM_COMMUNICATOR@{agentName.toUpperCase()}>_
+                    </div>
+                    <button
+                      onClick={() => setShowCommunicator(false)}
+                      className="time-button"
+                      style={{ 
+                        padding: '0.25rem 0.5rem', 
+                        fontSize: '0.8rem',
+                        backgroundColor: 'transparent',
+                        borderColor: '#ff3d00',
+                        color: '#ff3d00'
+                      }}
+                    >
+                      CLOSE
+                    </button>
+                  </div>
+                  
+                  <div className="communicator-window" style={{ flex: 1, marginBottom: '1rem' }}>
+                    {communicatorHistory.map((entry, i) => (
+                      <div 
+                        key={i} 
+                        style={{ 
+                          marginBottom: '0.25rem',
+                          fontFamily: "'Orbitron', sans-serif",
+                          fontSize: '0.9rem',
+                          color: entry.isCommand ? '#ff3d00' : '#00e5ff'
+                        }}
+                      >
+                        <span style={{ opacity: 0.7, marginRight: '0.5rem' }}>[{entry.timestamp}]</span>
+                        {entry.text}
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <div style={{ color: '#00e5ff', whiteSpace: 'nowrap' }}>
+                      &gt;
+                    </div>
+                    <input
+                      type="text"
+                      value={communicatorInput}
+                      onChange={(e) => setCommunicatorInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleCommunicatorCommand()}
+                      className="communicator-input"
+                      autoFocus
+                      style={{ flex: 1 }}
+                    />
+                    <span className="terminal-cursor">█</span>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Gadgets & Stats */}
+            <div className="timeline-card">
+              <h2 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 'bold', 
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                borderBottom: '1px solid rgba(0, 229, 255, 0.3)',
+                paddingBottom: '0.5rem',
+                letterSpacing: '1px'
+              }}>
+                <span>⚙️</span> TEMPORAL GADGETS
+              </h2>
+              
+              <div style={{ 
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1rem',
+                marginBottom: '1.5rem'
+              }}>
+                {timeGadgets.map((gadget) => (
+                  <div 
+                    key={gadget.id}
+                    className="timeline-card"
+                    style={{
+                      marginBottom: 0,
+                      padding: '0.75rem',
+                      opacity: gadget.unlocked ? 1 : 0.5,
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    <div style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center',
+                      marginBottom: '0.25rem'
+                    }}>
+                      <div style={{ fontWeight: 'bold', color: '#00e5ff' }}>
+                        {gadget.name}
+                      </div>
+                      <div style={{ 
+                        fontSize: '0.8rem', 
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '4px'
+                      }}>
+                        Lvl {gadget.level}
+                      </div>
+                    </div>
+                    
+                    <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem', opacity: 0.8 }}>
+                      {gadget.description}
+                    </div>
+                    
+                    {gadget.unlocked && (
+                      <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center'
+                      }}>
+                        <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
+                          Upgrade Cost: <span style={{ color: '#00e5ff' }}>{gadget.level * 15} STABILITY</span>
+                        </div>
+                        
+                        <button
+                          onClick={() => upgradeGadgetLevel(gadget.id)}
+                          className="time-button"
+                          style={{ 
+                            padding: '0.25rem 0.5rem', 
+                            fontSize: '0.8rem',
+                            opacity: timelineStability >= gadget.level * 15 ? 1 : 0.5
+                          }}
+                          disabled={timelineStability < gadget.level * 15}
+                        >
+                          UPGRADE
+                        </button>
+                      </div>
+                    )}
+                    
+                    {!gadget.unlocked && (
+                      <div style={{ fontSize: '0.8rem', color: '#ff3d00' }}>
+                        LOCKED - Increase timeline stability to unlock
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              
+              <h2 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 'bold', 
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                borderBottom: '1px solid rgba(0, 229, 255, 0.3)',
+                paddingBottom: '0.5rem',
+                letterSpacing: '1px'
+              }}>
+                <span>🏆</span> ACHIEVEMENTS
+              </h2>
+              
+              <div style={{ 
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.75rem',
+                marginBottom: '1.5rem'
+              }}>
+                {achievements.map((achievement) => (
+                  <div
+                    key={achievement.id}
+                    style={{
+                      backgroundColor: achievement.unlocked ? 'rgba(0, 229, 255, 0.1)' : 'rgba(0, 0, 0, 0.5)',
+                      borderRadius: '8px',
+                      padding: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      opacity: achievement.unlocked ? 1 : 0.6,
+                      border: achievement.unlocked ? '1px solid #00e5ff' : '1px solid rgba(255, 255, 255, 0.1)'
+                    }}
+                  >
+                    <div style={{
+                      backgroundColor: achievement.unlocked ? 'rgba(0, 229, 255, 0.3)' : 'rgba(0, 0, 0, 0.5)',
+                      color: achievement.unlocked ? '#00e5ff' : darkMode ? '#666' : '#aaa',
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      border: '1px solid #00e5ff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.8rem'
+                    }}>
+                      {achievement.unlocked ? '✓' : '?'}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 'bold' }}>{achievement.name}</div>
+                      <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>{achievement.description}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div style={{
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                padding: '0.75rem',
+                borderRadius: '8px',
+                fontSize: '0.9rem',
+                border: '1px solid rgba(0, 229, 255, 0.3)'
+              }}>
+                <p style={{ fontWeight: 'bold', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span>📊</span> AGENT STATUS:
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Eras Explored:</span>
+                    <span>{erasVisited.length} / {eras.length}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Missions Completed:</span>
+                    <span>
+                      {missions.flat().filter(m => m.completed).length} / {missions.flat().length}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Gadgets Unlocked:</span>
+                    <span>
+                      {timeGadgets.filter(g => g.unlocked).length} / {timeGadgets.length}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Timeline Integrity:</span>
+                    <span>{100 - paradoxLevel}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default QuantumDrift;

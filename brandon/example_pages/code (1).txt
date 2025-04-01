@@ -1,0 +1,522 @@
+import React, { useState, useEffect, useCallback } from 'react';
+
+// --- TypeScript Interfaces ---
+
+interface Recipe {
+  id: number;
+  targetFraction: string; // "3/4", "1/2"
+  ingredientsNeeded: string[]; // For future expansion - specify required ingredients
+  level: number;
+  reward: number;
+}
+
+interface GeneratedFraction {
+  id: string;
+  value: string; // "1/2", "1/3", "1/4"
+}
+
+// --- Static Data ---
+// More recipes can be added, graded by difficulty (level)
+const RECIPES: Recipe[] = [
+  { id: 1, targetFraction: "1/2", ingredientsNeeded: [], level: 1, reward: 10 },
+  { id: 2, targetFraction: "3/4", ingredientsNeeded: [], level: 2, reward: 15 },
+  { id: 3, targetFraction: "1/4", ingredientsNeeded: [], level: 1, reward: 12 },
+  { id: 4, targetFraction: "2/3", ingredientsNeeded: [], level: 3, reward: 20 },
+  { id: 5, targetFraction: "5/8", ingredientsNeeded: [], level: 4, reward: 25 },
+  { id: 6, targetFraction: "7/8", ingredientsNeeded: [], level: 5, reward: 30 },
+  { id: 7, targetFraction: "1/3", ingredientsNeeded: [], level: 1, reward: 10 },
+  { id: 8, targetFraction: "5/6", ingredientsNeeded: [], level: 4, reward: 28 },
+  { id: 9, targetFraction: "11/12", ingredientsNeeded: [], level: 6, reward: 35 },
+  { id: 10, targetFraction: "1/8", ingredientsNeeded: [], level: 1, reward: 8 },
+  { id: 11, targetFraction: "3/8", ingredientsNeeded: [], level: 2, reward: 14 },
+  { id: 12, targetFraction: "7/12", ingredientsNeeded: [], level: 5, reward: 32 },
+  { id: 13, targetFraction: "1/6", ingredientsNeeded: [], level: 2, reward: 12 },
+  { id: 14, targetFraction: "5/12", ingredientsNeeded: [], level: 4, reward: 26 },
+  { id: 15, targetFraction: "1/1", ingredientsNeeded: [], level: 7, reward: 40 }, // "1" as fraction is a goal too!
+];
+
+// Initial available fraction generators - could be expanded or level-dependent
+const INITIAL_FRACTIONS: string[] = ["1/2", "1/4", "1/3"];
+
+// --- FractionFusionFrenzy Component ---
+const FractionFusionFrenzy = () => {
+  // --- State ---
+  const [gameStarted, setGameStarted] = useState(false);
+  const [playerName, setPlayerName] = useState('');
+  const [score, setScore] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(60);
+  const [currentRecipe, setCurrentRecipe] = useState<Recipe | null>(null);
+  const [generatedFractions, setGeneratedFractions] = useState<GeneratedFraction[]>([]);
+  const [availableOperators, setAvailableOperators] = useState<string[]>(['+', '-', '*', '/']); // Limited for balance? Could be expanded
+  const [level, setLevel] = useState(1);
+  const [selectedFractions, setSelectedFractions] = useState<string[]>([]); // IDs of selected fractions for combination
+  const [fusionMessage, setFusionMessage] = useState(''); // Feedback message
+  const [showNotification, setShowNotification] = useState(false); // Notification Toggle
+
+  // --- Effects ---
+  // Game Loop (Timer)
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (gameStarted && timeRemaining > 0) {
+      timer = setTimeout(() => {
+        setTimeRemaining(prev => prev - 1);
+      }, 1000);
+    } else if (timeRemaining === 0 && gameStarted) {
+      // Game Over
+      setFusionMessage("Time's up! Better luck next time, Chef!");
+      setShowNotification(true);
+      setGameStarted(false); // End the game
+    }
+    return () => clearTimeout(timer); // Cleanup on unmount or dependency change
+  }, [gameStarted, timeRemaining]);
+
+  // Level Initialization
+  useEffect(() => {
+    if (gameStarted) {
+      loadLevel(level);
+    }
+  }, [level, gameStarted]);
+
+    // --Initializes Fraction state
+    useEffect(() => {
+        if (gameStarted) {
+            generateInitialFractions();
+        }
+    }, [gameStarted]);
+
+  // --- Helper Functions ---
+    const generateId = (): string => {
+        return Math.random().toString(36).substring(2, 15);
+    };
+
+    const generateRandomFraction = useCallback(() => {
+        const fractions = ["1/2", "1/3", "1/4", "1/6", "1/8", "1/5", "1/10", "2/5", "3/10", "1/12", "5/12", "7/12", "11/12"]; // Expanded set
+        let newFractions: GeneratedFraction[] = [];
+
+        for (let i = 0; i < 3; i++) {
+            const value = fractions[Math.floor(Math.random() * fractions.length)];
+            newFractions.push({ value: value, id: generateId() });
+        }
+
+        return newFractions;
+    }, []);
+
+    const generateInitialFractions = useCallback(() => {
+        setGeneratedFractions(generateRandomFraction());
+    }, [generateRandomFraction]);
+
+  const fractionToDecimal = (fraction: string): number => {
+    try {
+      const [num, den] = fraction.split('/').map(Number);
+      return num / den;
+    } catch (error) {
+      console.error("Invalid fraction format:", fraction);
+      return NaN;
+    }
+  };
+
+  const formatFraction = (decimal: number): string => {
+       // Simplify? Find closest fraction in list? Or leave as decimal for now.
+       return decimal.toFixed(2); // Simple decimal formatting - could add fraction simplification later
+  }
+
+  // --- Game Logic Functions ---
+  const startGame = () => {
+     if (playerName.trim() === '') {
+         setFusionMessage("Cosmic Chefs need names! Enter your name!");
+         setShowNotification(true);
+         setTimeout(() => setShowNotification(false), 3000);
+        return;
+     }
+    setGameStarted(true);
+    setScore(0);
+    setTimeRemaining(60);
+    setLevel(1);
+  };
+
+  const loadLevel = (levelNum: number) => {
+    const recipe = RECIPES.find(r => r.level === levelNum); // Simple level-based recipes
+    if (recipe) {
+      setCurrentRecipe(recipe);
+        generateNewFractions();
+      setFusionMessage(`Recipe: ${recipe.targetFraction} stardust!`);
+      setShowNotification(true);
+      // Clear existing selection when new level loads.
+        setSelectedFractions([]);
+    } else {
+        setFusionMessage("You've mastered all the current recipes! More coming soon!");
+        setShowNotification(true);
+      // End of Content
+      setGameStarted(false);
+    }
+  };
+
+    const generateNewFractions = () => {
+        setGeneratedFractions(generateRandomFraction());
+    }
+
+  const combineFractions = useCallback((operator: string) => {
+      if (selectedFractions.length !== 2) {
+          setFusionMessage("Select exactly two fractions to combine!");
+          setShowNotification(true);
+          setTimeout(() => setShowNotification(false), 3000);
+          return;
+      }
+
+        const [id1, id2] = selectedFractions;
+        const frac1 = generatedFractions.find(f => f.id === id1)?.value;
+        const frac2 = generatedFractions.find(f => f.id === id2)?.value;
+
+        if (!frac1 || !frac2) {
+            setFusionMessage("Oops! One of the fractions disappeared. Try again.");
+            setShowNotification(true);
+            setTimeout(() => setShowNotification(false), 3000);
+            return;
+        }
+
+        const num1 = fractionToDecimal(frac1);
+        const num2 = fractionToDecimal(frac2);
+
+        if (isNaN(num1) || isNaN(num2)) {
+            setFusionMessage("Invalid fractions detected!");
+            setShowNotification(true);
+            setTimeout(() => setShowNotification(false), 3000);
+            return;
+        }
+
+        let result: number;
+        switch (operator) {
+            case '+': result = num1 + num2; break;
+            case '-': result = num1 - num2; break;
+            case '*': result = num1 * num2; break;
+            case '/': result = num1 / num2; break;
+            default:
+                setFusionMessage("Invalid operator selected.");
+                setShowNotification(true);
+                setTimeout(() => setShowNotification(false), 3000);
+                return;
+        }
+
+        const formattedResult = formatFraction(result); // Or simplifyFraction
+
+        // VISUAL FXS:
+         setFusionMessage(`⚡️ ZAP! ${frac1} ${operator} ${frac2} = ${formattedResult} ⚡️`);
+         setShowNotification(true);
+         setTimeout(() => setShowNotification(false), 2000);
+
+
+         // CHECK VS SOLUTION:
+         if (currentRecipe && formatFraction(result) === formatFraction(fractionToDecimal(currentRecipe.targetFraction))) {
+             // YAHOO! - Progress:
+             setScore(prev => prev + currentRecipe.reward);
+             setGeneratedFractions(prev => prev.filter(f => f.id !== id1 && f.id !== id2)); // Clear the fractions
+
+             // Check for next level
+             setLevel(prev => prev + 1); // Next Level
+         }
+         // reset for the next combination
+         setSelectedFractions([]); // Clear selections
+
+         // Need New Values
+         generateNewFractions(); // Generate new set of fractions
+    }, [selectedFractions, generatedFractions, currentRecipe, generateRandomFraction]);
+
+  const toggleFractionSelection = (fractionId: string) => {
+       setSelectedFractions(prev => {
+           if (prev.includes(fractionId)) {
+               // Deselect
+               return prev.filter(id => id !== fractionId);
+           } else {
+               // Select (if less than 2)
+               return prev.length < 2 ? [...prev, fractionId] : prev; // Max 2 selected
+           }
+       });
+   };
+
+
+  // --- Render Functions ---
+
+  return (
+    <div className="fff-container flex flex-col items-center min-h-screen bg-gradient-to-b from-gray-800 to-gray-900 text-gray-100 p-8 overflow-hidden">
+      {/* Global Styles - Utility Class Hints */}
+      <style>{`
+        /* Font Imports (Example) - Replace with actual imports if needed */
+        /* @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Rajdhani:wght@600&display=swap'); */
+
+        /* Root Variables - Like Tailwind config */
+        :root {
+            --font-main: sans-serif; /* Simplified for now */
+            --font-display: sans-serif;
+            --transition-speed: 0.3s; /* Seconds */
+        }
+
+        /* Core Container - "fff" prefix for namespacing */
+        .fff-container {
+            font-family: var(--font-main);
+            /* flex, col, items-center already applied */
+            /* min-h-screen, bg-gradient, text-gray, p-8, overflow-hidden already applied */
+        }
+
+        /* Header Styling */
+        .fff-header {
+            width: 100%; /* w-full */
+            max-width: 900px; /* max-w-6xl */
+            display: flex; /* flex */
+            justify-content: space-between; /* justify-between */
+            align-items: center; /* items-center */
+            padding: 1rem; /* p-4 */
+            background-color: rgba(52, 73, 94, 0.6); /* bg-opacity-60? But no true Tailwind */
+            border-radius: 0.5rem; /* rounded-md */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4); /* shadow-md */
+            margin-bottom: 2rem; /* mb-8 */
+        }
+        .fff-header-title {
+            font-family: var(--font-display);
+            font-size: 2.2rem; /* text-3xl */
+            color: #f1c40f; /* text-yellow-400 */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* shadow-custom? */
+        }
+        .fff-player-info {
+            display: flex; /* flex */
+            align-items: center; /* items-center */
+            gap: 1.5rem; /* gap-6 */
+            font-size: 1.1rem; /* text-lg */
+        }
+         .fff-player-info span { display: flex; align-items: center; gap: 0.4rem; }
+         .fff-player-info strong { color: #9b59b6; } /* text-purple-400 */
+
+
+        /* Start Screen Styling */
+        .fff-start-screen {
+            text-align: center; /* text-center */
+            max-width: 600px; /* max-w-xl */
+            margin: 3rem auto; /* mx-auto my-12 */
+            padding: 2rem; /* p-8 */
+            background-color: rgba(255, 255, 255, 0.1); /* bg-white/10 */
+            border-radius: 0.625rem; /* rounded-xl */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* shadow-lg */
+        }
+         .fff-start-screen h1 {
+             font-family: var(--font-display);
+             font-size: 3rem; /* text-4xl */
+             color: #e67e22; /* text-orange-400 */
+             margin-bottom: 1rem; /* mb-4 */
+             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* shadow-custom */
+         }
+        .fff-start-screen p {
+            font-size: 1.2rem; /* text-lg */
+            color: #ecf0f1; /* text-gray-50 */
+            line-height: 1.7; /* leading-relaxed */
+            margin-bottom: 2rem; /* mb-8 */
+        }
+        .fff-start-screen input {
+            padding: 0.9rem 1.2rem; /* px-5 py-3 */
+            font-size: 1.1rem; /* text-lg */
+            border: none; /* border-none */
+            border-radius: 0.375rem; /* rounded-md */
+            margin-bottom: 1.5rem; /* mb-6 */
+            background-color: rgba(255, 255, 255, 0.8); /* bg-white/80 */
+            color: #34495e; /* text-gray-700 */
+            width: 80%; /* w-4/5 */
+            max-width: 350px; /* max-w-md */
+        }
+         .fff-start-button {
+             padding: 1rem 2rem; /* px-8 py-4 */
+             font-size: 1.2rem; /* text-lg */
+             font-weight: bold; /* font-bold */
+             background-color: #2ecc71; /* bg-green-500 */
+             color: white; /* text-white */
+             border: none; /* border-none */
+             border-radius: 0.375rem; /* rounded-md */
+             cursor: pointer; /* cursor-pointer */
+             transition: background-color var(--transition-speed); /* transition */
+         }
+          .fff-start-button:hover { background-color: #27ae60; } /* hover:bg-green-600 */
+
+        /* Game Area Styling */
+        .fff-game-area {
+            max-width: 900px; /* max-w-6xl */
+            width: 100%; /* w-full */
+            display: flex; /* flex */
+            flex-direction: column; /* flex-col */
+            align-items: center; /* items-center */
+            background-color: rgba(0, 0, 0, 0.4); /* bg-black/40 */
+            border-radius: 0.625rem; /* rounded-xl */
+            padding: 2rem; /* p-8 */
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6); /* shadow-xl */
+            position: relative; /* relative */
+            overflow: hidden; /* overflow-hidden */
+        }
+
+        .fff-recipe-display {
+            font-family: var(--font-display);
+            font-size: 2.5rem; /* text-4xl */
+            color: #f39c12; /* text-yellow-300 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* shadow-custom */
+             border-bottom: 2px dashed rgba(255, 255, 255, 0.2); /* border-b border-dashed border-opacity-20 */
+             padding-bottom: 0.7rem; /* pb-3 */
+        }
+
+        .fff-fractions-container {
+            display: flex; /* flex */
+            gap: 1.5rem; /* gap-6 */
+            flex-wrap: wrap; /* flex-wrap */
+            justify-content: center; /* justify-center */
+            margin-bottom: 2rem; /* mb-8 */
+        }
+
+        .fff-fraction-button {
+            padding: 0.8rem 1.5rem; /* px-6 py-3 */
+            font-size: 1.3rem; /* text-xl */
+            background-color: rgba(155, 89, 182, 0.7); /* bg-purple-400/70 */
+            color: white; /* text-white */
+            border: none; /* border-none */
+            border-radius: 0.5rem; /* rounded-md */
+            cursor: pointer; /* cursor-pointer */
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed); /* transition */
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4); /* shadow-md */
+            position: relative; /* relative */
+            overflow: hidden; /* overflow-hidden - for gradient */
+        }
+         .fff-fraction-button:hover { transform: translateY(-3px); box-shadow: 0 5px 12px rgba(0, 0, 0, 0.5); } /* hover: transform, hover:shadow */
+         .fff-fraction-button.selected {
+             background-color: #8e44ad; /* bg-purple-500 */
+             box-shadow: 0 0 15px #8e44ad; /* shadow-inner-purple */
+             transform: scale(1.05); /* scale-105 */
+         }
+
+        .fff-operators-container { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+        .fff-operator-button {
+             padding: 0.7rem 1.3rem; /* px-5 py-3 */
+             font-size: 1.4rem; /* text-xl */
+             font-weight: bold; /* font-bold */
+             background-color: #e74c3c; /* bg-red-500 */
+             color: white; /* text-white */
+             border: none; /* border-none */
+             border-radius: 0.3125rem; /* rounded-sm */
+             cursor: pointer; /* cursor-pointer */
+             transition: transform var(--transition-speed), background-color var(--transition-speed); /* transition */
+             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); /* shadow-sm */
+        }
+        .fff-operator-button:hover { transform: translateY(-2px); background-color: #c0392b; } /* hover: transform hover:bg */
+
+        /* Notification Styling - Positioned in .fff-game-area */
+        .fff-notification {
+             position: absolute;
+             top: 1rem; /* top-4 */
+             left: 50%; /* left-1/2 */
+             transform: translateX(-50%); /* -translate-x-1/2 */
+             padding: 0.8rem 1.5rem; /* px-5 py-3 */
+             border-radius: 0.375rem; /* rounded-md */
+             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.7); /* shadow-xl */
+             z-index: 10; /* z-10 */
+             font-size: 1.1rem; /* text-lg */
+             font-weight: bold; /* font-bold */
+             background-color: #3498db; /* bg-blue-400 */
+             color: white; /* text-white */
+             animation: slide-down 0.5s ease-out, fade-out 2s 2s forwards; /* animation */
+        }
+
+         /* Animations */
+        @keyframes slide-down {
+             from { transform: translateX(-50%) translateY(-50px); opacity: 0; }
+             to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        @keyframes fade-out { to { opacity: 0; } }
+
+        /* Fraction Combination Message */
+        .fff-fusion-message {
+             /* Add styles for a cool text effect! */
+             color: #f1c40f; /* Gold text */
+             font-size: 1.5rem;
+             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+         }
+
+
+        /* Responsive adjustments (Simplified) */
+        /*  Real Tailwind would use @screen directives */
+        @media (max-width: 768px) {
+             .fff-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+             .fff-start-screen { padding: 1.5rem; }
+             .fff-start-screen h1 { font-size: 2.5rem; }
+             .fff-start-screen p { font-size: 1rem; }
+             .fff-fractions-container { gap: 1rem; }
+             .fff-fraction-button { padding: 0.6rem 1rem; font-size: 1rem; }
+             .fff-player-info { flex-direction: column; align-items: flex-start; }
+        }
+      `}</style>
+
+      {/* Header */}
+      <header className="fff-header">
+        <h1 className="fff-header-title">
+          <span>✨</span> Fraction Fusion Frenzy <span>🚀</span>
+        </h1>
+        {gameStarted && (
+          <div className="fff-player-info">
+            <span>👨‍🍳 Chef: <strong>{playerName}</strong></span>
+            <span>⭐ Score: <strong>{score}</strong></span>
+            <span>⏱️ Time: <strong>{timeRemaining}</strong></span>
+          </div>
+        )}
+      </header>
+
+      {/* Main Content */}
+      <main>
+        {/* Conditionally show notification for better effect */}
+        {showNotification && (
+          <div className="fff-notification">{fusionMessage}</div>
+        )}
+
+        {!gameStarted ? (
+          // Start Screen
+          <div className="fff-start-screen">
+            <h1>Cosmic Cooking Challenge!</h1>
+            <p>
+              Become the ultimate Fraction Fusion Chef! Combine fractions to
+              create the perfect cosmic recipes. Enter your name to begin:
+            </p>
+            <input
+              type="text"
+              placeholder="Chef Name"
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+            />
+            <button onClick={startGame} className="fff-start-button">
+              Begin the Frenzy!
+            </button>
+          </div>
+        ) : (
+          // Game Area
+          <div className="fff-game-area">
+            <div className="fff-recipe-display">
+              Needs: {currentRecipe?.targetFraction} stardust!
+            </div>
+
+            <div className="fff-fractions-container">
+              {generatedFractions.map((fraction) => (
+                <button
+                  key={fraction.id}
+                  className={`fff-fraction-button ${selectedFractions.includes(fraction.id) ? 'selected' : ''}`}
+                  onClick={() => toggleFractionSelection(fraction.id)}
+                >
+                  {fraction.value}
+                </button>
+              ))}
+            </div>
+
+            <div className="fff-operators-container">
+              {availableOperators.map((op) => (
+                <button key={op} className="fff-operator-button" onClick={() => combineFractions(op)}>
+                  {op}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default FractionFusionFrenzy;

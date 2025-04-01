@@ -1,103 +1,172 @@
-import Image from "next/image";
+"use client";
+
+import React, { useEffect, useState, useRef, ReactNode } from 'react';
+import { motion, useScroll, useTransform, useSpring, MotionValue } from 'framer-motion';
+import { useTheme } from 'next-themes';
+import { HeroSection } from '../components/HeroSection';
+import { ExpertiseSection } from '../components/ExpertiseSection';
+import { PortfolioSection } from '../components/PortfolioSection';
+import { MathematicalBridgeSection } from '../components/MathematicalBridgeSection';
+import FeaturedWork from '../components/home/FeaturedWork';
+import TechnologiesSection from '../components/home/TechnologiesSection';
+import CodeTyperSection from '../components/home/CodeTyperSection';
+
+// ScrollReveal component for animating elements as they enter the viewport
+interface ScrollRevealProps {
+  children: ReactNode;
+  threshold?: number;
+}
+
+const ScrollReveal = ({ children, threshold = 0.1 }: ScrollRevealProps) => {
+  return (
+    <motion.div
+      initial={{ y: 50, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true, amount: threshold }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// Parallax component that moves at a different speed while scrolling
+interface ParallaxProps {
+  children: ReactNode;
+  speed?: number;
+}
+
+const Parallax = ({ children, speed = 0.5 }: ParallaxProps) => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", `${speed * 100}%`]);
+  
+  return (
+    <motion.div ref={ref} style={{ y }}>
+      {children}
+    </motion.div>
+  );
+};
+
+// Progress indicator that shows scroll progress
+const ScrollProgressIndicator = () => {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  return (
+    <motion.div
+      className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 z-50"
+      style={{ scaleX, transformOrigin: "0%" }}
+    />
+  );
+};
+
+// Fancy background that changes as you scroll
+const ScrollingBackground = () => {
+  const { scrollYProgress } = useScroll();
+  const backgroundColor = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.4, 0.6, 0.8, 1],
+    ["rgba(0, 0, 0, 0)", "rgba(25, 25, 112, 0.05)", "rgba(75, 0, 130, 0.05)", "rgba(139, 0, 139, 0.05)", "rgba(0, 0, 128, 0.05)", "rgba(0, 0, 0, 0)"]
+  );
+
+  return (
+    <motion.div 
+      className="fixed inset-0 -z-10 pointer-events-none"
+      style={{ backgroundColor }}
+    />
+  );
+};
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { theme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const mainRef = useRef(null);
+  
+  // Move useTransform hooks to the top level
+  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.9]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+  // Handle mounted state to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Avoid rendering until client-side to prevent hydration mismatch
+  if (!mounted) {
+    return null;
+  }
+
+  const currentTheme = theme === 'system' ? resolvedTheme : theme;
+
+  return (
+    <motion.div
+      ref={mainRef}
+      className={`relative ${currentTheme}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <ScrollProgressIndicator />
+      <ScrollingBackground />
+      
+      <motion.div
+        style={{
+          scale: heroScale,
+          opacity: heroOpacity,
+        }}
+      >
+        <HeroSection />
+      </motion.div>
+
+      <ScrollReveal threshold={0.2}>
+        <ExpertiseSection />
+      </ScrollReveal>
+
+      <Parallax speed={-0.2}>
+        <ScrollReveal>
+          <PortfolioSection />
+        </ScrollReveal>
+      </Parallax>
+
+      <ScrollReveal>
+        <motion.div
+          whileInView={{
+            rotateX: [0, 5, 0],
+            transition: { duration: 2, repeat: Infinity, repeatType: "reverse" }
+          }}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          <MathematicalBridgeSection />
+        </motion.div>
+      </ScrollReveal>
+
+      <Parallax speed={0.3}>
+        <ScrollReveal>
+          <FeaturedWork />
+        </ScrollReveal>
+      </Parallax>
+
+      <ScrollReveal>
+        <CodeTyperSection />
+      </ScrollReveal>
+
+      <motion.div
+        initial={{ x: 100, opacity: 0 }}
+        whileInView={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.8, type: "spring" }}
+        viewport={{ once: true }}
+      >
+        <TechnologiesSection />
+      </motion.div>
+    </motion.div>
   );
 }

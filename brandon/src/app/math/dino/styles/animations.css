@@ -1,0 +1,107 @@
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animation Classes */
+.floating {
+  animation: float 10s ease-in-out infinite;
+}
+
+.spinning {
+  animation: spin 15s linear infinite;
+}
+
+.blinking {
+  animation: blink 1s infinite;
+}
+
+.animate-fadeIn {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.sparkle {
+  animation: sparkle 1s ease-in-out;
+}
+
+/* Hover Effects */
+.hover-scale {
+  transition: transform 0.2s;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* Layout Utilities */
+.backdrop-blur {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Game-specific Utilities */
+.character-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  color: white;
+}
+
+.achievement-badge {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+
+/* Theme Transitions */
+.theme-transition {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Memory Game Transitions */
+.memory-transition {
+  transition: opacity 0.3s, transform 0.3s;
+}

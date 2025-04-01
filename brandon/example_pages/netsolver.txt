@@ -1,0 +1,1689 @@
+import React, { useState, useEffect, useCallback } from 'react';
+
+const NetRunner = () => {
+  // Core state variables
+  const [darkMode, setDarkMode] = useState(true); // Default to dark mode for cyberpunk feel
+  const [gameStarted, setGameStarted] = useState(false);
+  const [activeZone, setActiveZone] = useState(0);
+  const [reputation, setReputation] = useState(0);
+  const [username, setUsername] = useState('');
+  const [avatar, setAvatar] = useState('hacker');
+  const [securityLevel, setSecurityLevel] = useState(1);
+  const [hackProgress, setHackProgress] = useState(0);
+  const [hackingActive, setHackingActive] = useState(false);
+  const [currentNode, setCurrentNode] = useState(null);
+  const [traceLevel, setTraceLevel] = useState(0);
+
+  // UI state
+  const [showTerminal, setShowTerminal] = useState(false);
+  const [terminalInput, setTerminalInput] = useState('');
+  const [terminalHistory, setTerminalHistory] = useState([
+    { timestamp: getCurrentTime(), text: 'NetRunner v2.0 initialized...' },
+    { timestamp: getCurrentTime(), text: 'Type "help" for commands.' }
+  ]);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [showTutorial, setShowTutorial] = useState(true);
+  const [tutorialStep, setTutorialStep] = useState(0);
+  const [showGlitchEffect, setShowGlitchEffect] = useState(false);
+
+  // Game state
+  const [knownExploits, setKnownExploits] = useState([]);
+  const [currentChallenge, setCurrentChallenge] = useState(null);
+  const [codeMatrix, setCodeMatrix] = useState([]);
+  const [matrixSize, setMatrixSize] = useState(8);
+  const [zonesVisited, setZonesVisited] = useState([0]);
+  const [hackingTimeout, setHackingTimeout] = useState(null);
+  
+  // Progress tracking
+  const [userPrograms, setUserPrograms] = useState([
+    { id: 'icebreaker', name: 'ICE Breaker', level: 1, description: 'Basic firewall bypass tool', unlocked: true, cooldown: 0 },
+    { id: 'dataminer', name: 'Data Miner', level: 1, description: 'Extract data from secured databases', unlocked: false, cooldown: 0 },
+    { id: 'ghostware', name: 'Ghostware', level: 1, description: 'Avoid detection while hacking', unlocked: false, cooldown: 0 },
+    { id: 'decryptor', name: 'Decryptor', level: 1, description: 'Break encryption on secured files', unlocked: false, cooldown: 0 },
+  ]);
+  
+  const [achievements, setAchievements] = useState([
+    { id: 'first_hack', name: 'Digital Fingerprint', description: 'Complete your first hack', unlocked: false },
+    { id: 'zone_explorer', name: 'Grid Runner', description: 'Explore all network zones', unlocked: false },
+    { id: 'program_collector', name: 'Software Arsenal', description: 'Unlock all hacking programs', unlocked: false },
+    { id: 'master_hacker', name: 'Ghost in the Machine', description: 'Reach reputation level 50', unlocked: false },
+  ]);
+  
+  // Network zones
+  const zones = [
+    { name: "Darknet Hub", color: "#00ff41", description: "Your starting point in the network.", icon: "🌐" },
+    { name: "Corporate Intranet", color: "#ff3e3e", description: "Heavily secured corporate systems.", icon: "🏢" },
+    { name: "Government Database", color: "#3a86ff", description: "Classified information storage.", icon: "🔒" },
+    { name: "AI Nexus", color: "#8338ec", description: "Artificial intelligence research network.", icon: "🧠" }
+  ];
+  
+  // Challenges for each zone
+  const [challenges, setChallenges] = useState([
+    // Darknet Hub Challenges
+    [
+      { id: 'data_breach', name: 'Data Breach', difficulty: 'Easy', reward: 10, completed: false, description: 'Infiltrate a small business database to extract customer records.' },
+      { id: 'firewall_bypass', name: 'Firewall Bypass', difficulty: 'Easy', reward: 15, completed: false, description: 'Develop a technique to bypass standard firewall configurations.' },
+      { id: 'identity_spoof', name: 'Identity Spoofing', difficulty: 'Medium', reward: 20, completed: false, description: 'Assume the digital identity of a network administrator.' },
+    ],
+    // Corporate Intranet Challenges
+    [
+      { id: 'secure_server', name: 'Secure Server Infiltration', difficulty: 'Medium', reward: 25, completed: false, description: 'Gain access to a high-security corporate server.' },
+      { id: 'data_exfiltration', name: 'Data Exfiltration', difficulty: 'Medium', reward: 30, completed: false, description: 'Extract sensitive data without triggering security protocols.' },
+      { id: 'backdoor_implant', name: 'Backdoor Implantation', difficulty: 'Hard', reward: 40, completed: false, description: 'Create a persistent access point in the corporate network.' },
+    ],
+    // Government Database Challenges
+    [
+      { id: 'encryption_break', name: 'Encryption Breakthrough', difficulty: 'Hard', reward: 45, completed: false, description: 'Decrypt classified government communications.' },
+      { id: 'surveillance_evade', name: 'Surveillance Evasion', difficulty: 'Hard', reward: 50, completed: false, description: 'Operate undetected within a monitored network.' },
+      { id: 'classified_access', name: 'Classified Access', difficulty: 'Very Hard', reward: 60, completed: false, description: 'Gain access to top-secret classified files.' },
+    ],
+    // AI Nexus Challenges
+    [
+      { id: 'ai_manipulation', name: 'AI System Manipulation', difficulty: 'Very Hard', reward: 65, completed: false, description: 'Manipulate AI security systems to grant access privileges.' },
+      { id: 'neural_network', name: 'Neural Network Infiltration', difficulty: 'Extreme', reward: 80, completed: false, description: 'Enter the core neural network of an advanced AI system.' },
+      { id: 'singularity_code', name: 'Singularity Code', difficulty: 'Extreme', reward: 100, completed: false, description: 'Discover and decrypt the rumored "Singularity" algorithm.' },
+    ],
+  ]);
+  
+  // Cybersecurity tips
+  const securityTips = [
+    "Always use strong, unique passwords for different accounts.",
+    "Enable two-factor authentication whenever possible.",
+    "Keep your software and operating systems updated.",
+    "Be cautious of phishing attempts in emails and messages.",
+    "Use a VPN to encrypt your internet connection.",
+    "Regularly backup your important data.",
+    "Be careful what you share on social media.",
+    "Use encrypted messaging for sensitive communications.",
+    "Monitor your accounts for suspicious activity.",
+    "Use a password manager to keep track of complex passwords."
+  ];
+  
+  // Tutorial steps
+  const tutorialSteps = [
+    { text: "Welcome to NetRunner, the cyberpunk hacking simulation. I'm your AI assistant.", character: "ai" },
+    { text: "In this world, your reputation is everything. Complete hacking challenges to build your rep.", character: "ai" },
+    { text: "You'll start in the Darknet Hub. From there, you can access other zones of the network.", character: "ai" },
+    { text: "Use your hacking tools to overcome security systems and extract valuable data.", character: "ai" },
+    { text: "Are you ready to become a legendary NetRunner? Enter your handle to begin.", character: "ai" }
+  ];
+  
+  // Generate network activity for background
+  const networkActivity = Array.from({ length: 15 }, (_, i) => ({
+    id: i,
+    top: Math.random() * 100,
+    left: Math.random() * 100,
+    speed: Math.random() * 5 + 2,
+    size: Math.random() * 100 + 50,
+    opacity: Math.random() * 0.3 + 0.05,
+    delay: Math.random() * 2,
+  }));
+  
+  // Initialize code matrix for hacking minigame
+  useEffect(() => {
+    if (currentChallenge) {
+      generateCodeMatrix();
+    }
+  }, [currentChallenge]);
+  
+  // Track visited zones
+  useEffect(() => {
+    if (!zonesVisited.includes(activeZone)) {
+      setZonesVisited([...zonesVisited, activeZone]);
+      // Add reputation for exploring a new zone
+      setReputation(prev => prev + 5);
+      showNotificationMessage(`You discovered ${zones[activeZone].name}! +5 reputation`);
+      
+      // Check for Grid Runner achievement
+      if (zonesVisited.length + 1 === zones.length) {
+        unlockAchievement('zone_explorer');
+      }
+    }
+  }, [activeZone]);
+  
+  // Check for program unlocks when reputation changes
+  useEffect(() => {
+    checkProgramUnlocks();
+  }, [reputation]);
+  
+  // Random security tip display
+  const [currentTip, setCurrentTip] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTip(prev => (prev + 1) % securityTips.length);
+    }, 15000);
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Utility functions
+  function getCurrentTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+  
+  function generateCodeMatrix() {
+    const difficulty = getDifficultyLevel(currentChallenge.difficulty);
+    const size = matrixSize;
+    const newMatrix = [];
+    
+    for (let i = 0; i < size; i++) {
+      const row = [];
+      for (let j = 0; j < size; j++) {
+        // Random hex value (simulating code)
+        const value = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+        const isKey = Math.random() < 0.08 + (0.02 * difficulty); // More key nodes at higher difficulties
+        const isFirewall = Math.random() < 0.12 + (0.03 * difficulty); // More firewalls at higher difficulties
+        const isHoneypot = Math.random() < 0.03 * difficulty; // Honeypots only appear at higher difficulties
+        
+        row.push({ 
+          value, 
+          isKey, 
+          isFirewall, 
+          isHoneypot,
+          selected: false, 
+          row: i, 
+          col: j 
+        });
+      }
+      newMatrix.push(row);
+    }
+    
+    setCodeMatrix(newMatrix);
+    return newMatrix;
+  }
+  
+  function getDifficultyLevel(difficultyText) {
+    const levels = { 'Easy': 1, 'Medium': 2, 'Hard': 3, 'Very Hard': 4, 'Extreme': 5 };
+    return levels[difficultyText] || 1;
+  }
+  
+  // Game mechanics functions
+  const toggleTheme = () => setDarkMode(!darkMode);
+  
+  const startGame = () => {
+    if (username.trim() === '') {
+      showNotificationMessage("You need a handle to access the network");
+      return;
+    }
+    setGameStarted(true);
+    setReputation(10);
+    showNotificationMessage("Connection established. Welcome to the network.");
+    addTerminalEntry("System initialized. Network connection established.");
+    addTerminalEntry(`Welcome, ${username}. You have been granted access to the Darknet Hub.`);
+  };
+  
+  const selectAvatar = (type) => {
+    setAvatar(type);
+  };
+  
+  const showNotificationMessage = (message) => {
+    setNotificationMessage(message);
+    setShowNotification(true);
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
+  };
+  
+  const unlockAchievement = (id) => {
+    const updatedAchievements = achievements.map(achievement => 
+      achievement.id === id ? { ...achievement, unlocked: true } : achievement
+    );
+    
+    if (!achievements.find(a => a.id === id).unlocked) {
+      setAchievements(updatedAchievements);
+      showNotificationMessage(`Achievement Unlocked: ${achievements.find(a => a.id === id).name}`);
+      
+      // Add reputation for unlocking an achievement
+      setReputation(prev => prev + 10);
+      triggerGlitchEffect();
+    }
+    
+    // Check for master hacker achievement
+    if (id !== 'master_hacker' && reputation >= 50) {
+      unlockAchievement('master_hacker');
+    }
+  };
+  
+  const checkProgramUnlocks = () => {
+    const updatedPrograms = [...userPrograms];
+    let changed = false;
+    
+    // Unlock Data Miner at 20 reputation
+    if (reputation >= 20 && !userPrograms[1].unlocked) {
+      updatedPrograms[1].unlocked = true;
+      showNotificationMessage("New program unlocked: Data Miner");
+      addTerminalEntry("SYSTEM: Data Miner program installed. Type 'programs' to view details.");
+      changed = true;
+    }
+    
+    // Unlock Ghostware at 35 reputation
+    if (reputation >= 35 && !userPrograms[2].unlocked) {
+      updatedPrograms[2].unlocked = true;
+      showNotificationMessage("New program unlocked: Ghostware");
+      addTerminalEntry("SYSTEM: Ghostware program installed. Type 'programs' to view details.");
+      changed = true;
+    }
+    
+    // Unlock Decryptor at 50 reputation
+    if (reputation >= 50 && !userPrograms[3].unlocked) {
+      updatedPrograms[3].unlocked = true;
+      showNotificationMessage("New program unlocked: Decryptor");
+      addTerminalEntry("SYSTEM: Decryptor program installed. Type 'programs' to view details.");
+      changed = true;
+    }
+    
+    if (changed) {
+      setUserPrograms(updatedPrograms);
+      
+      // Check if all programs are unlocked
+      if (updatedPrograms.every(program => program.unlocked)) {
+        unlockAchievement('program_collector');
+      }
+    }
+    
+    return changed;
+  };
+  
+  const addTerminalEntry = (text) => {
+    const newEntry = { timestamp: getCurrentTime(), text };
+    setTerminalHistory(prev => [...prev, newEntry]);
+  };
+  
+  const handleTerminalCommand = useCallback(() => {
+    if (!terminalInput.trim()) return;
+    
+    const command = terminalInput.trim().toLowerCase();
+    setTerminalHistory(prev => [...prev, { timestamp: getCurrentTime(), text: `> ${terminalInput}`, isCommand: true }]);
+    
+    // Process command
+    switch (command) {
+      case 'help':
+        addTerminalEntry("Available commands: help, clear, status, programs, scan, exit");
+        break;
+      case 'clear':
+        setTerminalHistory([{ timestamp: getCurrentTime(), text: 'Terminal cleared. Type "help" for commands.' }]);
+        break;
+      case 'status':
+        addTerminalEntry(`NetRunner: ${username} | Reputation: ${reputation} | Security Level: ${securityLevel}`);
+        addTerminalEntry(`Current zone: ${zones[activeZone].name}`);
+        break;
+      case 'programs':
+        addTerminalEntry("Installed programs:");
+        userPrograms.forEach(program => {
+          if (program.unlocked) {
+            addTerminalEntry(`· ${program.name} (Lvl ${program.level}): ${program.description}`);
+          }
+        });
+        break;
+      case 'scan':
+        addTerminalEntry(`Scanning ${zones[activeZone].name}...`);
+        setTimeout(() => {
+          addTerminalEntry("Detected systems:");
+          challenges[activeZone].forEach((challenge, i) => {
+            addTerminalEntry(`${i+1}. ${challenge.name} - ${challenge.difficulty} [${challenge.completed ? 'COMPLETED' : 'AVAILABLE'}]`);
+          });
+        }, 1000);
+        break;
+      case 'exit':
+        setShowTerminal(false);
+        break;
+      default:
+        if (command.startsWith('hack ')) {
+          const target = command.substring(5);
+          const targetChallenge = challenges[activeZone].find(c => 
+            c.name.toLowerCase().includes(target) || c.id.toLowerCase().includes(target)
+          );
+          
+          if (targetChallenge) {
+            if (targetChallenge.completed) {
+              addTerminalEntry(`Already compromised: ${targetChallenge.name}`);
+            } else {
+              addTerminalEntry(`Initiating hack sequence on: ${targetChallenge.name}`);
+              startHackingChallenge(targetChallenge);
+            }
+          } else {
+            addTerminalEntry(`Target not found: ${target}`);
+          }
+        } else {
+          addTerminalEntry(`Command not recognized: ${command}`);
+        }
+    }
+    
+    setTerminalInput('');
+  }, [terminalInput, activeZone, userPrograms, username, reputation, securityLevel, challenges]);
+  
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter' && showTerminal) {
+        handleTerminalCommand();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleTerminalCommand, showTerminal]);
+  
+  const startHackingChallenge = (challenge) => {
+    setCurrentChallenge(challenge);
+    setHackingActive(true);
+    setHackProgress(0);
+    setTraceLevel(0);
+    
+    // Initialize hacking timeout based on difficulty
+    const timeLimit = 30 + (10 * getDifficultyLevel(challenge.difficulty));
+    
+    if (hackingTimeout) {
+      clearTimeout(hackingTimeout);
+    }
+    
+    const timeout = setTimeout(() => {
+      if (hackProgress < 100) {
+        // Hack failed due to timeout
+        setHackingActive(false);
+        showNotificationMessage("Connection timed out. Hack failed.");
+        addTerminalEntry("ALERT: Connection lost. Security protocols terminated the intrusion.");
+        triggerGlitchEffect();
+      }
+    }, timeLimit * 1000);
+    
+    setHackingTimeout(timeout);
+  };
+  
+  const completeChallenge = (challenge) => {
+    // Update challenges
+    const updatedChallenges = [...challenges];
+    updatedChallenges[activeZone] = challenges[activeZone].map(c => 
+      c.id === challenge.id ? { ...c, completed: true } : c
+    );
+    setChallenges(updatedChallenges);
+    
+    // Add reputation
+    setReputation(prev => prev + challenge.reward);
+    
+    // Clear hacking state
+    setHackingActive(false);
+    setCurrentChallenge(null);
+    if (hackingTimeout) {
+      clearTimeout(hackingTimeout);
+      setHackingTimeout(null);
+    }
+    
+    // Show notification and update terminal
+    showNotificationMessage(`Hack successful! +${challenge.reward} reputation`);
+    addTerminalEntry(`Hack completed: ${challenge.name}`);
+    addTerminalEntry(`Data extracted. Reputation increased by ${challenge.reward} points.`);
+    
+    // Check for first hack achievement
+    if (!achievements.find(a => a.id === 'first_hack').unlocked) {
+      unlockAchievement('first_hack');
+    }
+  };
+  
+  const handleNodeSelection = (row, col) => {
+    if (!hackingActive) return;
+    
+    // Make a copy of the matrix
+    const newMatrix = [...codeMatrix];
+    const node = newMatrix[row][col];
+    
+    // If node is already selected, do nothing
+    if (node.selected) return;
+    
+    // Handle node effects
+    if (node.isHoneypot) {
+      // Honeypot trap
+      showNotificationMessage("Honeypot detected! Security alerted.");
+      addTerminalEntry("WARNING: Honeypot triggered. Trace acceleration in progress.");
+      setTraceLevel(prevLevel => Math.min(prevLevel + 25, 100));
+      triggerGlitchEffect();
+    }
+    else if (node.isFirewall) {
+      // Firewall encounter
+      const iceBreakerLevel = userPrograms.find(p => p.id === 'icebreaker').level;
+      if (Math.random() < 0.4 + (0.1 * iceBreakerLevel)) { // Success chance increases with ICE Breaker level
+        showNotificationMessage("Firewall bypassed!");
+        setHackProgress(prevProgress => Math.min(prevProgress + 5, 100));
+      } else {
+        showNotificationMessage("Firewall blocked access.");
+        setTraceLevel(prevLevel => Math.min(prevLevel + 10, 100));
+      }
+    }
+    else if (node.isKey) {
+      // Key node - major progress
+      showNotificationMessage("Security node compromised!");
+      setHackProgress(prevProgress => Math.min(prevProgress + 15, 100));
+    }
+    else {
+      // Regular node - minor progress
+      setHackProgress(prevProgress => Math.min(prevProgress + 2, 100));
+    }
+    
+    // Mark node as selected
+    newMatrix[row][col].selected = true;
+    setCodeMatrix(newMatrix);
+    
+    // Increment trace level (security response)
+    // Ghost program reduces trace rate
+    const ghostLevel = userPrograms.find(p => p.id === 'ghostware')?.level || 0;
+    const traceIncrement = ghostLevel > 0 ? 0.5 / ghostLevel : 1;
+    setTraceLevel(prevLevel => Math.min(prevLevel + traceIncrement, 100));
+    
+    // Check if hack is complete or failed
+    if (hackProgress >= 95) {
+      completeChallenge(currentChallenge);
+    } else if (traceLevel >= 95) {
+      // Hack failed - security trace complete
+      setHackingActive(false);
+      if (hackingTimeout) {
+        clearTimeout(hackingTimeout);
+        setHackingTimeout(null);
+      }
+      showNotificationMessage("Security trace complete. Hack failed.");
+      addTerminalEntry("ALERT: Security detected intrusion. Connection terminated.");
+      triggerGlitchEffect();
+    }
+  };
+  
+  const upgradeProgramLevel = (programId) => {
+    const program = userPrograms.find(p => p.id === programId);
+    
+    // Check if program exists and is unlocked
+    if (!program || !program.unlocked) return;
+    
+    // Cost increases with each level
+    const upgradeCost = program.level * 15;
+    
+    // Check if enough reputation
+    if (reputation < upgradeCost) {
+      showNotificationMessage(`Not enough reputation to upgrade ${program.name}`);
+      return;
+    }
+    
+    // Upgrade program
+    const updatedPrograms = userPrograms.map(p => 
+      p.id === programId ? { ...p, level: p.level + 1 } : p
+    );
+    
+    setUserPrograms(updatedPrograms);
+    setReputation(prev => prev - upgradeCost);
+    
+    showNotificationMessage(`${program.name} upgraded to level ${program.level + 1}`);
+    addTerminalEntry(`SYSTEM: ${program.name} upgraded to version ${program.level + 1}.0`);
+  };
+  
+  const nextTutorialStep = () => {
+    if (tutorialStep < tutorialSteps.length - 1) {
+      setTutorialStep(tutorialStep + 1);
+    } else {
+      setShowTutorial(false);
+    }
+  };
+  
+  const triggerGlitchEffect = () => {
+    setShowGlitchEffect(true);
+    setTimeout(() => {
+      setShowGlitchEffect(false);
+    }, 1000);
+  };
+  
+  // UI Components
+  const renderAvatar = (type, size = 40) => {
+    const avatars = {
+      'hacker': '👤',
+      'robot': '🤖',
+      'ghost': '👻',
+      'cyber': '🦾',
+      'ai': '🧠'
+    };
+    
+    return (
+      <div style={{ 
+        width: `${size}px`, 
+        height: `${size}px`, 
+        borderRadius: '50%', 
+        backgroundColor: darkMode ? '#1a1a1a' : '#e0e0e0',
+        border: `2px solid ${type === avatar ? '#00ff41' : 'transparent'}`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: `${size/2}px`,
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        opacity: type === avatar ? 1 : 0.7
+      }}
+      onClick={() => selectAvatar(type)}
+      className={type === avatar ? 'pulse-glow' : ''}
+      >
+        {avatars[type]}
+      </div>
+    );
+  };
+  
+  return (
+    <div style={{
+      fontFamily: "'Share Tech Mono', monospace",
+      minHeight: '100vh',
+      backgroundColor: darkMode ? '#0a0a0a' : '#f0f0f0',
+      color: darkMode ? '#00ff41' : '#121212',
+      transition: 'background-color 0.3s, color 0.3s',
+      position: 'relative',
+      overflow: 'hidden',
+      backgroundImage: darkMode ? 'linear-gradient(0deg, rgba(0,20,0,0.2) 0%, rgba(0,0,0,0.2) 100%)' : 'none',
+    }}>
+      {/* CSS for animations and styling */}
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+          
+          @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 5px #00ff41; }
+            50% { box-shadow: 0 0 20px #00ff41; }
+          }
+          
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+          }
+          
+          @keyframes terminal-cursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+          }
+          
+          @keyframes data-flow {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+          }
+          
+          @keyframes glitch {
+            0% {
+              transform: translate(0);
+              text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff;
+            }
+            20% {
+              transform: translate(-3px, 3px);
+              text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff;
+            }
+            40% {
+              transform: translate(-3px, -3px);
+              text-shadow: 2px 0 #00ffff, -2px 0 #ff00ff;
+            }
+            60% {
+              transform: translate(3px, 3px);
+              text-shadow: -2px 0 #00ffff, 2px 0 #ff00ff;
+            }
+            80% {
+              transform: translate(3px, -3px);
+              text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff;
+            }
+            100% {
+              transform: translate(0);
+              text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff;
+            }
+          }
+          
+          @keyframes scanline {
+            0% { transform: translateY(-100vh); }
+            100% { transform: translateY(100vh); }
+          }
+          
+          .glitch {
+            animation: glitch 0.3s infinite;
+          }
+          
+          .pulse-glow {
+            animation: pulse-glow 2s infinite;
+          }
+          
+          .float {
+            animation: float 10s ease-in-out infinite;
+          }
+          
+          .terminal-cursor {
+            animation: terminal-cursor 1s infinite;
+          }
+          
+          .data-flow {
+            animation: data-flow var(--flow-duration) linear infinite;
+            animation-delay: var(--flow-delay);
+          }
+          
+          .scanline {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 255, 65, 0.2);
+            z-index: 200;
+            opacity: 0.5;
+            animation: scanline 6s linear infinite;
+          }
+          
+          .crt-effect {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 200;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.03));
+            background-size: 100% 2px, 3px 100%;
+          }
+          
+          .hover-effect:hover {
+            text-shadow: 0 0 8px #00ff41;
+            transform: scale(1.05);
+            transition: all 0.2s ease;
+          }
+          
+          .code-node {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+          }
+          
+          .code-node:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
+          }
+          
+          .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.1);
+          }
+          
+          .progress-bar-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+          }
+          
+          .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(${matrixSize}, 30px);
+            gap: 2px;
+          }
+          
+          .terminal-window {
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #00ff41;
+            border: 1px solid #00ff41;
+            border-radius: 4px;
+            font-family: 'Share Tech Mono', monospace;
+            padding: 1rem;
+            overflow-y: auto;
+            max-height: 400px;
+          }
+          
+          .terminal-input {
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid #00ff41;
+            color: #00ff41;
+            font-family: 'Share Tech Mono', monospace;
+            padding: 0.5rem;
+            width: 100%;
+            outline: none;
+          }
+          
+          .terminal-input:focus {
+            box-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+          }
+          
+          .neo-button {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #00ff41;
+            border: 1px solid #00ff41;
+            padding: 0.5rem 1rem;
+            font-family: 'Share Tech Mono', monospace;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+          }
+          
+          .neo-button:hover {
+            background-color: rgba(0, 255, 65, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+          }
+          
+          .neo-button:active {
+            transform: translateY(2px);
+          }
+          
+          .neo-card {
+            background-color: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff41;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+            transition: all 0.2s ease;
+          }
+          
+          .neo-card:hover {
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+          }
+        `}
+      </style>
+      
+      {/* Background data flow */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 0, overflow: 'hidden', opacity: 0.3 }}>
+        {Array.from({ length: 15 }).map((_, i) => (
+          <div 
+            key={i}
+            className="data-flow"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: `${i * 7}%`,
+              fontSize: `${Math.random() * 14 + 8}px`,
+              color: '#00ff41',
+              fontFamily: 'monospace',
+              opacity: 0.5 + Math.random() * 0.5,
+              '--flow-duration': `${Math.random() * 20 + 10}s`,
+              '--flow-delay': `${Math.random() * 5}s`,
+              zIndex: 0
+            }}
+          >
+            {Array.from({ length: 40 }).map((_, j) => (
+              <div key={j} style={{ marginBottom: '8px' }}>
+                {Math.floor(Math.random() * 2)}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+      
+      {/* Background network activity */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 0, overflow: 'hidden' }}>
+        {networkActivity.map((item) => (
+          <div 
+            key={item.id}
+            className="float"
+            style={{
+              position: 'absolute',
+              width: `${item.size}px`,
+              height: `${item.size}px`,
+              borderRadius: '50%',
+              border: `1px solid ${zones[item.id % zones.length].color}`,
+              opacity: item.opacity,
+              top: `${item.top}%`,
+              left: `${item.left}%`,
+              animationDelay: `${item.delay}s`,
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* CRT screen effect */}
+      <div className="scanline"></div>
+      <div className="crt-effect"></div>
+      
+      {/* Header */}
+      <header style={{
+        position: 'relative',
+        zIndex: 1,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '1rem',
+        borderBottom: '1px solid #00ff41',
+        backgroundColor: darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(240, 240, 240, 0.8)',
+        backdropFilter: 'blur(5px)'
+      }}>
+        <h1 style={{
+          fontSize: '2.5rem',
+          fontWeight: 'bold',
+          margin: 0,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          textShadow: darkMode ? '0 0 10px #00ff41' : 'none'
+        }}>
+          <span className="glitch" style={{ visibility: showGlitchEffect ? 'visible' : 'hidden' }}>ERROR://</span>
+          <span className={showGlitchEffect ? 'glitch' : ''}>NET_RUNNER</span>
+          <span style={{ fontSize: '1rem', opacity: 0.7 }}>v2.0</span>
+        </h1>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {gameStarted && (
+            <div className="pulse-glow" style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              color: '#00ff41',
+              padding: '0.5rem 1rem',
+              borderRadius: '4px',
+              border: '1px solid #00ff41',
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              <span style={{ fontSize: '1.2rem' }}>REP:</span>
+              <span>{reputation}</span>
+            </div>
+          )}
+          
+          <button 
+            onClick={toggleTheme} 
+            className="hover-effect"
+            style={{
+              backgroundColor: 'transparent',
+              color: darkMode ? '#00ff41' : '#121212',
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              border: `1px solid ${darkMode ? '#00ff41' : '#121212'}`,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1.2rem'
+            }}
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+        </div>
+      </header>
+      
+      {/* Notification */}
+      {showNotification && (
+        <div style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
+          color: '#00ff41',
+          padding: '1rem 2rem',
+          borderRadius: '4px',
+          zIndex: 100,
+          textAlign: 'center',
+          fontSize: '1.5rem',
+          fontWeight: 'bold',
+          border: '1px solid #00ff41',
+          boxShadow: '0 0 20px rgba(0, 255, 65, 0.5)',
+          animation: 'pulse-glow 2s infinite'
+        }}>
+          {notificationMessage}
+        </div>
+      )}
+      
+      {/* Main Content */}
+      <main style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '2rem 1rem',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        {/* Tutorial Dialog */}
+        {showTutorial && gameStarted && (
+          <div style={{
+            position: 'fixed',
+            bottom: '2rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '80%',
+            maxWidth: '600px',
+            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+            borderRadius: '4px',
+            padding: '1.5rem',
+            border: '1px solid #00ff41',
+            boxShadow: '0 0 15px rgba(0, 255, 65, 0.3)',
+            zIndex: 100,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
+            animation: 'float 3s ease-in-out infinite'
+          }}>
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+              <div style={{
+                minWidth: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.8rem',
+                textShadow: '0 0 5px #00ff41'
+              }}>
+                {tutorialSteps[tutorialStep].character === 'ai' ? '🧠' : '👤'}
+              </div>
+              <div>
+                <div style={{ marginBottom: '0.5rem', color: '#00ff41', opacity: 0.7 }}>
+                  {tutorialSteps[tutorialStep].character === 'ai' ? 'SYSTEM' : username.toUpperCase()}
+                </div>
+                <div style={{ lineHeight: '1.5' }}>{tutorialSteps[tutorialStep].text}</div>
+              </div>
+            </div>
+            
+            <button
+              onClick={nextTutorialStep}
+              className="neo-button"
+              style={{
+                alignSelf: 'flex-end',
+                marginTop: '0.5rem'
+              }}
+            >
+              {tutorialStep < tutorialSteps.length - 1 ? 'NEXT' : 'START'}
+            </button>
+          </div>
+        )}
+        
+        {!gameStarted ? (
+          // Login Screen
+          <div style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto' }}>
+            <div className="pulse-glow" style={{ 
+              fontSize: '6rem', 
+              marginBottom: '1.5rem',
+              textShadow: '0 0 20px #00ff41'
+            }}>
+              <span style={{ color: '#00ff41' }}>$</span>
+            </div>
+            <h2 style={{ 
+              fontSize: '2.5rem', 
+              fontWeight: 'bold', 
+              marginBottom: '1rem',
+              textTransform: 'uppercase',
+              letterSpacing: '2px'
+            }}>
+              NetRunner Access Terminal
+            </h2>
+            <p style={{ 
+              fontSize: '1rem', 
+              marginBottom: '2rem',
+              opacity: 0.7,
+              letterSpacing: '1px',
+              lineHeight: '1.6'
+            }}>
+              ENTER THE NETWORK AT YOUR OWN RISK.<br/>
+              UNAUTHORIZED ACCESS WILL BE TRACED AND PROSECUTED.
+            </p>
+            
+            {/* Username Input */}
+            <div style={{ 
+              marginBottom: '2rem',
+              padding: '2rem',
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              borderRadius: '4px',
+              border: '1px solid #00ff41',
+              boxShadow: '0 0 15px rgba(0, 255, 65, 0.2)'
+            }}>
+              <h3 style={{ marginBottom: '1rem' }}>Enter Your Handle</h3>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="NetRunner ID"
+                style={{
+                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  color: '#00ff41',
+                  border: '1px solid #00ff41',
+                  padding: '0.75rem',
+                  width: '100%',
+                  marginBottom: '1rem',
+                  fontSize: '1.2rem',
+                  textAlign: 'center',
+                  outline: 'none'
+                }}
+                maxLength={15}
+              />
+              
+              <div style={{ marginBottom: '1.5rem' }}>
+                <p style={{ marginBottom: '1rem' }}>Choose Your Avatar</p>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'center',
+                  gap: '1rem',
+                  flexWrap: 'wrap'
+                }}>
+                  {renderAvatar('hacker', 50)}
+                  {renderAvatar('robot', 50)}
+                  {renderAvatar('ghost', 50)}
+                  {renderAvatar('cyber', 50)}
+                </div>
+              </div>
+              
+              <button
+                onClick={startGame}
+                className="neo-button"
+                style={{
+                  padding: '0.75rem 2rem',
+                  fontSize: '1.25rem',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                Connect To Network
+              </button>
+            </div>
+            
+            <div style={{
+              color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
+              fontSize: '0.8rem',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              lineHeight: '1.5'
+            }}>
+              <p>
+                Warning: This system is monitored.<br/>
+                All connection attempts are logged.
+              </p>
+            </div>
+          </div>
+        ) : (
+          // Game Interface
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+            gap: '1.5rem'
+          }}>
+            {/* Zone Selection */}
+            <div className="neo-card">
+              <h2 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 'bold', 
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                borderBottom: '1px solid rgba(0, 255, 65, 0.3)',
+                paddingBottom: '0.5rem'
+              }}>
+                <span>🌐</span> Network Zones
+              </h2>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {zones.map((zone, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveZone(index)}
+                    className={`hover-effect ${index === activeZone ? 'pulse-glow' : ''}`}
+                    style={{
+                      backgroundColor: index === activeZone ? 'rgba(0, 0, 0, 0.8)' : 'transparent',
+                      color: index === activeZone ? zone.color : darkMode ? '#00ff41' : '#121212',
+                      border: `1px solid ${zone.color}`,
+                      borderRadius: '4px',
+                      padding: '0.75rem',
+                      fontSize: '1rem',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'all 0.2s',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'space-between',
+                      position: 'relative',
+                      zIndex: 2
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span>{zone.icon}</span>
+                        <span>{zone.name}</span>
+                      </div>
+                      <div>
+                        {zonesVisited.includes(index) ? '✓' : ''}
+                        {index === activeZone && <span style={{ marginLeft: '0.5rem', opacity: 0.7 }}>LIVE</span>}
+                      </div>
+                    </div>
+                    <div style={{ fontSize: '0.8rem', marginTop: '0.25rem', opacity: 0.7 }}>
+                      {zone.description}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              
+              {/* Security Tips */}
+              <div style={{
+                marginTop: '1.5rem',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                padding: '0.75rem',
+                borderRadius: '4px',
+                border: '1px solid rgba(0, 255, 65, 0.3)',
+                fontSize: '0.9rem',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                <p style={{ fontWeight: 'bold', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span>💡</span> Security Advice:
+                </p>
+                <p key={currentTip} style={{ opacity: 0.8 }}>{securityTips[currentTip]}</p>
+              </div>
+            </div>
+            
+            {/* Active Zone Content */}
+            <div className="neo-card">
+              <h2 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 'bold', 
+                marginBottom: '1rem', 
+                color: zones[activeZone].color,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                borderBottom: '1px solid rgba(0, 255, 65, 0.3)',
+                paddingBottom: '0.5rem'
+              }}>
+                <span>{zones[activeZone].icon}</span> {zones[activeZone].name}
+              </h2>
+              
+              {/* Hacking Interface */}
+              {hackingActive ? (
+                <div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <div>Target: <span style={{ color: zones[activeZone].color }}>{currentChallenge.name}</span></div>
+                      <div>Difficulty: <span style={{ color: getDifficultyLevel(currentChallenge.difficulty) > 3 ? '#ff3e3e' : '#00ff41' }}>{currentChallenge.difficulty}</span></div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '0.8rem', marginBottom: '0.25rem', opacity: 0.7 }}>Hack Progress</div>
+                        <div className="progress-bar">
+                          <div 
+                            className="progress-bar-fill" 
+                            style={{ 
+                              width: `${hackProgress}%`,
+                              backgroundColor: '#00ff41'
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '0.8rem', marginBottom: '0.25rem', opacity: 0.7 }}>Security Trace</div>
+                        <div className="progress-bar">
+                          <div 
+                            className="progress-bar-fill" 
+                            style={{ 
+                              width: `${traceLevel}%`,
+                              backgroundColor: '#ff3e3e'
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div style={{ marginBottom: '1rem', fontSize: '0.8rem', opacity: 0.7, textAlign: 'center' }}>
+                      Select nodes to breach the system. <span style={{ color: '#ff3e3e' }}>Red</span> = Firewall, <span style={{ color: '#ffcc00' }}>Yellow</span> = Key Node.
+                    </div>
+                    
+                    <div style={{ 
+                      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                      border: '1px solid rgba(0, 255, 65, 0.3)',
+                      borderRadius: '4px',
+                      padding: '1rem',
+                      display: 'flex',
+                      justifyContent: 'center'
+                    }}>
+                      <div className="matrix-grid">
+                        {codeMatrix.map((row, rowIndex) => (
+                          row.map((node, colIndex) => (
+                            <div 
+                              key={`${rowIndex}-${colIndex}`}
+                              className="code-node"
+                              style={{
+                                backgroundColor: node.selected ? (
+                                  node.isKey ? 'rgba(255, 204, 0, 0.3)' : 
+                                  node.isFirewall ? 'rgba(255, 62, 62, 0.3)' : 
+                                  node.isHoneypot ? 'rgba(255, 0, 255, 0.3)' :
+                                  'rgba(0, 255, 65, 0.2)'
+                                ) : 'rgba(0, 0, 0, 0.7)',
+                                border: `1px solid ${
+                                  node.isKey ? '#ffcc00' : 
+                                  node.isFirewall ? '#ff3e3e' : 
+                                  '#00ff41'
+                                }`,
+                                boxShadow: node.selected ? `0 0 5px ${
+                                  node.isKey ? '#ffcc00' : 
+                                  node.isFirewall ? '#ff3e3e' : 
+                                  '#00ff41'
+                                }` : 'none'
+                              }}
+                              onClick={() => handleNodeSelection(rowIndex, colIndex)}
+                            >
+                              {node.value}
+                            </div>
+                          ))
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => {
+                      setHackingActive(false);
+                      if (hackingTimeout) {
+                        clearTimeout(hackingTimeout);
+                        setHackingTimeout(null);
+                      }
+                      addTerminalEntry("Hack manually aborted.");
+                    }}
+                    className="neo-button"
+                    style={{
+                      width: '100%',
+                      backgroundColor: 'rgba(255, 62, 62, 0.1)',
+                      borderColor: '#ff3e3e',
+                      color: '#ff3e3e'
+                    }}
+                  >
+                    Abort Hack
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div style={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    padding: '1rem',
+                    borderRadius: '4px',
+                    marginBottom: '1rem',
+                    border: '1px solid rgba(0, 255, 65, 0.3)'
+                  }}>
+                    <p style={{ marginBottom: '0.5rem' }}>
+                      Security Level: <span style={{ color: zones[activeZone].color }}>{securityLevel + activeZone}</span>
+                    </p>
+                    <p>
+                      {activeZone === 0 ? 
+                        "This is your starting point. Begin by hacking simple systems to build your reputation." :
+                        `${zones[activeZone].name} contains high-value targets with advanced security protocols.`
+                      }
+                    </p>
+                  </div>
+                  
+                  <h3 style={{ 
+                    marginBottom: '0.75rem',
+                    fontSize: '1.2rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <span>🎯</span> Available Targets
+                  </h3>
+                  
+                  <div style={{ 
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.75rem',
+                    marginBottom: '1.5rem'
+                  }}>
+                    {challenges[activeZone].map((challenge, index) => (
+                      <div
+                        key={index}
+                        className="neo-card hover-effect"
+                        style={{
+                          marginBottom: 0,
+                          opacity: challenge.completed ? 0.7 : 1,
+                          padding: '0.75rem',
+                          position: 'relative',
+                          overflow: 'hidden'
+                        }}
+                      >
+                        <div style={{ 
+                          display: 'flex', 
+                          justifyContent: 'space-between', 
+                          alignItems: 'center',
+                          marginBottom: '0.25rem'
+                        }}>
+                          <div style={{ fontWeight: 'bold', color: zones[activeZone].color }}>
+                            {challenge.name}
+                          </div>
+                          <div style={{ 
+                            fontSize: '0.8rem', 
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            padding: '0.25rem 0.5rem',
+                            borderRadius: '4px',
+                            color: getDifficultyLevel(challenge.difficulty) > 3 ? '#ff3e3e' : '#00ff41'
+                          }}>
+                            {challenge.difficulty}
+                          </div>
+                        </div>
+                        
+                        <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem', opacity: 0.8 }}>
+                          {challenge.description}
+                        </div>
+                        
+                        <div style={{ 
+                          display: 'flex', 
+                          justifyContent: 'space-between', 
+                          alignItems: 'center'
+                        }}>
+                          <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
+                            Reward: <span style={{ color: '#00ff41' }}>{challenge.reward} REP</span>
+                          </div>
+                          
+                          {challenge.completed ? (
+                            <div style={{ 
+                              fontSize: '0.8rem', 
+                              color: '#00ff41',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.25rem'
+                            }}>
+                              <span>✓</span> COMPLETED
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => startHackingChallenge(challenge)}
+                              className="neo-button"
+                              style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }}
+                            >
+                              HACK
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    gap: '0.5rem'
+                  }}>
+                    <button
+                      onClick={() => setShowTerminal(true)}
+                      className="neo-button"
+                      style={{ flex: 1 }}
+                    >
+                      TERMINAL
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        // Simulate a security scan
+                        showNotificationMessage(`Scanning ${zones[activeZone].name}...`);
+                        setTimeout(() => {
+                          // Random chance to discover an exploit
+                          if (Math.random() < 0.3 && !knownExploits.includes(activeZone)) {
+                            setKnownExploits([...knownExploits, activeZone]);
+                            showNotificationMessage("Vulnerability discovered!");
+                            addTerminalEntry(`SCANNER: Security vulnerability found in ${zones[activeZone].name}.`);
+                            setReputation(prev => prev + 3);
+                          } else {
+                            showNotificationMessage("No new vulnerabilities found.");
+                            addTerminalEntry(`SCANNER: No exploitable vulnerabilities detected in ${zones[activeZone].name}.`);
+                          }
+                        }, 1500);
+                      }}
+                      className="neo-button"
+                      style={{ flex: 1 }}
+                    >
+                      SCAN
+                    </button>
+                  </div>
+                </div>
+              )}
+              
+              {/* Terminal Overlay */}
+              {showTerminal && (
+                <div style={{
+                  position: 'fixed',
+                  inset: 0,
+                  backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                  zIndex: 50,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '2rem'
+                }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    marginBottom: '1rem',
+                    borderBottom: '1px solid #00ff41',
+                    paddingBottom: '0.5rem'
+                  }}>
+                    <div style={{ fontSize: '1.2rem', color: '#00ff41' }}>
+                      TERMINAL@{username.toUpperCase()}:~$
+                    </div>
+                    <button
+                      onClick={() => setShowTerminal(false)}
+                      className="neo-button"
+                      style={{ 
+                        padding: '0.25rem 0.5rem', 
+                        fontSize: '0.8rem',
+                        backgroundColor: 'transparent',
+                        borderColor: '#ff3e3e',
+                        color: '#ff3e3e'
+                      }}
+                    >
+                      CLOSE
+                    </button>
+                  </div>
+                  
+                  <div className="terminal-window" style={{ flex: 1, marginBottom: '1rem' }}>
+                    {terminalHistory.map((entry, i) => (
+                      <div 
+                        key={i} 
+                        style={{ 
+                          marginBottom: '0.25rem',
+                          fontFamily: "'Share Tech Mono', monospace",
+                          fontSize: '0.9rem',
+                          color: entry.isCommand ? '#ff3e3e' : '#00ff41'
+                        }}
+                      >
+                        <span style={{ opacity: 0.7, marginRight: '0.5rem' }}>[{entry.timestamp}]</span>
+                        {entry.text}
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <div style={{ color: '#00ff41', whiteSpace: 'nowrap' }}>
+                      ${username.toLowerCase()}:~$
+                    </div>
+                    <input
+                      type="text"
+                      value={terminalInput}
+                      onChange={(e) => setTerminalInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleTerminalCommand()}
+                      className="terminal-input"
+                      autoFocus
+                      style={{ flex: 1 }}
+                    />
+                    <span className="terminal-cursor">█</span>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Programs & Stats */}
+            <div className="neo-card">
+              <h2 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 'bold', 
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                borderBottom: '1px solid rgba(0, 255, 65, 0.3)',
+                paddingBottom: '0.5rem'
+              }}>
+                <span>💻</span> Hacking Programs
+              </h2>
+              
+              <div style={{ 
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1rem',
+                marginBottom: '1.5rem'
+              }}>
+                {userPrograms.map((program) => (
+                  <div 
+                    key={program.id}
+                    className="neo-card"
+                    style={{
+                      marginBottom: 0,
+                      padding: '0.75rem',
+                      opacity: program.unlocked ? 1 : 0.5,
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    <div style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center',
+                      marginBottom: '0.25rem'
+                    }}>
+                      <div style={{ fontWeight: 'bold', color: '#00ff41' }}>
+                        {program.name}
+                      </div>
+                      <div style={{ 
+                        fontSize: '0.8rem', 
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '4px'
+                      }}>
+                        Lvl {program.level}
+                      </div>
+                    </div>
+                    
+                    <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem', opacity: 0.8 }}>
+                      {program.description}
+                    </div>
+                    
+                    {program.unlocked && (
+                      <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center'
+                      }}>
+                        <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
+                          Upgrade Cost: <span style={{ color: '#00ff41' }}>{program.level * 15} REP</span>
+                        </div>
+                        
+                        <button
+                          onClick={() => upgradeProgramLevel(program.id)}
+                          className="neo-button"
+                          style={{ 
+                            padding: '0.25rem 0.5rem', 
+                            fontSize: '0.8rem',
+                            opacity: reputation >= program.level * 15 ? 1 : 0.5
+                          }}
+                          disabled={reputation < program.level * 15}
+                        >
+                          UPGRADE
+                        </button>
+                      </div>
+                    )}
+                    
+                    {!program.unlocked && (
+                      <div style={{ fontSize: '0.8rem', color: '#ff3e3e' }}>
+                        LOCKED - Increase your reputation to unlock
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              
+              <h2 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 'bold', 
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                borderBottom: '1px solid rgba(0, 255, 65, 0.3)',
+                paddingBottom: '0.5rem'
+              }}>
+                <span>🏆</span> Achievements
+              </h2>
+              
+              <div style={{ 
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.75rem',
+                marginBottom: '1.5rem'
+              }}>
+                {achievements.map((achievement) => (
+                  <div
+                    key={achievement.id}
+                    style={{
+                      backgroundColor: achievement.unlocked ? 'rgba(0, 255, 65, 0.1)' : 'rgba(0, 0, 0, 0.5)',
+                      borderRadius: '4px',
+                      padding: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      opacity: achievement.unlocked ? 1 : 0.6,
+                      border: achievement.unlocked ? '1px solid #00ff41' : '1px solid rgba(255, 255, 255, 0.1)'
+                    }}
+                  >
+                    <div style={{
+                      backgroundColor: achievement.unlocked ? 'rgba(0, 255, 65, 0.3)' : 'rgba(0, 0, 0, 0.5)',
+                      color: achievement.unlocked ? '#00ff41' : darkMode ? '#666' : '#aaa',
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      border: '1px solid #00ff41',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.8rem'
+                    }}>
+                      {achievement.unlocked ? '✓' : '?'}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 'bold' }}>{achievement.name}</div>
+                      <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>{achievement.description}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div style={{
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                padding: '0.75rem',
+                borderRadius: '4px',
+                fontSize: '0.9rem',
+                border: '1px solid rgba(0, 255, 65, 0.3)'
+              }}>
+                <p style={{ fontWeight: 'bold', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span>📊</span> System Status:
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Zones Explored:</span>
+                    <span>{zonesVisited.length} / {zones.length}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Challenges Completed:</span>
+                    <span>
+                      {challenges.flat().filter(c => c.completed).length} / {challenges.flat().length}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Programs Unlocked:</span>
+                    <span>
+                      {userPrograms.filter(p => p.unlocked).length} / {userPrograms.length}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Security Level:</span>
+                    <span>{securityLevel}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default NetRunner;

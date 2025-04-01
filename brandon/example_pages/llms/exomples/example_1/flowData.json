@@ -1,0 +1,211 @@
+{
+  "nodes": [
+    {
+      "id": "expert-family",
+      "type": "family",
+      "data": {
+        "type": "parent",
+        "familyName": "Expert System",
+        "layout": {
+          "columns": 4
+        },
+        "children": [
+          {
+            "id": "expert-1",
+            "type": "iconCard",
+            "data": {
+              "title": "Planning Expert",
+              "description": "Analyzes schedules and timing",
+              "icon": {
+                "type": "Clock",
+                "props": {
+                  "className": "w-6 h-6 text-white"
+                }
+              },
+              "customClasses": "bg-slate-800"
+            },
+            "handles": ["bottom"]
+          },
+          {
+            "id": "expert-2",
+            "type": "iconCard",
+            "data": {
+              "title": "Tone Expert",
+              "description": "Manages communication style",
+              "icon": {
+                "type": "MessageSquare",
+                "props": {
+                  "className": "w-6 h-6 text-white"
+                }
+              },
+              "customClasses": "bg-slate-800"
+            },
+            "handles": ["bottom"]
+          },
+          {
+            "id": "expert-3",
+            "type": "iconCard",
+            "data": {
+              "title": "Context Expert",
+              "description": "Provides relevant details",
+              "icon": {
+                "type": "Layers",
+                "props": {
+                  "className": "w-6 h-6 text-white"
+                }
+              },
+              "customClasses": "bg-slate-800"
+            },
+            "handles": ["bottom"]
+          },
+          {
+            "id": "expert-4",
+            "type": "iconCard",
+            "data": {
+              "title": "Format Expert",
+              "description": "Structures the output",
+              "icon": {
+                "type": "Layout",
+                "props": {
+                  "className": "w-6 h-6 text-white"
+                }
+              },
+              "customClasses": "bg-slate-800"
+            },
+            "handles": ["bottom"]
+          }
+        ]
+      },
+      "position": {
+        "x": 50,
+        "y": 0
+      }
+    },
+    {
+      "id": "output-1",
+      "type": "simple",
+      "data": {
+        "label": "Output 1",
+        "customClasses": "bg-slate-700"
+      },
+      "position": {
+        "x": 50,
+        "y": 200
+      },
+      "draggable": true
+    },
+    {
+      "id": "output-2",
+      "type": "simple",
+      "data": {
+        "label": "Output 2",
+        "customClasses": "bg-slate-700"
+      },
+      "position": {
+        "x": 180,
+        "y": 200
+      },
+      "draggable": true
+    },
+    {
+      "id": "output-3",
+      "type": "simple",
+      "data": {
+        "label": "Output 3",
+        "customClasses": "bg-slate-700"
+      },
+      "position": {
+        "x": 310,
+        "y": 200
+      },
+      "draggable": true
+    },
+    {
+      "id": "output-4",
+      "type": "simple",
+      "data": {
+        "label": "Output 4",
+        "customClasses": "bg-slate-700"
+      },
+      "position": {
+        "x": 440,
+        "y": 200
+      },
+      "draggable": true
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1-out1",
+      "source": "expert-1",
+      "target": "output-1",
+      "type": "animatedSvg",
+      "data": {
+        "duration": 2,
+        "direction": "forward",
+        "path": "straight",
+        "repeat": "indefinite",
+        "shape": "ArrowDown",
+        "iconProps": {
+          "size": 20,
+          "color": "#ffffff",
+          "strokeWidth": 2
+        }
+      }
+    },
+    {
+      "id": "e2-out2",
+      "source": "expert-2",
+      "target": "output-2",
+      "type": "animatedSvg",
+      "data": {
+        "duration": 2,
+        "direction": "forward",
+        "path": "straight",
+        "repeat": "indefinite",
+        "shape": "ArrowDown",
+        "iconProps": {
+          "size": 20,
+          "color": "#ffffff",
+          "strokeWidth": 2
+        }
+      }
+    },
+    {
+      "id": "e3-out3",
+      "source": "expert-3",
+      "target": "output-3",
+      "type": "animatedSvg",
+      "data": {
+        "duration": 2,
+        "direction": "forward",
+        "path": "straight",
+        "repeat": "indefinite",
+        "shape": "ArrowDown",
+        "iconProps": {
+          "size": 20,
+          "color": "#ffffff",
+          "strokeWidth": 2
+        }
+      }
+    },
+    {
+      "id": "e4-out4",
+      "source": "expert-4",
+      "target": "output-4",
+      "type": "animatedSvg",
+      "data": {
+        "duration": 2,
+        "direction": "forward",
+        "path": "straight",
+        "repeat": "indefinite",
+        "shape": "ArrowDown",
+        "iconProps": {
+          "size": 20,
+          "color": "#ffffff",
+          "strokeWidth": 2
+        }
+      }
+    }
+  ]
+}

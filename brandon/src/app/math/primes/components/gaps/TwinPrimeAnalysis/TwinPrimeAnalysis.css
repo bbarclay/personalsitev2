@@ -1,0 +1,41 @@
+.twin-prime-analysis {
+    padding: 20px;
+}
+
+.twin-prime-table, .twin-prime-charts, .twin-prime-explanation {
+    margin-bottom: 20px;
+}
+/* styles.css */
+.container {
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  .input-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 10px solid #000;
+  }
+  
+  .input-controls .form-group {
+    margin-right: 10px;
+    flex-grow: 1;
+  }
+  
+  .input-controls .btn {
+    height: fit-content;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .pagination button {
+    margin: 0 5px;
+  }
+  
+  

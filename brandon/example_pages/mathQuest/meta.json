@@ -1,0 +1,83 @@
+{
+  "id": "mathQuest",
+  "title": "Math Quest",
+  "description": "An epic mathematical adventure game where players solve puzzles, battle mathematical monsters, and explore a world of numbers",
+  "category": "Games",
+  "subcategory": "Educational",
+  "featured": true,
+  "difficulty": "intermediate",
+  "lastUpdated": "2024-03-30",
+  "icon": "⚔️",
+  "color": "from-purple-600 to-pink-600",
+  "shape": "square",
+  "enabled": true,
+  "tags": [
+    "games",
+    "mathematics",
+    "education",
+    "puzzles",
+    "adventure"
+  ],
+  "keywords": [
+    "math game",
+    "educational game",
+    "mathematical puzzles",
+    "learning game",
+    "interactive math"
+  ],
+  "type": "tool",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "game",
+        "label": "Play",
+        "icon": "🎮",
+        "color": {
+          "active": "bg-purple-500 text-white",
+          "hover": "bg-purple-100 dark:bg-purple-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "leaderboard",
+        "label": "Leaderboard",
+        "icon": "🏆",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Games",
+      "path": "/games"
+    },
+    "nextTools": [
+      {
+        "id": "aigame",
+        "title": "AI Game",
+        "icon": "🤖",
+        "path": "/games/aigame"
+      }
+    ]
+  }
+} 

@@ -1,0 +1,83 @@
+{
+  "id": "groupmaster",
+  "title": "Group Master",
+  "description": "An interactive game that teaches group theory concepts through puzzle-solving and mathematical exploration",
+  "category": "Mathematics",
+  "subcategory": "Abstract Algebra",
+  "featured": true,
+  "difficulty": "advanced",
+  "lastUpdated": "2024-03-30",
+  "icon": "👥",
+  "color": "from-red-600 to-orange-600",
+  "shape": "circle",
+  "enabled": true,
+  "tags": [
+    "mathematics",
+    "group theory",
+    "abstract algebra",
+    "game",
+    "education"
+  ],
+  "keywords": [
+    "group theory",
+    "abstract algebra",
+    "mathematical games",
+    "puzzle solving",
+    "mathematical education"
+  ],
+  "type": "game",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "game",
+        "label": "Play",
+        "icon": "🎮",
+        "color": {
+          "active": "bg-red-500 text-white",
+          "hover": "bg-red-100 dark:bg-red-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "💡",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Mathematics",
+      "path": "/mathematics"
+    },
+    "nextTools": [
+      {
+        "id": "starvoyage",
+        "title": "Star Voyage",
+        "icon": "🚀",
+        "path": "/games/starvoyage"
+      }
+    ]
+  }
+} 

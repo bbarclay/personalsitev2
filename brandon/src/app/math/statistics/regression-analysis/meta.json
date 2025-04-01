@@ -1,0 +1,80 @@
+{
+  "id": "regression-analysis",
+  "title": "Regression Analysis",
+  "description": "Perform linear and non-linear regression analysis on data sets with visualization",
+  "category": "Statistics",
+  "level": "Advanced",
+  "icon": "📈",
+  "color": "from-lime-500 to-green-600",
+  "shape": "rectangle",
+  "enabled": true,
+  "featured": false,
+  "tags": [
+    "statistics",
+    "regression",
+    "linear regression",
+    "data fitting",
+    "analysis"
+  ],
+  "keywords": [
+    "regression",
+    "curve fitting",
+    "trendline",
+    "prediction",
+    "correlation"
+  ],
+  "relatedTools": [
+    "data-analysis",
+    "statistics-analyzer"
+  ],
+  "path": "/math/statistics/regression-analysis",
+  "type": "math",
+  "difficulty": "intermediate",
+  "lastUpdated": "2025-03-31",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Solver",
+        "icon": "🧮",
+        "color": {
+          "active": "bg-blue-500 text-white",
+          "hover": "bg-blue-100 dark:bg-blue-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "💡",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Statistics",
+      "path": "/math"
+    }
+  }
+}

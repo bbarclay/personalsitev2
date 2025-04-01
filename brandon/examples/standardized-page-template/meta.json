@@ -1,0 +1,11 @@
+{
+  "id": "my-tool",
+  "title": "My Tool",
+  "description": "Description of my amazing tool",
+  "type": "math",
+  "icon": "🧮",
+  "difficulty": "intermediate",
+  "color": "#4F46E5",
+  "tags": ["example", "template"],
+  "keywords": ["example", "template", "math tool"]
+} 

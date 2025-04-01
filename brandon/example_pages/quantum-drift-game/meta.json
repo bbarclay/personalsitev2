@@ -1,0 +1,83 @@
+{
+  "id": "quantum-drift-game",
+  "title": "Quantum Drift Game",
+  "description": "An immersive time-travel adventure game that explores quantum mechanics and temporal paradoxes",
+  "category": "Games",
+  "subcategory": "Adventure",
+  "featured": true,
+  "difficulty": "intermediate",
+  "lastUpdated": "2024-03-30",
+  "icon": "🌌",
+  "color": "from-indigo-600 to-purple-600",
+  "shape": "circle",
+  "enabled": true,
+  "tags": [
+    "quantum",
+    "time travel",
+    "adventure",
+    "game",
+    "paradox"
+  ],
+  "keywords": [
+    "quantum mechanics",
+    "time travel",
+    "paradox",
+    "adventure game",
+    "temporal mechanics"
+  ],
+  "type": "game",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "game",
+        "label": "Play",
+        "icon": "🎮",
+        "color": {
+          "active": "bg-indigo-500 text-white",
+          "hover": "bg-indigo-100 dark:bg-indigo-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "💡",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Games",
+      "path": "/games"
+    },
+    "nextTools": [
+      {
+        "id": "jacobi-perron-explorer",
+        "title": "Jacobi-Perron Explorer",
+        "icon": "🔢",
+        "path": "/games/jacobi-perron-explorer"
+      }
+    ]
+  }
+} 

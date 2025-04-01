@@ -1,0 +1,44 @@
+[
+  {
+    "name": "AI & Machine Learning",
+    "slug": "ai-machine-learning",
+    "icon": "Brain",
+    "color": "from-purple-500",
+    "description": "Deep expertise in neural networks, NLP, and advanced ML algorithms"
+  },
+  {
+    "name": "Cloud & DevOps",
+    "slug": "cloud-devops",
+    "icon": "Cloud",
+    "color": "from-blue-500",
+    "description": "Cloud infrastructure and deployment automation"
+  },
+  {
+    "name": "Programming",
+    "slug": "programming",
+    "icon": "Code",
+    "color": "from-emerald-500 ",
+    "description": "Multiple programming languages and frameworks"
+  },
+  {
+    "name": "Database & Storage",
+    "slug": "database-storage",
+    "icon": "Database",
+    "color": "from-amber-500 ",
+    "description": "Database design, optimization, and management"
+  },
+  {
+    "name": "Security",
+    "slug": "security",
+    "icon": "Shield",
+    "color": "from-rose-500",
+    "description": "Cybersecurity and system hardening"
+  },
+  {
+    "name": "Leadership",
+    "slug": "leadership",
+    "icon": "Users",
+    "color": "from-cyan-500",
+    "description": "Strategic planning, team leadership, and project management"
+  }
+]

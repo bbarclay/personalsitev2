@@ -1,0 +1,83 @@
+{
+  "id": "ai",
+  "title": "AI",
+  "description": "A comprehensive artificial intelligence tool for exploring, learning, and experimenting with AI concepts and applications",
+  "category": "Technology",
+  "subcategory": "Artificial Intelligence",
+  "featured": true,
+  "difficulty": "advanced",
+  "lastUpdated": "2024-03-30",
+  "icon": "🧠",
+  "color": "from-red-600 to-orange-600",
+  "shape": "circle",
+  "enabled": true,
+  "tags": [
+    "artificial intelligence",
+    "machine learning",
+    "technology",
+    "education",
+    "experimentation"
+  ],
+  "keywords": [
+    "AI",
+    "machine learning",
+    "neural networks",
+    "deep learning",
+    "AI tools"
+  ],
+  "type": "tool",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "explorer",
+        "label": "Explore",
+        "icon": "🔍",
+        "color": {
+          "active": "bg-red-500 text-white",
+          "hover": "bg-red-100 dark:bg-red-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "💡",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Technology",
+      "path": "/technology"
+    },
+    "nextTools": [
+      {
+        "id": "aigame",
+        "title": "AI Game",
+        "icon": "🤖",
+        "path": "/games/aigame"
+      }
+    ]
+  }
+} 

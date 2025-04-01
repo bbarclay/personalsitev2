@@ -1,0 +1,20 @@
+
+{
+  "name": "Collatz Analysis",
+  "title": "Advanced Collatz Pattern Analysis",
+  "status": "published",
+  "description": "Exploring binary patterns and trajectories in the Collatz conjecture.",
+  "path": "/math/collatz-analysis",
+  "categories": ["math", "education"],
+  "sub_categories": "collatz conjecture, sequences, analysis",
+  "category_pages": "education",
+  "order": 11,
+  "featured": false,
+  "createdDate": "2024-01-20",
+  "icon": "🔍",
+  "tags": ["collatz conjecture", "sequences", "analysis", "education"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 11
+  }
+}

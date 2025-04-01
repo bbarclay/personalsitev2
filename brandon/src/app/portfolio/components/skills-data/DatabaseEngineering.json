@@ -1,0 +1,20 @@
+{
+  "name": "Database Engineering",
+  "category": "database-storage",
+  "proficiency": 95,
+  "experience": "10+ years",
+  "description": "Expert in modern data lake technologies, distributed databases, and large-scale data processing. Specialized in designing and optimizing database architectures for high-performance applications.",
+  "relatedTech": [
+    "Delta Lake", "Apache Iceberg", "AWS Glue",
+    "PostgreSQL", "MySQL", "BigQuery",
+    "Elasticsearch", "SOLR", "Data Warehousing",
+    "Data Modeling", "ETL Pipelines"
+  ],
+  "icon": "Database",
+  "achievements": [
+    "Engineered monitoring system for 250,000+ stores",
+    "Optimized database performance for petabyte-scale data processing",
+    "Developed ETL processes for GIS system automation",
+    "Improved data retrieval speeds by 50% through optimization"
+  ]
+}

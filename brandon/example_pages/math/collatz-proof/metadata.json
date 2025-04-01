@@ -1,0 +1,19 @@
+{
+  "name": "CollatzProof",
+  "title": "Collatz Conjecture: Cryptographic Framework",
+  "status": "published",
+  "description": "An interactive visualization and proof of the Collatz Conjecture using cryptographic, measure-theoretic, and information-theoretic frameworks. Features include sequence visualization, entropy analysis, and phase space exploration.",
+  "path": "/math/collatz-proof",
+  "categories": ["math", "education", "visualization"],
+  "sub_categories": ["number theory", "cryptography", "information theory"],
+  "category_pages": "education",
+  "order": 8,
+  "featured": false,
+  "createdDate": "2024-03-18",
+  "icon": "🔢",
+  "tags": ["collatz", "conjecture", "cryptography", "information theory", "measure theory", "visualization", "education"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 8
+  }
+}

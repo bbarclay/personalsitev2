@@ -1,0 +1,19 @@
+{
+  "name": "Matrix Operations",
+  "title": "Matrix Calculator",
+  "status": "published",
+  "description": "Interactive matrix calculator for linear algebra operations",
+  "path": "/math/matrix-operations",
+  "categories": ["math", "education"],
+  "sub_categories": "linear algebra, calculator, matrices",
+  "category_pages": "education",
+  "order": 5,
+  "featured": false,
+  "createdDate": "2024-01-20",
+  "icon": "🔲",
+  "tags": ["linear algebra", "matrices", "calculator", "education"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 5
+  }
+}

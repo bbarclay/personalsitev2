@@ -1,0 +1,20 @@
+
+{
+  "name": "SIR Epidemic Model Simulator",
+  "title": "SIR Epidemic Model Simulator",
+  "status": "published",
+  "description": "Simulate the spread of infectious diseases using the SIR model.",
+  "path": "/math/sir-epidemic-model-simulator",
+  "categories": ["math", "education"],
+  "sub_categories": "epidemiology, simulation, infectious diseases",
+  "category_pages": "education",
+  "order": 10,
+  "featured": false,
+  "createdDate": "2024-01-20",
+  "icon": "🦠",
+  "tags": ["epidemiology", "simulation", "infectious diseases", "education"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 10
+  }
+}

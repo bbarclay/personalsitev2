@@ -1,0 +1,79 @@
+{
+  "id": "area-calculator",
+  "title": "Area Calculator",
+  "description": "Calculate the area of various 2D shapes with interactive visualizations",
+  "category": "Geometry",
+  "subcategory": "Measurement",
+  "featured": true,
+  "difficulty": "beginner",
+  "lastUpdated": "2023-03-29",
+  "icon": "◻️",
+  "type": "math",
+  "tags": [
+    "geometry",
+    "area",
+    "shapes",
+    "measurement",
+    "calculation"
+  ],
+  "keywords": [
+    "area",
+    "square",
+    "rectangle",
+    "triangle",
+    "circle",
+    "polygon"
+  ],
+  "relatedTools": [
+    "angle-calculator",
+    "transformations"
+  ],
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "solver",
+        "label": "Calculator",
+        "icon": "🧮",
+        "color": {
+          "active": "text-blue-600 dark:text-blue-400",
+          "hover": "text-blue-500"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📚",
+        "color": {
+          "active": "text-green-600 dark:text-green-400",
+          "hover": "text-green-500"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "🔧",
+        "color": {
+          "active": "text-purple-600 dark:text-purple-400",
+          "hover": "text-purple-500"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📖",
+        "color": {
+          "active": "text-orange-600 dark:text-orange-400",
+          "hover": "text-orange-500"
+        }
+      }
+    ]
+  },
+  "color": "from-blue-500 to-purple-500",
+  "enabled": true,
+  "navigation": {
+    "category": {
+      "title": "Geometry",
+      "path": "/math"
+    }
+  }
+}

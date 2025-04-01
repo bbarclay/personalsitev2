@@ -1,0 +1,19 @@
+{
+  "name": "GeometryVisualizer",
+  "title": "Interactive Geometry Visualizer",
+  "status": "published",
+  "description": "An interactive tool for visualizing geometric shapes with advanced 3D capabilities, interactive controls, mathematical equations using MathJax, and dynamic animations using Three.js.",
+  "path": "/math/geometry-visualizer",
+  "categories": ["math", "education", "visualization"],
+  "sub_categories": ["geometry", "3d", "interactive"],
+  "category_pages": "education",
+  "order": 5,
+  "featured": true,
+  "createdDate": "2024-02-10",
+  "icon": "🔷",
+  "tags": ["geometry", "threejs", "mathjax", "visualization", "interactive", "3d", "educational", "animation"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 5
+  }
+}
