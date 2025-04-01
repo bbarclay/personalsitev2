@@ -67,12 +67,17 @@ export function loadToolMeta(metaJson: any): ToolMeta {
     };
   }
   
+  // Construct path if not provided
+  const path = metaJson.path || `/${metaJson.type || 'ai'}/${metaJson.id}`;
+  
   // Apply all defaults in order of precedence
   const meta = {
     ...GLOBAL_DEFAULTS,
     ...typeDefaults,
     ...sidebarConfig,
     ...metaJson,
+    // Add path to ensure it's always present
+    path,
     // Make sure sidebar structure is maintained if metaJson has sidebar but not tabs
     sidebar: {
       ...(sidebarConfig.sidebar || {}),

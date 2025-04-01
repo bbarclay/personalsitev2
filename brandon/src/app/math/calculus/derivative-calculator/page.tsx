@@ -2,24 +2,31 @@
 
 import React from 'react';
 import { ToolPageLayout, createDynamicPanelComponent } from '@/components/layouts/ToolPageLayout';
+import dynamic from 'next/dynamic';
 import { loadToolMeta } from '@/utils/meta-loader';
 import metaJson from './meta.json';
 
 // Load metadata with proper defaults
 const meta = loadToolMeta(metaJson);
 
-// Create dynamic panel component with placeholders
+// Dynamically import components
+const SolverPanel = dynamic(() => import('./components/SolverPanel'), { ssr: false });
+const ExplanationPanel = dynamic(() => import('./components/ExplanationPanel'), { ssr: false });
+const ApplicationsPanel = dynamic(() => import('./components/ApplicationsPanel'), { ssr: false });
+const ResourcesPanel = dynamic(() => import('./components/ResourcesPanel'), { ssr: false });
+
+// Create dynamic panel component
 const DerivativeCalculatorContent = createDynamicPanelComponent({
-  solver: () => <div>Solver panel content</div>,
-  explanation: () => <div>Explanation panel content</div>,
-  applications: () => <div>Applications panel content</div>,
-  resources: () => <div>Resources panel content</div>
+  solver: SolverPanel,
+  explanation: ExplanationPanel,
+  applications: ApplicationsPanel,
+  resources: ResourcesPanel
 });
 
 export default function DerivativeCalculatorPage() {
   return (
     <ToolPageLayout meta={meta}>
-      <div>Tool content</div>
+      <DerivativeCalculatorContent />
     </ToolPageLayout>
   );
 }

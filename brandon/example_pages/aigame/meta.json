@@ -1,0 +1,83 @@
+{
+  "id": "aigame",
+  "title": "AI Game",
+  "description": "An interactive game where players learn about artificial intelligence through hands-on challenges and simulations",
+  "category": "Games",
+  "subcategory": "Educational",
+  "featured": true,
+  "difficulty": "intermediate",
+  "lastUpdated": "2024-03-30",
+  "icon": "🤖",
+  "color": "from-cyan-600 to-blue-600",
+  "shape": "square",
+  "enabled": true,
+  "tags": [
+    "games",
+    "artificial intelligence",
+    "education",
+    "simulation",
+    "interactive"
+  ],
+  "keywords": [
+    "AI game",
+    "machine learning",
+    "educational game",
+    "interactive learning",
+    "AI simulation"
+  ],
+  "type": "tool",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "game",
+        "label": "Play",
+        "icon": "🎮",
+        "color": {
+          "active": "bg-cyan-500 text-white",
+          "hover": "bg-cyan-100 dark:bg-cyan-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "leaderboard",
+        "label": "Leaderboard",
+        "icon": "🏆",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Games",
+      "path": "/games"
+    },
+    "nextTools": [
+      {
+        "id": "ai",
+        "title": "AI",
+        "icon": "🧠",
+        "path": "/ai"
+      }
+    ]
+  }
+} 

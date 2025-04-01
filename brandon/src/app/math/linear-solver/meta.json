@@ -1,42 +1,35 @@
 {
-  "id": "linear-solver",
-  "title": "Linear System Solver",
-  "description": "Solve systems of linear equations step by step with detailed explanations and visualizations",
-  "category": "Linear Algebra",
-  "subcategory": "Matrix Operations",
-  "featured": true,
+  "id": "LinearSolver",
+  "title": "LinearSolver",
+  "description": "Interactive LinearSolver tool for mathematics exploration",
+  "category": "Mathematics",
+  "subcategory": "Interactive Tools",
   "type": "math",
   "difficulty": "intermediate",
-  "lastUpdated": "2024-03-31",
-  "icon": "📊",
+  "lastUpdated": "2025-04-01",
+  "icon": "🧮",
   "color": "from-blue-500 to-purple-500",
   "shape": "rectangle",
   "enabled": true,
+  "featured": false,
   "tags": [
-    "linear algebra",
-    "matrix",
-    "vector",
-    "gaussian elimination",
-    "solver",
-    "equations"
+    "math",
+    "interactive"
   ],
   "keywords": [
-    "linear system",
-    "solver",
-    "gaussian elimination",
-    "matrix",
-    "vector",
-    "linear algebra"
+    "linearsolver",
+    "math",
+    "tool"
   ],
   "sidebar": {
     "tabs": [
       {
         "id": "solver",
         "label": "Solver",
-        "icon": "⚡",
+        "icon": "🧮",
         "color": {
-          "active": "bg-blue-500 text-white",
-          "hover": "bg-blue-100 dark:bg-blue-900"
+          "active": "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
@@ -44,17 +37,17 @@
         "label": "Explanation",
         "icon": "📚",
         "color": {
-          "active": "bg-purple-500 text-white",
-          "hover": "bg-purple-100 dark:bg-purple-900"
+          "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
         "id": "applications",
         "label": "Applications",
-        "icon": "🎯",
+        "icon": "🌐",
         "color": {
-          "active": "bg-green-500 text-white",
-          "hover": "bg-green-100 dark:bg-green-900"
+          "active": "bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
@@ -62,29 +55,9 @@
         "label": "Resources",
         "icon": "📖",
         "color": {
-          "active": "bg-orange-500 text-white",
-          "hover": "bg-orange-100 dark:bg-orange-900"
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
-      }
-    ]
-  },
-  "navigation": {
-    "category": {
-      "title": "Mathematics",
-      "path": "/math"
-    },
-    "nextTools": [
-      {
-        "id": "quadratic-solver",
-        "title": "Quadratic Solver",
-        "icon": "📈",
-        "path": "/math/quadratic-solver"
-      },
-      {
-        "id": "polynomial-solver",
-        "title": "Polynomial Solver",
-        "icon": "🔢",
-        "path": "/math/polynomial"
       }
     ]
   }

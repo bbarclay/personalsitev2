@@ -196,194 +196,23 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
           })()}
         </div>
 
-        <div className="container mx-auto relative z-10">
-          <h1 className="text-5xl font-bold mb-3 flex items-center text-white">
-            <span className="mr-2 relative">
-              {title}
-              <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 to-purple-400"></span>
-            </span>
-          </h1>
-          <p className="text-xl text-blue-100">
-            {description}
-          </p>
-
-          {/* Enhanced Search Bar in Header */}
-          <div className="mt-8 max-w-2xl mx-auto relative">
-            <div className="relative backdrop-blur-sm bg-white/10 rounded-xl overflow-hidden shadow-lg border border-white/20">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-100" size={20} />
-              <input
-                type="text"
-                placeholder="Search for tools, concepts, or keywords..."
-                className="w-full bg-transparent border-none py-4 pl-12 pr-14 text-white placeholder-blue-100/70 focus:outline-none focus:ring-2 focus:ring-white/50"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              {searchTerm && (
-                <button 
-                  onClick={() => setSearchTerm('')}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-blue-100 hover:text-white"
-                >
-                  <X size={18} />
-                </button>
-              )}
-            </div>
-
-            {/* Search Stats */}
-            {searchTerm && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="absolute mt-2 text-blue-100 text-sm"
-              >
-                Found {filteredTools.length} {filteredTools.length === 1 ? 'tool' : 'tools'} 
-                for "{searchTerm}"
-              </motion.div>
-            )}
-          </div>
+        <div className="container mx-auto max-w-[2000px] px-8">
+          <h1 className="text-4xl font-bold mb-4 text-white">{title}</h1>
+          <p className="text-lg text-gray-200">{description}</p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 mt-8">
-        {/* Filter Bar */}
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-glow-sm mb-8 overflow-hidden">
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
-            <div className="flex items-center space-x-2">
-              <Filter size={18} className="text-indigo-600 dark:text-indigo-400" />
-              <h3 className="font-semibold">Filters</h3>
-              
-              {/* Active filters count */}
-              {(activeCategory !== 'All Categories' || activeLevel !== null || activeTags.length > 0) && (
-                <span className="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-xs px-2 py-1 rounded-full">
-                  {(activeCategory !== 'All Categories' ? 1 : 0) + 
-                   (activeLevel !== null ? 1 : 0) + 
-                   activeTags.length}
-                </span>
-              )}
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              {/* Reset filters button */}
-              {(activeCategory !== 'All Categories' || activeLevel !== null || activeTags.length > 0 || searchTerm) && (
-                <button 
-                  onClick={resetFilters}
-                  className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center"
-                >
-                  <X size={14} className="mr-1" />
-                  Reset
-                </button>
-              )}
-              
-              {/* View toggle */}
-              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg flex">
-                <button 
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-l-lg ${viewMode === 'grid' 
-                    ? 'bg-indigo-600 text-white' 
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
-                >
-                  <Grid size={16} />
-                </button>
-                <button 
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-r-lg ${viewMode === 'list' 
-                    ? 'bg-indigo-600 text-white' 
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
-                >
-                  <List size={16} />
-                </button>
-              </div>
-              
-              {/* Expand/collapse filter */}
-              <button 
-                onClick={() => setIsFilterExpanded(!isFilterExpanded)}
-                className="text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center"
-              >
-                {isFilterExpanded ? 'Less' : 'More'} filters
-                <ChevronDown 
-                  size={14} 
-                  className={`ml-1 transform transition-transform ${isFilterExpanded ? 'rotate-180' : ''}`} 
-                />
-              </button>
-            </div>
-          </div>
-          
-          {/* Expanded filters */}
-          <AnimatePresence>
-            {isFilterExpanded && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden"
-              >
-                <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Level filter */}
-                  <div>
-                    <h4 className="font-medium mb-2 text-sm text-gray-700 dark:text-gray-300">Level</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {['Beginner', 'Intermediate', 'Advanced'].map(level => (
-                        <button
-                          key={level}
-                          onClick={() => setActiveLevel(activeLevel === level ? null : level)}
-                          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                            activeLevel === level
-                              ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200'
-                              : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-                          }`}
-                        >
-                          {level === 'Beginner' && <AwardIcon size={12} className="inline mr-1" />}
-                          {level === 'Intermediate' && <BookOpen size={12} className="inline mr-1" />}
-                          {level === 'Advanced' && <Zap size={12} className="inline mr-1" />}
-                          {level}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* Tags filter */}
-                  <div className="md:col-span-2">
-                    <h4 className="font-medium mb-2 text-sm text-gray-700 dark:text-gray-300">Tags</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {allTags.slice(0, 10).map(tag => (
-                        <button
-                          key={tag}
-                          onClick={() => toggleTag(tag)}
-                          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                            activeTags.includes(tag)
-                              ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200'
-                              : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-                          }`}
-                        >
-                          {tag}
-                        </button>
-                      ))}
-                      {allTags.length > 10 && (
-                        <button className="px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-                          +{allTags.length - 10} more
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+      {/* Main content */}
+      <div className="container mx-auto max-w-[2000px] px-8 py-8">
+        {/* Search and filters */}
+        <div className="mb-8">
+          {/* Remove the old search box container */}
         </div>
 
-        {/* Results count */}
-        <div className="mb-6 text-gray-700 dark:text-gray-300">
-          {filteredTools.length > 0 ? (
-            <p>Showing {filteredTools.length} {filteredTools.length === 1 ? 'tool' : 'tools'}</p>
-          ) : (
-            <p>No tools found matching your criteria. Try adjusting your filters.</p>
-          )}
-        </div>
-
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Sidebar with Enhanced Categories */}
-          <div className="md:w-1/4">
+        {/* Tools grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
             <div className="bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-glow-sm sticky top-4">
               <h2 className="text-xl font-bold p-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
                 <span>Categories</span>
@@ -446,8 +275,178 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
             </div>
           </div>
 
-          {/* Main content */}
-          <div className="md:w-3/4">
+          {/* Main content area */}
+          <div className="lg:col-span-4">
+            {/* Filter Bar */}
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-glow-sm mb-8 overflow-hidden">
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
+                <div className="flex items-center space-x-2">
+                  <Filter size={18} className="text-indigo-600 dark:text-indigo-400" />
+                  <h3 className="font-semibold">Filters</h3>
+                  
+                  {/* Active filters count */}
+                  {(activeCategory !== 'All Categories' || activeLevel !== null || activeTags.length > 0) && (
+                    <span className="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-xs px-2 py-1 rounded-full">
+                      {(activeCategory !== 'All Categories' ? 1 : 0) + 
+                       (activeLevel !== null ? 1 : 0) + 
+                       activeTags.length}
+                    </span>
+                  )}
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  {/* Reset filters button */}
+                  {(activeCategory !== 'All Categories' || activeLevel !== null || activeTags.length > 0 || searchTerm) && (
+                    <button 
+                      onClick={resetFilters}
+                      className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center"
+                    >
+                      <X size={14} className="mr-1" />
+                      Reset
+                    </button>
+                  )}
+                  
+                  {/* View toggle */}
+                  <div className="bg-gray-100 dark:bg-gray-800 rounded-lg flex">
+                    <button 
+                      onClick={() => setViewMode('grid')}
+                      className={`p-2 rounded-l-lg ${viewMode === 'grid' 
+                        ? 'bg-indigo-600 text-white' 
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
+                    >
+                      <Grid size={16} />
+                    </button>
+                    <button 
+                      onClick={() => setViewMode('list')}
+                      className={`p-2 rounded-r-lg ${viewMode === 'list' 
+                        ? 'bg-indigo-600 text-white' 
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
+                    >
+                      <List size={16} />
+                    </button>
+                  </div>
+                  
+                  {/* Expand/collapse filter */}
+                  <button 
+                    onClick={() => setIsFilterExpanded(!isFilterExpanded)}
+                    className="text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center"
+                  >
+                    {isFilterExpanded ? 'Less' : 'More'} filters
+                    <ChevronDown 
+                      size={14} 
+                      className={`ml-1 transform transition-transform ${isFilterExpanded ? 'rotate-180' : ''}`} 
+                    />
+                  </button>
+                </div>
+              </div>
+
+              {/* Search Box */}
+              <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-800">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                  <input
+                    type="text"
+                    placeholder="Search for tools, concepts, or keywords..."
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg py-2 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  {searchTerm && (
+                    <button 
+                      onClick={() => setSearchTerm('')}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    >
+                      <X size={16} />
+                    </button>
+                  )}
+                </div>
+                {/* Search Stats */}
+                {searchTerm && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="mt-2 text-sm text-gray-500 dark:text-gray-400"
+                  >
+                    Found {filteredTools.length} {filteredTools.length === 1 ? 'tool' : 'tools'} 
+                    for "{searchTerm}"
+                  </motion.div>
+                )}
+              </div>
+              
+              {/* Expanded filters */}
+              <AnimatePresence>
+                {isFilterExpanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {/* Level filter */}
+                      <div>
+                        <h4 className="font-medium mb-2 text-sm text-gray-700 dark:text-gray-300">Level</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {['Beginner', 'Intermediate', 'Advanced'].map(level => (
+                            <button
+                              key={level}
+                              onClick={() => setActiveLevel(activeLevel === level ? null : level)}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                                activeLevel === level
+                                  ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200'
+                                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                              }`}
+                            >
+                              {level === 'Beginner' && <AwardIcon size={12} className="inline mr-1" />}
+                              {level === 'Intermediate' && <BookOpen size={12} className="inline mr-1" />}
+                              {level === 'Advanced' && <Zap size={12} className="inline mr-1" />}
+                              {level}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      {/* Tags filter */}
+                      <div className="md:col-span-2">
+                        <h4 className="font-medium mb-2 text-sm text-gray-700 dark:text-gray-300">Tags</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {allTags.slice(0, 10).map(tag => (
+                            <button
+                              key={tag}
+                              onClick={() => toggleTag(tag)}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                                activeTags.includes(tag)
+                                  ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200'
+                                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                              }`}
+                            >
+                              {tag}
+                            </button>
+                          ))}
+                          {allTags.length > 10 && (
+                            <button className="px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+                              +{allTags.length - 10} more
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Results count */}
+            <div className="mb-6 text-gray-700 dark:text-gray-300">
+              {filteredTools.length > 0 ? (
+                <p>Showing {filteredTools.length} {filteredTools.length === 1 ? 'tool' : 'tools'}</p>
+              ) : (
+                <p>No tools found matching your criteria. Try adjusting your filters.</p>
+              )}
+            </div>
+
             {/* Active Filters */}
             <AnimatePresence>
               {(activeCategory !== 'All Categories' || activeLevel !== null || activeTags.length > 0) && (
@@ -520,37 +519,41 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                   <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {featuredTools.map((tool, index) => (
                     <motion.div
                       key={tool.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
-                      className="group"
+                      className="group relative"
                       whileHover={{ y: -5 }}
                     >
                       <Link href={getToolPath(tool.id)} className="block h-full">
-                        <div className={`relative rounded-xl overflow-hidden shadow-glow-md h-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 hover:border-${tool.color?.split(' ')[0].replace('from-', '')}-400 transition-all duration-300`}>
-                          {/* Pulsing background effect on hover */}
+                        <div className={`relative rounded-xl overflow-hidden shadow-glow-md h-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border border-gray-200 dark:border-gray-700 hover:border-${tool.color?.split(' ')[0].replace('from-', '')}-400 transition-all duration-300`}>
+                          {/* Animated background gradient */}
                           <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-1000 animate-pulse-slow">
                             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10"></div>
                           </div>
                           
                           {/* Tool content */}
-                          <div 
-                            className={`absolute inset-0 bg-gradient-to-br ${tool.color || 'from-blue-600 to-indigo-600'} opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-500`}
-                            style={{ clipPath: tool.shape === 'rectangle' ? 'none' : undefined }}
-                          ></div>
-                          
                           <div className="relative z-10 p-6 flex flex-col h-full">
+                            {/* Icon with shape */}
                             <div className="flex items-start justify-between mb-4">
-                              <div className={`${getShapeClass(tool.shape || 'square')} bg-gradient-to-br ${tool.color || 'from-blue-600 to-indigo-600'} flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300`}>
-                                {tool.icon}
+                              <div className={`${getShapeClass(tool.shape || 'square')} bg-gradient-to-br ${tool.color || 'from-blue-600 to-indigo-600'} flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300 relative overflow-hidden`}>
+                                {/* Animated background for icon */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                <div className="relative z-10">{tool.icon}</div>
+                                
+                                {/* Decorative elements */}
+                                <div className="absolute -top-4 -right-4 w-8 h-8 bg-white/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                <div className="absolute -bottom-4 -left-4 w-8 h-8 bg-white/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                               </div>
-                              <div>
-                                {tool.tags?.map(tag => (
-                                  <span key={tag} className="inline-block px-2 py-1 text-xs font-medium rounded-md bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-200 mr-2 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/50 group-hover:text-indigo-700 dark:group-hover:text-indigo-200 transition-colors">
+                              
+                              {/* Tags and level */}
+                              <div className="flex flex-wrap gap-2 justify-end">
+                                {tool.tags?.slice(0, 2).map(tag => (
+                                  <span key={tag} className="inline-block px-2 py-1 text-xs font-medium rounded-md bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-200 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/50 group-hover:text-indigo-700 dark:group-hover:text-indigo-200 transition-colors">
                                     {tag}
                                   </span>
                                 ))}
@@ -566,18 +569,23 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                               </div>
                             </div>
                             
-                            <h3 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white">
+                            {/* Title with animated underline */}
+                            <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white relative inline-block">
                               {tool.title}
-                              <span className="ml-2 inline-block w-5 h-0.5 bg-indigo-500 group-hover:w-12 transition-all duration-300"></span>
+                              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-500 group-hover:w-full transition-all duration-300"></span>
                             </h3>
-                            <p className="text-gray-600 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-gray-100 mb-4">
+                            
+                            {/* Description with gradient text on hover */}
+                            <p className="text-gray-600 dark:text-gray-400 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-600 group-hover:to-purple-600 dark:group-hover:from-indigo-400 dark:group-hover:to-purple-400 mb-4 line-clamp-2">
                               {tool.description}
                             </p>
                             
+                            {/* Action button */}
                             <div className="mt-auto">
-                              <button className="group-hover:bg-indigo-600 group-hover:text-white dark:group-hover:bg-white/90 dark:group-hover:text-gray-900 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg transition-colors duration-300 flex items-center text-sm font-medium">
-                                Open Tool
-                                <ChevronRight className="ml-1 h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
+                              <button className="group-hover:bg-indigo-600 group-hover:text-white dark:group-hover:bg-white/90 dark:group-hover:text-gray-900 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg transition-colors duration-300 flex items-center text-sm font-medium relative overflow-hidden">
+                                <span className="relative z-10">Open Tool</span>
+                                <ChevronRight className="ml-1 h-4 w-4 transform group-hover:translate-x-1 transition-transform relative z-10" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                               </button>
                             </div>
                           </div>
@@ -591,6 +599,12 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                             {(tool.shape === 'parallelogram' || tool.shape === 'rhombus') && <div className="h-16 w-16 rotate-45 border-2 border-current" />}
                             {(tool.shape === 'pentagon' || tool.shape === 'octagon' || tool.shape === 'trapezoid') && <div className="h-16 w-16 border-2 border-current" />}
                           </div>
+                          
+                          {/* Animated corner accents */}
+                          <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                          <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                          <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                          <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         </div>
                       </Link>
                     </motion.div>

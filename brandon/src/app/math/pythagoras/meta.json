@@ -1,35 +1,26 @@
 {
-  "id": "pythagoras",
-  "title": "Pythagorean Theorem Calculator",
-  "description": "Calculate the sides of a right triangle using the Pythagorean theorem",
-  "category": "Geometry",
-  "level": "Beginner",
-  "icon": "📐",
-  "color": "from-sky-600 to-cyan-700",
-  "shape": "triangle",
-  "enabled": true,
-  "featured": true,
-  "tags": [
-    "geometry",
-    "pythagorean theorem",
-    "triangles",
-    "right triangles",
-    "calculator"
-  ],
-  "keywords": [
-    "pythagorean",
-    "theorem",
-    "geometry",
-    "triangles",
-    "calculator"
-  ],
-  "relatedTools": [
-    "geometry-angle",
-    "geometry-trigonometry"
-  ],
+  "id": "Pythagoras",
+  "title": "Pythagoras",
+  "description": "Interactive Pythagoras tool for mathematics exploration",
+  "category": "Mathematics",
+  "subcategory": "Interactive Tools",
   "type": "math",
   "difficulty": "intermediate",
-  "lastUpdated": "2025-03-31",
+  "lastUpdated": "2025-04-01",
+  "icon": "🧮",
+  "color": "from-blue-500 to-purple-500",
+  "shape": "rectangle",
+  "enabled": true,
+  "featured": false,
+  "tags": [
+    "math",
+    "interactive"
+  ],
+  "keywords": [
+    "pythagoras",
+    "math",
+    "tool"
+  ],
   "sidebar": {
     "tabs": [
       {
@@ -37,8 +28,8 @@
         "label": "Solver",
         "icon": "🧮",
         "color": {
-          "active": "bg-blue-500 text-white",
-          "hover": "bg-blue-100 dark:bg-blue-900"
+          "active": "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
@@ -46,17 +37,17 @@
         "label": "Explanation",
         "icon": "📚",
         "color": {
-          "active": "bg-purple-500 text-white",
-          "hover": "bg-purple-100 dark:bg-purple-900"
+          "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
         "id": "applications",
         "label": "Applications",
-        "icon": "🔧",
+        "icon": "🌐",
         "color": {
-          "active": "bg-green-500 text-white",
-          "hover": "bg-green-100 dark:bg-green-900"
+          "active": "bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
@@ -64,16 +55,10 @@
         "label": "Resources",
         "icon": "📖",
         "color": {
-          "active": "bg-orange-500 text-white",
-          "hover": "bg-orange-100 dark:bg-orange-900"
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       }
     ]
-  },
-  "navigation": {
-    "category": {
-      "title": "Geometry",
-      "path": "/math"
-    }
   }
 }

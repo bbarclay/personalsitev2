@@ -1,0 +1,19 @@
+{
+  "name": "UltimateCollatzExplorer",
+  "title": "Ultimate Collatz Explorer",
+  "status": "published",
+  "description": "An advanced, interactive Collatz Conjecture visualization tool with multi-dimensional visualizations, comparative analysis, and interactive discovery features.",
+  "path": "/math/ultimate-collatz-explorer",
+  "categories": ["math", "education", "visualization"],
+  "sub_categories": ["number theory", "collatz conjecture", "interactive"],
+  "category_pages": "education",
+  "order": 12,
+  "featured": true,
+  "createdDate": "2024-03-19",
+  "icon": "🧮",
+  "tags": ["collatz conjecture", "3n+1 problem", "number theory", "visualization", "mathematics", "sequences", "interactive"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 12
+  }
+}

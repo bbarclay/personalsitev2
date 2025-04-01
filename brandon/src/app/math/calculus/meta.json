@@ -1,29 +1,25 @@
 {
-  "id": "calculus",
+  "id": "Calculus",
   "title": "Calculus",
-  "description": "Mathematical study of continuous change, including derivatives, integrals, and their applications",
-  "category": "Math",
-  "subcategory": "Advanced",
+  "description": "Interactive Calculus tool for mathematics exploration",
+  "category": "Mathematics",
+  "subcategory": "Calculus",
   "type": "math",
-  "difficulty": "advanced",
-  "lastUpdated": "2025-03-31",
-  "icon": "📊",
-  "color": "from-blue-500 to-purple-500",
-  "shape": "square",
+  "difficulty": "intermediate",
+  "lastUpdated": "2025-04-01",
+  "icon": "∫",
+  "color": "from-green-500 to-blue-500",
+  "shape": "rectangle",
   "enabled": true,
-  "featured": true,
+  "featured": false,
   "tags": [
-    "calculus",
     "math",
-    "derivatives",
-    "integrals"
+    "interactive"
   ],
   "keywords": [
     "calculus",
-    "derivatives",
-    "integrals",
-    "limits",
-    "math"
+    "math",
+    "tool"
   ],
   "sidebar": {
     "tabs": [
@@ -41,17 +37,17 @@
         "label": "Explanation",
         "icon": "📚",
         "color": {
-          "active": "bg-purple-500 text-white",
-          "hover": "bg-purple-100 dark:bg-purple-900"
+          "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
         "id": "applications",
         "label": "Applications",
-        "icon": "🔧",
+        "icon": "🌐",
         "color": {
-          "active": "bg-green-500 text-white",
-          "hover": "bg-green-100 dark:bg-green-900"
+          "active": "bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
@@ -59,29 +55,9 @@
         "label": "Resources",
         "icon": "📖",
         "color": {
-          "active": "bg-orange-500 text-white",
-          "hover": "bg-orange-100 dark:bg-orange-900"
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
-      }
-    ]
-  },
-  "navigation": {
-    "category": {
-      "title": "Mathematics",
-      "path": "/math"
-    },
-    "nextTools": [
-      {
-        "id": "derivatives",
-        "title": "Derivative Calculator",
-        "path": "/math/calculus/derivative-calculator",
-        "icon": "📈"
-      },
-      {
-        "id": "integrals",
-        "title": "Integral Calculator",
-        "path": "/math/calculus/integral-calculator",
-        "icon": "∫"
       }
     ]
   }

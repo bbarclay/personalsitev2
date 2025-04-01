@@ -1,0 +1,75 @@
+{
+  "id": "moe",
+  "title": "Understanding Mixture of Experts in Large Language Models",
+  "description": "An interactive visualization explaining how Mixture of Experts (MoE) architecture works in modern language models, showing the flow from input through expert networks to final output.",
+  "category": "AI Architecture",
+  "subcategory": "LLM Design",
+  "featured": true,
+  "difficulty": "intermediate",
+  "lastUpdated": "2024-03-31",
+  "icon": "🤖",
+  "color": "from-blue-600 to-purple-600",
+  "shape": "circle",
+  "enabled": true,
+  "tags": [
+    "MoE", 
+    "Mixture of Experts", 
+    "LLM", 
+    "artificial intelligence", 
+    "system architecture", 
+    "visualization"
+  ],
+  "keywords": [
+    "Mixture of Experts",
+    "LLM architecture",
+    "AI visualization",
+    "neural networks",
+    "system design"
+  ],
+  "type": "ai",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "visualization",
+        "label": "Visualization",
+        "icon": "🧮",
+        "color": {
+          "active": "bg-blue-500 text-white",
+          "hover": "bg-blue-100 dark:bg-blue-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "💡",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "AI Tools",
+      "path": "/ai"
+    },
+    "nextTools": [
+      {
+        "id": "arcagi",
+        "title": "AI Architecture",
+        "icon": "🧠",
+        "path": "/ai/mermaidcharts/arcagi"
+      }
+    ]
+  }
+} 

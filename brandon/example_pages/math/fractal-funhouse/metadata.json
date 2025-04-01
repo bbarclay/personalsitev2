@@ -1,0 +1,19 @@
+{
+  "name": "FractalFunhouse",
+  "title": "Fractal Funhouse",
+  "status": "published",
+  "description": "An interactive tool for visualizing and exploring fractals like the Mandelbrot and Julia sets with customizable parameters and color schemes.",
+  "path": "/math/fractal-funhouse",
+  "categories": ["math", "education", "visualization"],
+  "sub_categories": ["fractal geometry", "interactive", "graphics"],
+  "category_pages": "education",
+  "order": 7,
+  "featured": false,
+  "createdDate": "2024-04-20",
+  "icon": "🌀",
+  "tags": ["fractal", "mandelbrot", "julia", "visualization", "interactive", "graphics", "education"],
+  "authors": ["Your Name"],
+  "category": {
+    "priority": 7
+  }
+}

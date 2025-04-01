@@ -1,25 +1,11 @@
-"use client";
+import { CoordinateGeometryTool } from './components/CoordinateGeometryTool';
+import { Metadata } from 'next';
 
-import React from 'react';
-import { ToolPageLayout, createDynamicPanelComponent } from '@/components/layouts/ToolPageLayout';
-import { loadToolMeta } from '@/utils/meta-loader';
-import metaJson from './meta.json';
+export const metadata: Metadata = {
+  title: 'Coordinate Geometry Explorer',
+  description: 'Interactive tool for exploring and solving coordinate geometry problems'
+};
 
-// Load metadata with proper defaults
-const meta = loadToolMeta(metaJson);
-
-// Create dynamic panel component with placeholders
-const CoordinateGeometryContent = createDynamicPanelComponent({
-  solver: () => <div>Solver panel content</div>,
-  explanation: () => <div>Explanation panel content</div>,
-  applications: () => <div>Applications panel content</div>,
-  resources: () => <div>Resources panel content</div>
-});
-
-export default function CoordinateGeometryPage() {
-  return (
-    <ToolPageLayout meta={meta}>
-      <div>Tool content</div>
-    </ToolPageLayout>
-  );
+export default function Page() {
+  return <CoordinateGeometryTool />;
 }

@@ -1,0 +1,11 @@
+{
+  "title": "Branching Flow Example",
+  "description": "Example of a branching flow using basic layouts",
+  "category": {
+    "name": "Examples",
+    "description": "Example flows demonstrating basic layout patterns",
+    "icon": "Code",
+    "priority": 2
+  },
+  "reviewed": true
+}

@@ -1,57 +1,81 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { usePolynomialCalculations } from '../hooks/usePolynomialCalculations';
-import PolynomialInput from './PolynomialInput';
-import PolynomialResult from './PolynomialResult';
+import { PolynomialParser } from '../utils/polynomialParser';
+import { Alert } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
 import { OperationSelector } from './inputs/OperationSelector';
 import { StepByStep } from './displays/StepByStep';
+import { PolynomialVisualizer } from './PolynomialVisualizer';
 
 export function PolynomialCalculator() {
-  const [polynomial, setPolynomial] = useState('');
+  const [input, setInput] = useState('');
   const [operation, setOperation] = useState<'factor' | 'expand' | 'simplify'>('factor');
-  
   const { result, steps, error, calculate } = usePolynomialCalculations();
 
-  const handleCalculate = () => {
-    calculate(polynomial, operation);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const polynomial = PolynomialParser.parse(input);
+      calculate(polynomial, operation);
+    } catch (err) {
+      // Error handling is managed by usePolynomialCalculations
+    }
   };
 
   return (
     <div className="space-y-6">
-      <PolynomialInput
-        value={polynomial}
-        onChange={setPolynomial}
-        placeholder="Enter polynomial (e.g., x^2 + 2x + 1)"
-      />
-      
-      <OperationSelector
-        operation={operation}
-        onOperationChange={setOperation}
-        operations={['factor', 'expand', 'simplify']}
-      />
-      
-      <button
-        onClick={handleCalculate}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
-      >
-        Calculate
-      </button>
+      <Card className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="polynomial" className="text-sm font-medium">
+              Enter Polynomial
+            </label>
+            <Input
+              id="polynomial"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="e.g., x^2 + 2x + 1"
+              className="font-mono"
+            />
+          </div>
+
+          <OperationSelector
+            value={operation}
+            onChange={setOperation}
+            operations={['factor', 'expand', 'simplify']}
+          />
+
+          <Button type="submit" className="w-full">
+            Calculate
+          </Button>
+        </form>
+      </Card>
 
       {error && (
-        <div className="p-4 bg-red-50 text-red-700 rounded-lg">
+        <Alert variant="destructive">
           {error}
-        </div>
+        </Alert>
       )}
 
       {result && (
-        <>
-          <PolynomialResult result={result} />
-          <StepByStep 
-            steps={steps} 
-            title={`${operation.charAt(0).toUpperCase() + operation.slice(1)} Steps`}
-          />
-        </>
+        <div className="space-y-6">
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Result</h3>
+            <div className="font-mono">{result.toString()}</div>
+          </Card>
+
+          <Card className="p-6">
+            <StepByStep steps={steps} />
+          </Card>
+
+          <Card className="p-6">
+            <PolynomialVisualizer polynomial={result} />
+          </Card>
+        </div>
       )}
     </div>
   );

@@ -1,0 +1,48 @@
+{
+  "edges": [
+    {
+      "id": "smith-image",
+      "source": "smith",
+      "target": "image1",
+      "type": "animatedSvg",
+      "data": {
+        "duration": 3,
+        "direction": "alternate",
+        "path": "bezier",
+        "repeat": "indefinite",
+        "shape": "Car",
+        "iconProps": {
+          "size": 24,
+          "color": "#ff0073",
+          "strokeWidth": 2
+        }
+      }
+    },
+    {
+      "id": "image-icon",
+      "source": "image1",
+      "target": "icon1",
+      "type": "animatedSvg",
+      "data": {
+        "duration": 2,
+        "direction": "forward",
+        "path": "smoothstep",
+        "repeat": "indefinite",
+        "shape": "circle"
+      }
+    },
+    {
+      "id": "icon-simple",
+      "source": "icon1",
+      "target": "simple1",
+      "type": "animatedSvg",
+      "data": {
+        "duration": 4,
+        "direction": "alternate-reverse",
+        "path": "straight",
+        "repeat": "indefinite",
+        "shape": "package"
+      }
+    }
+  ]
+}

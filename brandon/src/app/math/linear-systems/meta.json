@@ -1,76 +1,64 @@
 {
-  "id": "linear-systems",
-  "title": "Linear Systems Calculator",
-  "description": "Solve systems of linear equations with step-by-step solutions",
-  "category": "Math",
-  "subcategory": "Algebra",
+  "id": "LinearSystems",
+  "title": "LinearSystems",
+  "description": "Interactive LinearSystems tool for mathematics exploration",
+  "category": "Mathematics",
+  "subcategory": "Interactive Tools",
   "type": "math",
   "difficulty": "intermediate",
-  "lastUpdated": "2024-03-31",
-  "icon": "📊",
-  "color": "from-blue-500 to-indigo-500",
-  "shape": "square",
+  "lastUpdated": "2025-04-01",
+  "icon": "🧮",
+  "color": "from-blue-500 to-purple-500",
+  "shape": "rectangle",
   "enabled": true,
-  "featured": true,
+  "featured": false,
   "tags": [
-    "linear algebra",
-    "systems of equations",
-    "matrices",
-    "algebra"
+    "math",
+    "interactive"
   ],
   "keywords": [
-    "linear systems",
-    "systems of equations",
-    "matrices",
-    "algebra",
-    "solving equations"
+    "linearsystems",
+    "math",
+    "tool"
   ],
   "sidebar": {
     "tabs": [
       {
         "id": "solver",
         "label": "Solver",
-        "icon": "calculator",
+        "icon": "🧮",
         "color": {
-          "active": "bg-blue-500",
-          "hover": "bg-blue-600"
+          "active": "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
         "id": "explanation",
         "label": "Explanation",
-        "icon": "book",
+        "icon": "📚",
         "color": {
-          "active": "bg-blue-500",
-          "hover": "bg-blue-600"
+          "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
         "id": "applications",
         "label": "Applications",
-        "icon": "lightbulb",
+        "icon": "🌐",
         "color": {
-          "active": "bg-blue-500",
-          "hover": "bg-blue-600"
+          "active": "bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
         "id": "resources",
         "label": "Resources",
-        "icon": "bookmark",
+        "icon": "📖",
         "color": {
-          "active": "bg-blue-500",
-          "hover": "bg-blue-600"
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       }
     ]
-  },
-  "navigation": {
-    "category": "Math",
-    "path": "/math/linear-systems",
-    "next": {
-      "title": "Statistics",
-      "path": "/math/statistics"
-    }
   }
 }

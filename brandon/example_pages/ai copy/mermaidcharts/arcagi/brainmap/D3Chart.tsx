@@ -1,0 +1,241 @@
+import React, { useState, useEffect } from 'react';
+import {
+  Settings,
+  Server,
+  Database,
+  ArrowDownToLine as Input,  // Use alternative icon for Input
+  Shield,
+  Cpu,
+  HardDrive as Memory,       // Use alternative icon for Memory
+  Layers as LayersDifference, // Use alternative icon for LayersDifference
+  ArrowUpFromLine as Output, // Use alternative icon for Output
+  RefreshCw,
+  BarChart2 as BarChart,    // Use alternative icon for BarChart
+  Activity,
+  CircleDot as CircleEqual  // Use alternative icon for CircleEqual
+} from 'lucide-react';
+
+const FlowDiagram = () => {
+  const [animationOffset, setAnimationOffset] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimationOffset(prev => (prev + 1) % 100);
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Extended node positions with vertical layout
+  const nodes: { [key in keyof typeof iconMap]: { x: number; y: number; label: string } } = {
+    input: { x: 100, y: 150, label: 'Input Layer' },
+    validation: { x: 100, y: 300, label: 'Validation' },
+    preprocessing: { x: 100, y: 450, label: 'Preprocessing' },
+    processing: { x: 300, y: 150, label: 'Processing Core' },
+    memory: { x: 300, y: 300, label: 'Memory Store' },
+    cache: { x: 300, y: 450, label: 'Cache Layer' },
+    output: { x: 500, y: 150, label: 'Output Layer' },
+    feedback: { x: 400, y: 50, label: 'Feedback Loop' },
+    analytics: { x: 500, y: 300, label: 'Analytics' },
+    monitoring: { x: 500, y: 450, label: 'Monitoring' },
+    training: { x: 700, y: 150, label: 'Training Module' },
+    evaluation: { x: 700, y: 300, label: 'Evaluation' },
+    deployment: { x: 700, y: 450, label: 'Deployment' }
+  };
+
+  const iconMap = {
+    input: { icon: Input, color: '#60A5FA' },
+    validation: { icon: Shield, color: '#34D399' },
+    preprocessing: { icon: LayersDifference, color: '#34D399' },
+    processing: { icon: Cpu, color: '#F472B6' },
+    memory: { icon: Memory, color: '#34D399' },
+    cache: { icon: Database, color: '#34D399' },
+    output: { icon: Output, color: '#F472B6' },
+    feedback: { icon: RefreshCw, color: '#FBBF24' },
+    analytics: { icon: BarChart, color: '#F472B6' },
+    monitoring: { icon: Activity, color: '#F472B6' },
+    training: { icon: Settings, color: '#10B981' },
+    evaluation: { icon: CircleEqual, color: '#F59E0B' },
+    deployment: { icon: Server, color: '#8B5CF6' }
+  };
+
+  // Extended flow paths
+  const paths = [
+    {
+      id: 'input-processing',
+      d: `M ${nodes.input.x + 60} ${nodes.input.y} L ${nodes.processing.x - 60} ${nodes.processing.y}`,
+      color: '#60A5FA' // Brighter blue for dark mode
+    },
+    {
+      id: 'validation-preprocessing',
+      d: `M ${nodes.validation.x} ${nodes.validation.y + 40} L ${nodes.preprocessing.x} ${nodes.preprocessing.y - 40}`,
+      color: '#34D399' // Brighter green for dark mode
+    },
+    {
+      id: 'processing-memory',
+      d: `M ${nodes.processing.x} ${nodes.processing.y + 40} L ${nodes.memory.x} ${nodes.memory.y - 40}`,
+      color: '#34D399'
+    },
+    {
+      id: 'memory-cache',
+      d: `M ${nodes.memory.x} ${nodes.memory.y + 40} L ${nodes.cache.x} ${nodes.cache.y - 40}`,
+      color: '#34D399'
+    },
+    {
+      id: 'processing-output',
+      d: `M ${nodes.processing.x + 60} ${nodes.processing.y} L ${nodes.output.x - 60} ${nodes.output.y}`,
+      color: '#F472B6' // Brighter pink for dark mode
+    },
+    {
+      id: 'processing-feedback',
+      d: `M ${nodes.processing.x + 40} ${nodes.processing.y - 40} Q ${nodes.feedback.x} ${nodes.feedback.y} ${nodes.output.x - 40} ${nodes.output.y - 40}`,
+      color: '#FBBF24' // Brighter yellow for dark mode
+    },
+    {
+      id: 'output-analytics',
+      d: `M ${nodes.output.x} ${nodes.output.y + 40} L ${nodes.analytics.x} ${nodes.analytics.y - 40}`,
+      color: '#F472B6'
+    },
+    {
+      id: 'analytics-monitoring',
+      d: `M ${nodes.analytics.x} ${nodes.analytics.y + 40} L ${nodes.monitoring.x} ${nodes.monitoring.y - 40}`,
+      color: '#F472B6'
+    },
+    {
+      id: 'output-training',
+      d: `M ${nodes.output.x + 60} ${nodes.output.y} L ${nodes.training.x - 60} ${nodes.training.y}`,
+      color: '#10B981' // Brighter teal for dark mode
+    },
+    {
+      id: 'training-evaluation',
+      d: `M ${nodes.training.x} ${nodes.training.y + 40} L ${nodes.evaluation.x} ${nodes.evaluation.y - 40}`,
+      color: '#F59E0B' // Brighter amber for dark mode
+    },
+    {
+      id: 'evaluation-deployment',
+      d: `M ${nodes.evaluation.x} ${nodes.evaluation.y + 40} L ${nodes.deployment.x} ${nodes.deployment.y - 40}`,
+      color: '#8B5CF6' // Brighter purple for dark mode
+    }
+  ];
+
+  return (
+    <div className="mt-16 tech-card p-6">
+      <h2 className="text-xl font-orbitron font-semibold mb-3 gradient-text">
+        AGI System Architecture
+      </h2>
+      <div className="space-y-4 mb-6">
+        <p className="leading-relaxed">
+          This architectural diagram illustrates the intricate components and data flows within an AGI system. At its core,
+          the system processes information through multiple specialized layers, each contributing to the overall cognitive capabilities.
+        </p>
+        <p className="leading-relaxed">
+          The input layer manages raw data ingestion, while validation and preprocessing ensure data quality and standardization.
+          The processing core, integrated with a sophisticated memory store and cache layer, enables complex reasoning and pattern recognition.
+          The feedback loop facilitates continuous learning and self-improvement, while the analytics and monitoring systems ensure
+          performance optimization and system health.
+        </p>
+        <p className="leading-relaxed">
+          Training and evaluation modules work in tandem to refine the system's capabilities, leading to deployment-ready
+          cognitive functions. This architecture represents a significant step toward achieving true artificial general intelligence,
+          showcasing the complex interplay between different computational and cognitive components.
+        </p>
+      </div>
+
+      <div className="w-full h-[600px] bg-gray-900 rounded-lg p-4"> {/* Adjusted height */}
+        <svg className="w-full h-full">
+          {/* Background grid for depth */}
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path
+              d="M 40 0 L 0 0 0 40"
+              fill="none"
+              stroke="rgba(255,255,255,0.05)"
+              strokeWidth="1"
+            />
+          </pattern>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+
+          {/* Flow Paths with Animated Dashes */}
+          {paths.map((path) => (
+            <g key={path.id}>
+              <path
+                d={path.d}
+                fill="none"
+                stroke={path.color}
+                strokeWidth="3"
+                className="opacity-10"
+              />
+              <path
+                d={path.d}
+                fill="none"
+                stroke={path.color}
+                strokeWidth="3"
+                strokeDasharray="6,6"
+                strokeDashoffset={-animationOffset}
+                className="opacity-70"
+              />
+            </g>
+          ))}
+
+          {/* Nodes */}
+          {Object.entries(nodes).map(([key, node]) => {
+            key = key as keyof typeof iconMap;
+            const IconComponent = iconMap[key as keyof typeof iconMap].icon;
+            return (
+              <g key={key} transform={`translate(${node.x-40},${node.y-40})`}>
+                <IconComponent
+                  size={80}
+                  color={iconMap[key as keyof typeof iconMap].color}
+                  strokeWidth={1.5}
+                  className="drop-shadow-lg"
+                />
+                <text
+                  textAnchor="middle"
+                  x="40"
+                  y="100"
+                  className="text-sm font-semibold fill-current text-gray-200"
+                >
+                  {node.label}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Legend */}
+          <g transform="translate(800,20)">
+            <text className="text-sm font-medium fill-current text-gray-300">
+              Data Flow Types:
+            </text>
+            {[
+              { color: '#60A5FA', label: 'Input Flow' },
+              { color: '#34D399', label: 'Memory Access' },
+              { color: '#F472B6', label: 'Output Flow' },
+              { color: '#FBBF24', label: 'Feedback Loop' },
+              { color: '#10B981', label: 'Training Flow' },
+              { color: '#F59E0B', label: 'Evaluation Flow' },
+              { color: '#8B5CF6', label: 'Deployment Flow' }
+            ].map((item, i) => (
+              <g key={i} transform={`translate(0,${20 * (i + 1)})`}>
+                <line
+                  x1="0"
+                  y1="0"
+                  x2="20"
+                  y2="0"
+                  stroke={item.color}
+                  strokeWidth="3"
+                />
+                <text
+                  x="30"
+                  y="5"
+                  className="text-xs fill-current text-gray-300"
+                >
+                  {item.label}
+                </text>
+              </g>
+            ))}
+          </g>
+        </svg>
+      </div>
+    </div>
+  );
+};
+
+export default FlowDiagram;

@@ -1,0 +1,20 @@
+
+{
+  "name": "MatrixCompletion",
+  "title": "Matrix Completion Visualizer",
+  "status": "published",
+  "description": "An interactive tool for visualizing matrix completion algorithms and their metrics, based on the groundbreaking work of Emmanuel Candès and Benjamin Recht (2009) on nuclear norm minimization.",
+  "path": "/math/matrix-completion",
+  "categories": ["math", "education", "algorithm"],
+  "sub_categories": ["linear algebra", "visualization", "interactive"],
+  "category_pages": "education",
+  "order": 6,
+  "featured": true,
+  "createdDate": "2024-02-15",
+  "icon": "🔢",
+  "tags": ["matrix completion", "nuclear norm minimization", "Candès-Recht", "visualization", "recharts", "interactive", "education"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 6
+  }
+}

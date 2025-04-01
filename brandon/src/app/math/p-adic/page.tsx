@@ -2,30 +2,25 @@
 
 import React from 'react';
 import { ToolPageLayout, createDynamicPanelComponent } from '@/components/layouts/ToolPageLayout';
+import dynamic from 'next/dynamic';
 import { loadToolMeta } from '@/utils/meta-loader';
 import metaJson from './meta.json';
 
 // Load metadata with proper defaults
 const meta = loadToolMeta(metaJson);
 
-const PlaceholderPanel = () => (
-  <div className="p-4">
-    <h2 className="text-2xl font-bold mb-4">P-adic Calculator</h2>
-    <p className="text-gray-700 dark:text-gray-300">
-      P-adic numbers are an extension of the rational numbers that completes them with respect to a different metric than the usual absolute value. 
-      This tool allows you to explore p-adic numbers and perform calculations with them.
-    </p>
-  </div>
-);
+// Dynamically import components
+const SolverPanel = dynamic(() => import('./components/SolverPanel'), { ssr: false });
+const ExplanationPanel = dynamic(() => import('./components/ExplanationPanel'), { ssr: false });
+const ApplicationsPanel = dynamic(() => import('./components/ApplicationsPanel'), { ssr: false });
+const ResourcesPanel = dynamic(() => import('./components/ResourcesPanel'), { ssr: false });
 
-// Create dynamic panel component with placeholders
-
-
+// Create dynamic panel component
 const PAdicContent = createDynamicPanelComponent({
-  solver: PlaceholderPanel,
-  explanation: PlaceholderPanel,
-  applications: PlaceholderPanel,
-  resources: PlaceholderPanel
+  solver: SolverPanel,
+  explanation: ExplanationPanel,
+  applications: ApplicationsPanel,
+  resources: ResourcesPanel
 });
 
 export default function PAdicPage() {

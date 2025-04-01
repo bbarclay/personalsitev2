@@ -1,0 +1,19 @@
+{
+  "name": "AGIMindmap",
+  "title": "AGI System Architecture Mindmap",
+  "status": "published",
+  "description": "A comprehensive mindmap visualization of Artificial General Intelligence (AGI) system architecture components.",
+  "path": "/ai/agi-mindmap",
+  "categories": ["ai", "technology", "architecture"],
+  "sub_categories": ["AGI", "visualization", "system-design"],
+  "category_pages": "technology",
+  "order": 7,
+  "featured": false,
+  "createdDate": "2024-02-20",
+  "icon": "🧠",
+  "tags": ["AGI", "artificial intelligence", "system architecture", "mindmap", "visualization"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 7
+  }
+}

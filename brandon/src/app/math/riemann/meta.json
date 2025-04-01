@@ -1,29 +1,25 @@
 {
-  "id": "riemann",
-  "title": "Riemann Zeta Calculator",
-  "description": "Calculate values of the Riemann zeta function and explore its properties",
-  "category": "Math",
-  "subcategory": "Advanced",
+  "id": "Riemann",
+  "title": "Riemann",
+  "description": "Interactive Riemann tool for mathematics exploration",
+  "category": "Mathematics",
+  "subcategory": "Interactive Tools",
   "type": "math",
-  "difficulty": "advanced",
-  "lastUpdated": "2024-03-31",
-  "icon": "ζ",
-  "color": "from-purple-500 to-indigo-500",
-  "shape": "square",
+  "difficulty": "intermediate",
+  "lastUpdated": "2025-04-01",
+  "icon": "🧮",
+  "color": "from-blue-500 to-purple-500",
+  "shape": "rectangle",
   "enabled": true,
-  "featured": true,
+  "featured": false,
   "tags": [
-    "riemann zeta",
-    "complex analysis",
-    "number theory",
-    "special functions"
+    "math",
+    "interactive"
   ],
   "keywords": [
-    "riemann zeta function",
-    "complex numbers",
-    "number theory",
-    "special functions",
-    "mathematics"
+    "riemann",
+    "math",
+    "tool"
   ],
   "sidebar": {
     "tabs": [
@@ -32,8 +28,8 @@
         "label": "Solver",
         "icon": "🧮",
         "color": {
-          "active": "bg-purple-500 text-white",
-          "hover": "bg-purple-100 dark:bg-purple-900"
+          "active": "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
@@ -41,8 +37,8 @@
         "label": "Explanation",
         "icon": "📚",
         "color": {
-          "active": "bg-blue-500 text-white",
-          "hover": "bg-blue-100 dark:bg-blue-900"
+          "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
@@ -50,8 +46,8 @@
         "label": "Applications",
         "icon": "🌐",
         "color": {
-          "active": "bg-green-500 text-white",
-          "hover": "bg-green-100 dark:bg-green-900"
+          "active": "bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
@@ -59,23 +55,9 @@
         "label": "Resources",
         "icon": "📖",
         "color": {
-          "active": "bg-orange-500 text-white",
-          "hover": "bg-orange-100 dark:bg-orange-900"
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
-      }
-    ]
-  },
-  "navigation": {
-    "category": {
-      "title": "Math",
-      "path": "/math"
-    },
-    "nextTools": [
-      {
-        "id": "collatz",
-        "title": "Collatz Conjecture",
-        "path": "/math/collatz",
-        "icon": "🧮"
       }
     ]
   }

@@ -1,0 +1,19 @@
+{
+  "name": "Geometry Visualizer",
+  "title": "Interactive Geometry Tool",
+  "status": "published",
+  "description": "Interactive tool for exploring geometric concepts and relationships",
+  "path": "/math/geometry-visualizer",
+  "categories": ["math", "education"],
+  "sub_categories": "geometry, visualization, education",
+  "category_pages": "education",
+  "order": 4,
+  "featured": false,
+  "createdDate": "2024-01-20",
+  "icon": "📐",
+  "tags": ["geometry", "visualization", "education", "interactive"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 4
+  }
+}

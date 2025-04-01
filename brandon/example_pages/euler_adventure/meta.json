@@ -1,0 +1,83 @@
+{
+  "id": "euler_adventure",
+  "title": "Euler Adventure",
+  "description": "An interactive journey through the mathematical works of Leonhard Euler, featuring puzzles, visualizations, and historical insights",
+  "category": "Mathematics",
+  "subcategory": "History",
+  "featured": true,
+  "difficulty": "advanced",
+  "lastUpdated": "2024-03-30",
+  "icon": "📚",
+  "color": "from-blue-600 to-indigo-600",
+  "shape": "circle",
+  "enabled": true,
+  "tags": [
+    "mathematics",
+    "history",
+    "euler",
+    "puzzles",
+    "education"
+  ],
+  "keywords": [
+    "euler",
+    "mathematical history",
+    "mathematical puzzles",
+    "mathematical visualization",
+    "mathematical education"
+  ],
+  "type": "tool",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "explorer",
+        "label": "Explore",
+        "icon": "🔍",
+        "color": {
+          "active": "bg-blue-500 text-white",
+          "hover": "bg-blue-100 dark:bg-blue-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "💡",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Mathematics",
+      "path": "/mathematics"
+    },
+    "nextTools": [
+      {
+        "id": "mathQuest",
+        "title": "Math Quest",
+        "icon": "⚔️",
+        "path": "/games/mathQuest"
+      }
+    ]
+  }
+} 

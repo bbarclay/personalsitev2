@@ -143,24 +143,33 @@ const Header = () => {
               </div>
               
               {/* Main navigation items */}
-              {["TRAIN", "PROCESS", "ANALYZE", "PREDICT", "MATH"].map((item) => (
-                <div 
-                  key={item} 
-                  className={`relative px-5 py-2 text-white font-bold transition-all duration-300 group`}
-                  onMouseEnter={() => setHoverItem(item)}
-                  onMouseLeave={() => setHoverItem(null)}
+              {[
+                {name: "HOME", path: ""},
+                {name: "ABOUT", path: "about"},
+                {name: "SERVICES", path: "services"},
+                {name: "PORTFOLIO", path: "portfolio"}
+              ].map((item) => (
+                <Link 
+                  href={`/${item.path}`}
+                  key={item.name}
                 >
-                  {/* Text background for better visibility */}
-                  <span className={`absolute inset-0 ${hoverItem === item ? 'bg-indigo-600/80' : 'bg-indigo-900/50'} transition-all duration-300 -skew-x-12 rounded`}></span>
-                  
-                  {/* Glow effect on hover */}
-                  <span className={`absolute inset-0 rounded ${hoverItem === item ? 'shadow-[0_0_15px_3px_rgba(99,102,241,0.6)]' : ''} transition-all duration-300 -skew-x-12`}></span>
-                  
-                  {/* Bottom border that animates on hover */}
-                  <span className="absolute bottom-0 left-0 w-0 h-1 bg-blue-400 group-hover:w-full transition-all duration-300"></span>
-                  
-                  <span className="relative z-10">{item}</span>
-                </div>
+                  <div 
+                    className={`relative px-5 py-2 text-white font-bold transition-all duration-300 group`}
+                    onMouseEnter={() => setHoverItem(item.name)}
+                    onMouseLeave={() => setHoverItem(null)}
+                  >
+                    {/* Text background for better visibility */}
+                    <span className={`absolute inset-0 ${hoverItem === item.name ? 'bg-indigo-600/80' : 'bg-indigo-900/50'} transition-all duration-300 -skew-x-12 rounded`}></span>
+                    
+                    {/* Glow effect on hover */}
+                    <span className={`absolute inset-0 rounded ${hoverItem === item.name ? 'shadow-[0_0_15px_3px_rgba(99,102,241,0.6)]' : ''} transition-all duration-300 -skew-x-12`}></span>
+                    
+                    {/* Bottom border that animates on hover */}
+                    <span className="absolute bottom-0 left-0 w-0 h-1 bg-blue-400 group-hover:w-full transition-all duration-300"></span>
+                    
+                    <span className="relative z-10">{item.name}</span>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -172,12 +181,9 @@ const Header = () => {
         <div className="container mx-auto transform skew-y-1">
           <div className="flex justify-center md:justify-between items-center flex-wrap gap-3 px-4">
             {[
-              {name: "Home", path: ""},
-              {name: "About", path: "about"},
-              {name: "Services", path: "services"},
-              {name: "Portfolio", path: "portfolio"},
-              {name: "Math", path: "math"},
-              {name: "Math Cards", path: "designelements/components/math-cards"},
+              {name: "Computer Science", path: "cs"},
+              {name: "Mathematics", path: "math"},
+              {name: "Artificial Intelligence", path: "ai"},
               {name: "Contact", path: "contact"}
             ].map((item) => (
               <Link 

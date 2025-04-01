@@ -16,29 +16,37 @@ import { useState, useEffect } from "react";
 const navItems = [
   {
     name: "Home",
-    href: "/designelements",
+    href: "/",
+    hasDropdown: false
+  },
+  {
+    name: "About",
+    href: "/about",
+    hasDropdown: false
+  },
+  {
+    name: "Services",
+    href: "/services",
+    hasDropdown: false
+  },
+  {
+    name: "Portfolio",
+    href: "/portfolio",
     hasDropdown: false
   },
   {
     name: "Math",
     href: "/math",
-    hasDropdown: true,
-    dropdownItems: [
-      { name: "All Tools", href: "/math" },
-      { name: "Math Cards", href: "/math-cards" }
-    ]
+    hasDropdown: false
   },
   {
-    name: "AI",
+    name: "Math Cards",
     href: "/ai",
-    hasDropdown: true,
-    dropdownItems: [
-      { name: "AI Tools", href: "/ai" }
-    ]
+    hasDropdown: false
   },
   {
-    name: "Headers",
-    href: "/header-options",
+    name: "Contact",
+    href: "/contact",
     hasDropdown: false
   }
 ];

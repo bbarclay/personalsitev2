@@ -1,0 +1,20 @@
+{
+  "name": "Slot Machine Simulator",
+  "title": "Mathematical Slot Machine",
+  "status": "published",
+  "description": "Interactive slot machine simulator demonstrating probability, statistics, and game mathematics",
+  "route": "slot-machine",
+  "path": "/math/slot-machine",
+  "categories": ["math", "probability", "games"],
+  "sub_categories": "probability, statistics, game theory",
+  "category_pages": "education",
+  "order": 3,
+  "featured": true,
+  "createdDate": "2024-01-20",
+  "icon": "🎰",
+  "tags": ["probability", "statistics", "games", "simulation", "interactive"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 3
+  }
+}

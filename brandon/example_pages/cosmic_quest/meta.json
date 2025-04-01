@@ -1,0 +1,83 @@
+{
+  "id": "cosmic_quest",
+  "title": "Cosmic Quest",
+  "description": "An educational space exploration game that combines astronomy, physics, and interactive learning",
+  "category": "Games",
+  "subcategory": "Educational",
+  "featured": true,
+  "difficulty": "intermediate",
+  "lastUpdated": "2024-03-30",
+  "icon": "🌠",
+  "color": "from-purple-600 to-pink-600",
+  "shape": "circle",
+  "enabled": true,
+  "tags": [
+    "space",
+    "astronomy",
+    "education",
+    "game",
+    "physics"
+  ],
+  "keywords": [
+    "space exploration",
+    "astronomy",
+    "physics",
+    "educational game",
+    "cosmic discovery"
+  ],
+  "type": "game",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "game",
+        "label": "Play",
+        "icon": "🎮",
+        "color": {
+          "active": "bg-purple-500 text-white",
+          "hover": "bg-purple-100 dark:bg-purple-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "💡",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Games",
+      "path": "/games"
+    },
+    "nextTools": [
+      {
+        "id": "cosmic_geometry",
+        "title": "Cosmic Geometry",
+        "icon": "📐",
+        "path": "/games/cosmic_geometry"
+      }
+    ]
+  }
+} 

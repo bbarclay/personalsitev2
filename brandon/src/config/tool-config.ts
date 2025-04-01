@@ -1,4 +1,4 @@
-import { ToolMeta, TabConfig } from '../types/tool-types';
+import { ToolMeta, TabConfig, DEFAULT_SIDEBAR_TABS } from '../types/tool-types';
 
 export const DEFAULT_TOOL_META: Partial<ToolMeta> = {
   enabled: true,

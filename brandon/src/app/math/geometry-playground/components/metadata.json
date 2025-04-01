@@ -1,0 +1,19 @@
+{
+  "name": "GeometryPlayground",
+  "title": "Interactive Geometry Playground",
+  "status": "published",
+  "description": "An engaging interactive playground for exploring geometric concepts. Create, transform, and manipulate various shapes while learning about their properties and relationships.",
+  "path": "/math/geometry",
+  "categories": ["math", "education", "visualization"],
+  "sub_categories": ["geometry", "shapes", "interactive"],
+  "category_pages": "education",
+  "order": 11,
+  "featured": true,
+  "createdDate": "2024-02-25",
+  "icon": "📐",
+  "tags": ["geometry", "shapes", "transformations", "interactive", "education", "visualization"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 11
+  }
+}

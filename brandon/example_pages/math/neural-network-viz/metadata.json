@@ -1,0 +1,10 @@
+{
+  "name": "Neural Network Visualizer",
+  "description": "Interactive visualization of neural network training on a non-linear classification task. Watch in real-time as the network learns to separate data points using gradient descent.",
+  "reviewed": true,
+  "featured": true,
+  "category": {
+    "name": "Machine Learning",
+    "priority": 10
+  }
+}

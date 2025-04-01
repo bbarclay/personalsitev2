@@ -4,16 +4,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ComplexNumber, evaluateComplexPolynomial } from '../utils/polynomialUtils';
 import { Polynomial } from '../types';
 
-const PolynomialVisualizer = () => {
+export const PolynomialVisualizer: React.FC<{ polynomial: Polynomial }> = ({ polynomial }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [viewMode, setViewMode] = useState<'real' | 'imaginary' | 'absolute'>('absolute');
-    const [polynomial, setPolynomial] = useState<Polynomial>({
-        terms: [
-            { coefficient: 1, exponent: 2 },
-            { coefficient: 0, exponent: 1 },
-            { coefficient: -1, exponent: 0 }
-        ]
-    });
     const [params, setParams] = useState({
         xMin: -2,
         xMax: 2,
@@ -115,23 +108,8 @@ const PolynomialVisualizer = () => {
     };
 
     return (
-        <div className="space-y-4">
-            <div className="flex space-x-4 items-center">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        View Mode
-                    </label>
-                    <select
-                        value={viewMode}
-                        onChange={(e) => setViewMode(e.target.value as any)}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
-                    >
-                        <option value="absolute">Absolute Value</option>
-                        <option value="real">Real Part</option>
-                        <option value="imaginary">Imaginary Part</option>
-                    </select>
-                </div>
-
+        <div>
+            <div className="flex gap-4 mb-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Resolution
@@ -158,5 +136,3 @@ const PolynomialVisualizer = () => {
         </div>
     );
 };
-
-export default PolynomialVisualizer;

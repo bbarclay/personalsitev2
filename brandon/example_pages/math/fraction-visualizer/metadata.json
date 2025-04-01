@@ -1,0 +1,19 @@
+{
+  "name": "FractionVisualizer",
+  "title": "Interactive Fraction Visualizer",
+  "status": "published",
+  "description": "An interactive tool for visualizing and manipulating fractions through dynamic visual representations, making complex fraction operations intuitive and engaging for students.",
+  "path": "/math/fractions",
+  "categories": ["math", "education", "visualization"],
+  "sub_categories": ["fractions", "arithmetic", "interactive"],
+  "category_pages": "education",
+  "order": 9,
+  "featured": true,
+  "createdDate": "2024-02-25",
+  "icon": "🍕",
+  "tags": ["fractions", "visualization", "arithmetic", "interactive", "education", "mathematics"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 9
+  }
+}

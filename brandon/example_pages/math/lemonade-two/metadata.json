@@ -1,0 +1,19 @@
+{
+  "name": "Lemonade V2",
+  "title": "Lemonade Stand V2",
+  "status": "published",
+  "description": "Interactive educational game about blockchain transparency and charitable giving",
+  "path": "/math/lemonade_two",
+  "categories": ["web3", "math", "education"],
+  "sub_categories": "blockchain, charity, education, game",
+  "category_pages": "education",
+  "order": 1,
+  "featured": true,
+  "createdDate": "2024-11-17",
+  "icon": "🍋",
+  "tags": ["blockchain", "charity", "education", "game", "interactive"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 1
+  }
+}

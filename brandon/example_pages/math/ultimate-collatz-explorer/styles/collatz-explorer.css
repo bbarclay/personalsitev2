@@ -1,0 +1,1905 @@
+/* Cosmic Theme Variables */
+:root {
+  --primary-color: #7c4dff;
+  --primary-light: #b47cff;
+  --primary-dark: #3f1dcb;
+  --secondary-color: #03dac6;
+  --secondary-light: #66fff8;
+  --secondary-dark: #00a896;
+  --accent-color: #ff4081;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-disabled: rgba(255, 255, 255, 0.5);
+  --background-dark: #121212;
+  --surface-dark: #1e1e1e;
+  --elevated-dark: #2d2d2d;
+
+  /* Add grid colors */
+  --grid-line-color: rgba(255, 255, 255, 0.1);
+  --grid-text-color: rgba(255, 255, 255, 0.9);
+  --grid-axis-color: rgba(255, 255, 255, 0.2);
+
+  --cosmic-gradient: linear-gradient(135deg, var(--primary-dark), var(--primary-color), var(--primary-light));
+  --cosmic-gradient-alt: linear-gradient(135deg, var(--secondary-dark), var(--secondary-color), #7c4dff);
+  --border-radius: 12px;
+  --panel-gap: 16px;
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --transition-standard: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --box-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.6);
+
+  /* Visualization specific variables */
+  --cosmic-primary-color: rgba(124, 77, 255, 0.8);
+  --cosmic-highlight-color: rgba(0, 176, 255, 0.8);
+  --cosmic-accent-color: rgba(255, 193, 7, 0.8);
+  --cosmic-even-color: rgba(3, 218, 198, 0.8);
+  --cosmic-odd-color: rgba(255, 64, 129, 0.8);
+
+  /* Pattern grid specific colors */
+  --pattern-grid-line-color: rgba(255, 255, 255, 0.1);
+  --pattern-grid-bg: rgba(18, 18, 18, 0.3);
+  --pattern-cell-bg-even: rgba(124, 77, 255, 0.3);
+  --pattern-cell-bg-odd: rgba(255, 64, 129, 0.3);
+}
+
+/* Light mode styles */
+[data-theme="light"] .cosmic-container,
+:root[data-theme="light"] .cosmic-container {
+  --text-primary: #121212;
+  --text-secondary: rgba(0, 0, 0, 0.7);
+  --text-disabled: rgba(0, 0, 0, 0.5);
+  --background-dark: #f5f5f7;
+  --surface-dark: #ffffff;
+  --elevated-dark: #f0f0f2;
+
+  /* Update grid colors for light mode */
+  --grid-line-color: rgba(0, 0, 0, 0.1);
+  --grid-text-color: rgba(0, 0, 0, 0.9);
+  --grid-axis-color: rgba(0, 0, 0, 0.2);
+
+  /* Pattern grid colors for light mode */
+  --pattern-grid-line-color: rgba(0, 0, 0, 0.2);
+  --pattern-grid-bg: rgba(0, 0, 0, 0.05);
+  --pattern-cell-bg-even: rgba(124, 77, 255, 0.2);
+  --pattern-cell-bg-odd: rgba(255, 64, 129, 0.2);
+}
+
+[data-theme="light"] .cosmic-container::before,
+:root[data-theme="light"] .cosmic-container::before {
+  background-image:
+    radial-gradient(1px 1px at 25% 15%, rgba(0, 0, 0, 0.5), transparent),
+    radial-gradient(1px 1px at 50% 45%, rgba(0, 0, 0, 0.5), transparent),
+    radial-gradient(1px 1px at 75% 35%, rgba(0, 0, 0, 0.5), transparent),
+    radial-gradient(2px 2px at 15% 55%, rgba(0, 0, 0, 0.5), transparent),
+    radial-gradient(1px 1px at 35% 75%, rgba(0, 0, 0, 0.5), transparent),
+    radial-gradient(1px 1px at 65% 85%, rgba(0, 0, 0, 0.5), transparent),
+    radial-gradient(1px 1px at 85% 25%, rgba(0, 0, 0, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 10% 95%, rgba(0, 0, 0, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 90% 5%, rgba(0, 0, 0, 0.5), transparent);
+  opacity: 0.05;
+}
+
+/* Cosmic theme for Ultimate Collatz Explorer */
+
+.cosmic-container {
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--background-dark);
+  background-image: radial-gradient(circle at 10% 20%, rgba(124, 77, 255, 0.15) 0%, transparent 40%),
+                    radial-gradient(circle at 90% 80%, rgba(3, 218, 198, 0.15) 0%, transparent 40%);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Star background effect */
+.cosmic-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(1px 1px at 25% 15%, white, transparent),
+    radial-gradient(1px 1px at 50% 45%, white, transparent),
+    radial-gradient(1px 1px at 75% 35%, white, transparent),
+    radial-gradient(2px 2px at 15% 55%, white, transparent),
+    radial-gradient(1px 1px at 35% 75%, white, transparent),
+    radial-gradient(1px 1px at 65% 85%, white, transparent),
+    radial-gradient(1px 1px at 85% 25%, white, transparent),
+    radial-gradient(1.5px 1.5px at 10% 95%, white, transparent),
+    radial-gradient(1.5px 1.5px at 90% 5%, white, transparent);
+  opacity: 0.15;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cosmic-layout {
+  display: grid;
+  gap: var(--panel-gap);
+  position: relative;
+  z-index: 1;
+  margin: 0 auto;
+  max-width: 1600px;
+}
+
+.cosmic-layout.cosmic-focused {
+  grid-template-columns: 300px 1fr;
+}
+
+.cosmic-layout.cosmic-multi-panel {
+  grid-template-columns: 280px 1fr;
+}
+
+.cosmic-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--panel-gap);
+}
+
+.cosmic-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: var(--panel-gap);
+}
+
+.cosmic-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--panel-gap);
+}
+
+.cosmic-panel {
+  background-color: var(--surface-dark);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: var(--box-shadow);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: var(--transition-standard);
+}
+
+.cosmic-panel:hover {
+  box-shadow: var(--box-shadow-hover);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.cosmic-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--cosmic-gradient);
+}
+
+.cosmic-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  background: var(--cosmic-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -0.02em;
+}
+
+.cosmic-subtitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--secondary-color);
+}
+
+.cosmic-input-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cosmic-input {
+  background-color: var(--elevated-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius);
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 12px 16px;
+  flex: 1;
+  transition: var(--transition-standard);
+}
+
+.cosmic-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.25);
+}
+
+.cosmic-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: var(--transition-standard);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cosmic-button:hover {
+  background-color: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+.cosmic-button:active {
+  transform: translateY(0);
+}
+
+.cosmic-button:disabled {
+  background-color: rgba(124, 77, 255, 0.5);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cosmic-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%, -50%);
+  transform-origin: 50% 50%;
+}
+
+.cosmic-button:hover::after {
+  animation: ripple 1s ease-out;
+}
+
+.cosmic-button.cosmic-calculating {
+  background-image: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-light) 50%, var(--primary-color) 100%);
+  background-size: 200% 100%;
+  animation: loading-gradient 2s linear infinite;
+}
+
+.cosmic-presets {
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.cosmic-preset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.cosmic-preset-number {
+  background-color: var(--elevated-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius);
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-standard);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.cosmic-preset-number:hover {
+  background-color: rgba(124, 77, 255, 0.2);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.cosmic-preset-number:active {
+  transform: translateY(0);
+}
+
+.cosmic-preset-note {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.cosmic-info {
+  margin-top: 8px;
+  background-color: var(--elevated-dark);
+  border-radius: var(--border-radius);
+  padding: 16px;
+}
+
+.cosmic-info p, .cosmic-info ul {
+  margin: 12px 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.cosmic-info ul {
+  padding-left: 20px;
+}
+
+.cosmic-info li {
+  margin-bottom: 8px;
+}
+
+.cosmic-visualization-container {
+  background-color: var(--surface-dark);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 650px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: var(--box-shadow);
+}
+
+.cosmic-viz-content {
+  flex: 1;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.cosmic-viz-tabs {
+  display: flex;
+  background-color: var(--elevated-dark);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cosmic-viz-tab {
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-standard);
+  border-bottom: 3px solid transparent;
+}
+
+.cosmic-viz-tab:hover {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.cosmic-viz-tab.active {
+  color: var(--secondary-color);
+  border-bottom: 3px solid var(--secondary-color);
+}
+
+.cosmic-viz-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  position: relative;
+  height: 100%;
+  background-color: rgba(18, 18, 18, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cosmic-viz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
+  margin-bottom: 1rem;
+}
+
+.cosmic-viz-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+}
+
+.cosmic-viz-controls-horizontal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.cosmic-control-button-small {
+  background: rgba(60, 60, 60, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: white;
+  padding: 3px 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cosmic-control-button-small:hover:not(:disabled) {
+  background: rgba(80, 80, 80, 0.7);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.cosmic-control-button-small:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cosmic-control-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cosmic-zoom-display {
+  font-size: 12px;
+  color: white;
+  min-width: 35px;
+  text-align: center;
+}
+
+.cosmic-checkbox {
+  accent-color: var(--cosmic-highlight-color);
+}
+
+.cosmic-control-label {
+  font-size: 12px;
+  color: white;
+}
+
+.cosmic-chart-container {
+  width: 100%;
+  height: 400px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.cosmic-chart-container.expanded {
+  transition: all 0.3s ease;
+}
+
+.cosmic-chart-footer {
+  padding: 8px 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  position: relative;
+}
+
+.cosmic-chart-explanation {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 8px 12px;
+  border-radius: 4px;
+  max-width: 80%;
+  opacity: 0.8;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: var(--transition-standard);
+}
+
+.cosmic-chart-explanation:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.cosmic-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.cosmic-placeholder-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.cosmic-placeholder-text {
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+.cosmic-placeholder-desc {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.cosmic-viz-legend {
+  display: flex;
+  padding: 8px 16px;
+  gap: 16px;
+  background-color: var(--elevated-dark);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cosmic-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.cosmic-legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.cosmic-legend-color.primary {
+  background-color: var(--primary-color);
+}
+
+.cosmic-legend-color.compare-0 {
+  background-color: var(--secondary-color);
+}
+
+.cosmic-legend-color.compare-1 {
+  background-color: var(--accent-color);
+}
+
+.cosmic-legend-color.compare-2 {
+  background-color: #ffb300;
+}
+
+.cosmic-legend-color.compare-3 {
+  background-color: #64dd17;
+}
+
+.cosmic-legend-color.compare-4 {
+  background-color: #00b0ff;
+}
+
+.cosmic-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.cosmic-metric {
+  background-color: var(--elevated-dark);
+  border-radius: var(--border-radius);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.cosmic-metric-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--primary-light);
+}
+
+.cosmic-metric-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.cosmic-info-icon {
+  font-size: 0.8rem;
+  color: var(--secondary-color);
+  cursor: help;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-standard);
+}
+
+.cosmic-info-icon:hover {
+  color: white;
+}
+
+.cosmic-tooltip-container {
+  position: relative;
+}
+
+.cosmic-tooltip-container:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.cosmic-sequence-path {
+  margin-top: 16px;
+}
+
+.cosmic-path-container {
+  background-color: var(--elevated-dark);
+  border-radius: var(--border-radius);
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-height: 80px;
+  overflow-y: auto;
+  margin-top: 8px;
+}
+
+.cosmic-even, .cosmic-odd {
+  font-family: monospace;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.cosmic-even {
+  color: var(--secondary-color);
+  background-color: rgba(3, 218, 198, 0.1);
+}
+
+.cosmic-odd {
+  color: var(--accent-color);
+  background-color: rgba(255, 64, 129, 0.1);
+}
+
+.cosmic-controls-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.cosmic-control-button {
+  background-color: var(--elevated-dark);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius);
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: var(--transition-standard);
+}
+
+.cosmic-control-button:hover {
+  background-color: rgba(124, 77, 255, 0.1);
+  border-color: rgba(124, 77, 255, 0.3);
+}
+
+.cosmic-control-button.active {
+  background-color: rgba(124, 77, 255, 0.2);
+  border-color: var(--primary-color);
+}
+
+.cosmic-control-icon {
+  font-size: 1.5rem;
+}
+
+.cosmic-layout-controls {
+  margin-top: 8px;
+}
+
+.cosmic-layout-options {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.cosmic-layout-button {
+  background-color: var(--elevated-dark);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: var(--transition-standard);
+  flex: 1;
+  margin: 0 4px;
+}
+
+.cosmic-layout-button:hover {
+  background-color: rgba(3, 218, 198, 0.1);
+  border-color: rgba(3, 218, 198, 0.3);
+}
+
+.cosmic-layout-button.active {
+  background-color: rgba(3, 218, 198, 0.15);
+  border-color: var(--secondary-color);
+}
+
+.cosmic-layout-icon {
+  font-size: 1.25rem;
+}
+
+.cosmic-layout-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.cosmic-compare-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.cosmic-compare-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.cosmic-compare-item {
+  display: grid;
+  grid-template-columns: 20px 1fr 80px 120px auto;
+  gap: 8px;
+  align-items: center;
+  background-color: var(--elevated-dark);
+  border-radius: var(--border-radius);
+  padding: 12px 16px;
+  transition: var(--transition-standard);
+}
+
+.cosmic-compare-item:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.cosmic-compare-item.cosmic-current {
+  border: 1px solid rgba(124, 77, 255, 0.3);
+  background-color: rgba(124, 77, 255, 0.1);
+}
+
+.cosmic-compare-number {
+  font-weight: 600;
+}
+
+.cosmic-compare-steps, .cosmic-compare-max {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.cosmic-compare-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cosmic-button-small {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  background-color: var(--elevated-dark);
+  color: var(--secondary-color);
+  border: 1px solid var(--secondary-color);
+}
+
+.cosmic-button-small:hover {
+  background-color: rgba(3, 218, 198, 0.1);
+}
+
+.cosmic-current-label {
+  background-color: rgba(124, 77, 255, 0.3);
+  color: var(--primary-light);
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.cosmic-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  color: var(--text-secondary);
+  text-align: center;
+  font-style: italic;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  min-height: 150px;
+}
+
+.cosmic-rule-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cosmic-rule-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cosmic-rule-formula {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--elevated-dark);
+  padding: 12px;
+  border-radius: var(--border-radius);
+}
+
+.cosmic-formula-text {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.cosmic-small-input {
+  width: 80px;
+  padding: 8px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.cosmic-full-width {
+  width: 100%;
+}
+
+.cosmic-rules-info {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.cosmic-formula {
+  background-color: var(--elevated-dark);
+  border-radius: var(--border-radius);
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-family: monospace;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.cosmic-theorem-content {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.cosmic-theorem-content ul {
+  margin-top: 8px;
+  padding-left: 20px;
+}
+
+.cosmic-theorem-content li {
+  margin-bottom: 8px;
+}
+
+.cosmic-share-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cosmic-share-option {
+  background-color: var(--elevated-dark);
+  border-radius: var(--border-radius);
+  padding: 16px;
+}
+
+.cosmic-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.cosmic-success-message {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: rgba(100, 221, 23, 0.2);
+  border-radius: var(--border-radius);
+  color: #64dd17;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Animations */
+@keyframes ripple {
+  0% {
+    opacity: 1;
+    transform: scale(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(500, 500);
+  }
+}
+
+@keyframes loading-gradient {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cosmic-layout.cosmic-focused,
+  .cosmic-layout.cosmic-multi-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .cosmic-panels {
+    grid-template-columns: 1fr;
+  }
+
+  .cosmic-preset-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+
+  .cosmic-container {
+    padding: 12px;
+  }
+
+  .cosmic-title {
+    font-size: 1.75rem;
+  }
+
+  .cosmic-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .cosmic-compare-item {
+    grid-template-columns: 20px 1fr auto;
+    grid-template-rows: auto auto;
+  }
+
+  .cosmic-compare-max {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    text-align: right;
+    padding-left: 28px;
+  }
+}
+
+/* Ensure that custom scrollbars look good */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--elevated-dark);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
+}
+
+.cosmic-sequence-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.cosmic-path-expanded {
+  max-height: none !important;
+  overflow: visible !important;
+  padding-bottom: 16px;
+}
+
+/* Visualization styles */
+.cosmic-svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  background-color: rgba(18, 18, 18, 0.3);
+  border-radius: 8px;
+}
+
+.cosmic-axis {
+  font-size: 0.8rem;
+}
+
+.cosmic-axis text {
+  fill: var(--grid-text-color);
+  font-size: 12px;
+  font-weight: 400;
+  font-family: var(--font-mono);
+  letter-spacing: -0.2px;
+}
+
+.cosmic-axis path,
+.cosmic-axis line {
+  stroke: var(--grid-axis-color);
+}
+
+.cosmic-axis .tick line {
+  stroke: var(--grid-line-color);
+}
+
+.cosmic-axis-label {
+  fill: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+}
+
+/* Ensure axis labels don't overlap */
+.cosmic-axis .tick text {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* Add margin between ticks */
+.cosmic-axis .tick {
+  font-size: 11px;
+}
+
+/* Increase contrast for better readability */
+.cosmic-axis .tick text {
+  fill: var(--grid-text-color);
+}
+
+/* Ensure proper spacing for long numbers */
+.cosmic-axis.y-axis .tick text {
+  padding-right: 4px;
+}
+
+.cosmic-line {
+  fill: none;
+  stroke-width: 2;
+}
+
+.cosmic-primary-line {
+  stroke: var(--cosmic-primary-color);
+}
+
+.cosmic-even-line {
+  stroke: var(--cosmic-even-color);
+}
+
+.cosmic-odd-line {
+  stroke: var(--cosmic-odd-color);
+}
+
+.cosmic-point {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cosmic-drop-line {
+  pointer-events: none;
+}
+
+.cosmic-area {
+  opacity: 0.15;
+}
+
+.cosmic-highlight-line {
+  pointer-events: none;
+}
+
+.cosmic-annotation-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.cosmic-tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  max-width: 220px;
+  backdrop-filter: blur(5px);
+}
+
+.cosmic-viz-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.cosmic-viz-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cosmic-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: var(--transition-standard);
+  white-space: nowrap;
+}
+
+.cosmic-toggle:hover {
+  background-color: rgba(124, 77, 255, 0.1);
+}
+
+.cosmic-toggle input {
+  cursor: pointer;
+}
+
+.cosmic-control-button-small {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition-standard);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.cosmic-control-button-small:hover {
+  background-color: rgba(124, 77, 255, 0.1);
+  color: var(--text-primary);
+  border-color: rgba(124, 77, 255, 0.3);
+}
+
+.cosmic-pattern-point {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    stroke-opacity: 0.7;
+    stroke-width: 2;
+  }
+  50% {
+    stroke-opacity: 1;
+    stroke-width: 3;
+  }
+  100% {
+    stroke-opacity: 0.7;
+    stroke-width: 2;
+  }
+}
+
+.cosmic-grid-lines line {
+  stroke: var(--grid-line-color);
+  stroke-dasharray: 2, 2;
+}
+
+.cosmic-info-button {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: var(--transition-standard);
+  z-index: 100;
+}
+
+.cosmic-info-button:hover {
+  background-color: var(--secondary-color);
+  border-color: white;
+}
+
+.cosmic-info-icon-large {
+  font-size: 14px;
+  color: var(--text-secondary);
+  transition: var(--transition-standard);
+}
+
+.cosmic-info-button:hover .cosmic-info-icon-large {
+  color: white;
+}
+
+/* Style for native tooltips */
+[title] {
+  position: relative;
+}
+
+.cosmic-floating-tooltip {
+  position: absolute;
+  bottom: 40px;
+  right: 10px;
+  max-width: 250px;
+  background-color: rgba(0, 0, 0, 0.85);
+  border-radius: 6px;
+  padding: 5px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(5px);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  animation: fadeIn 0.2s ease-out;
+  pointer-events: auto;
+}
+
+.cosmic-tooltip-content {
+  position: relative;
+  padding: 8px 24px 8px 8px;
+}
+
+.cosmic-tooltip-content p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.cosmic-tooltip-close {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: var(--transition-standard);
+}
+
+.cosmic-tooltip-close:hover {
+  opacity: 1;
+  color: white;
+}
+
+/* Tooltip arrow */
+.cosmic-floating-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  right: 16px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid rgba(0, 0, 0, 0.85);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cosmic-calculation-note {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.calculation-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--secondary-color);
+  font-size: 12px;
+  font-weight: bold;
+  cursor: help;
+}
+
+.calculation-badge:hover {
+  background-color: var(--secondary-color);
+  color: var(--background-dark);
+}
+
+.cosmic-orbital-info {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  z-index: 5;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 280px;
+}
+
+.cosmic-orbital-info .cosmic-tip {
+  margin-top: 1rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 0.5rem;
+  line-height: 1.4;
+}
+
+.cosmic-info-basic {
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.cosmic-view-heading {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.5rem;
+}
+
+.cosmic-view-mode-controls {
+  margin-top: 1rem;
+}
+
+.cosmic-view-modes {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.cosmic-view-mode-button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cosmic-view-mode-button:hover {
+  background-color: rgba(124, 77, 255, 0.2);
+}
+
+.cosmic-view-mode-button.active {
+  background-color: var(--cosmic-primary-color);
+}
+
+.cosmic-view-description {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.5rem;
+}
+
+.cosmic-tip {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+
+.cosmic-heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 8px;
+  padding: 16px;
+  overflow-y: auto;
+  max-height: calc(100% - 70px);
+}
+
+.cosmic-heatmap-cell {
+  border-radius: var(--border-radius);
+  background-color: var(--cosmic-primary-color);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.cosmic-heatmap-cell:hover {
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.cosmic-heatmap-cell-value {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.cosmic-heatmap-cell-freq {
+  font-size: 12px;
+  margin-top: 3px;
+  opacity: 0.9;
+}
+
+.cosmic-heatmap-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+  padding: 12px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: var(--border-radius);
+}
+
+.cosmic-legend-color.even {
+  background-color: var(--cosmic-even-color);
+}
+
+.cosmic-legend-color.odd {
+  background-color: var(--cosmic-odd-color);
+}
+
+.cosmic-legend-scale {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 16px;
+}
+
+.cosmic-scale-gradient {
+  width: 80px;
+  height: 10px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 1));
+  border-radius: 2px;
+}
+
+.cosmic-scale-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Ensure tooltips and annotations don't get cut off */
+.cosmic-tooltip {
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.cosmic-view-mode-controls {
+  margin-top: 1rem;
+}
+
+.cosmic-view-modes {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.cosmic-view-mode-button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cosmic-view-mode-button:hover {
+  background-color: rgba(124, 77, 255, 0.2);
+}
+
+.cosmic-view-mode-button.active {
+  background-color: var(--cosmic-primary-color);
+}
+
+.cosmic-view-description {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.5rem;
+}
+
+/* Stop Time Analysis improvements */
+.cosmic-help-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease;
+}
+
+.cosmic-help-content {
+  background: rgba(30, 30, 30, 0.95);
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cosmic-help-content h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--cosmic-highlight-color);
+  font-size: 20px;
+}
+
+.cosmic-help-content p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.cosmic-help-content ul {
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.cosmic-help-content li {
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.cosmic-help-content li strong {
+  color: white;
+}
+
+.cosmic-stopping-time-overlay {
+  position: absolute;
+  top: 10px;
+  right: 50px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 6px;
+  padding: 10px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  opacity: 0.9;
+  max-width: 250px;
+}
+
+.cosmic-explanation-text {
+  color: white;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.cosmic-explanation-detail {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: normal;
+  font-size: 11px;
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+.cosmic-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.cosmic-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--cosmic-highlight-color);
+  animation: spin 1s ease-in-out infinite;
+}
+
+.cosmic-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ff4d4f;
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  max-width: 80%;
+}
+
+.cosmic-range-label {
+  font-size: 12px;
+  color: white;
+  margin-right: 5px;
+}
+
+.cosmic-checkbox-label {
+  font-size: 12px;
+  color: white;
+  margin-left: 5px;
+  user-select: none;
+}
+
+.cosmic-help-button {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(60, 60, 60, 0.5);
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cosmic-button-small {
+  background: rgba(60, 60, 60, 0.5);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 5px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cosmic-button-small:hover:not(:disabled) {
+  background: rgba(80, 80, 80, 0.7);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.cosmic-button-small:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cosmic-button-small.active {
+  background: rgba(var(--cosmic-highlight-color-rgb), 0.3);
+  border-color: var(--cosmic-highlight-color);
+}
+
+/* Enhanced tooltip styles */
+.cosmic-tooltip {
+  position: absolute;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 5px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 1000;
+  max-width: 250px;
+  font-size: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(2px);
+  line-height: 1.5;
+}
+
+/* Improved axis styling */
+.cosmic-axis path {
+  stroke: var(--grid-axis-color);
+}
+
+.cosmic-axis line {
+  stroke: var(--grid-line-color);
+}
+
+.cosmic-axis text {
+  fill: var(--grid-text-color);
+  font-size: 10px;
+}
+
+.cosmic-axis-label {
+  fill: white;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.cosmic-grid-lines line {
+  stroke: var(--grid-line-color);
+  stroke-dasharray: 2, 2;
+}
+
+/* Update the grid pattern in the chart */
+svg #grid-pattern path {
+  stroke: var(--grid-line-color) !important;
+}
+
+/* Pattern Visualization specific styles */
+.pattern-visualization {
+  background-color: var(--pattern-grid-bg);
+  border: 1px solid var(--pattern-grid-line-color);
+  border-radius: var(--border-radius);
+}
+
+.pattern-grid {
+  display: grid;
+  gap: 1px;
+  background-color: var(--pattern-grid-line-color);
+  padding: 1px;
+  border-radius: var(--border-radius);
+}
+
+.pattern-cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+.pattern-cell.even {
+  background-color: var(--pattern-cell-bg-even);
+}
+
+.pattern-cell.odd {
+  background-color: var(--pattern-cell-bg-odd);
+}
+
+.pattern-cell:hover {
+  transform: scale(1.1);
+  z-index: 2;
+}
+
+/* Pattern View Controls */
+.pattern-controls {
+  padding: 16px;
+  background-color: var(--elevated-dark);
+  border-radius: var(--border-radius);
+  margin-bottom: 16px;
+}
+
+.pattern-view-modes {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pattern-view-mode {
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: var(--surface-dark);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pattern-view-mode:hover {
+  background-color: rgba(124, 77, 255, 0.1);
+}
+
+.pattern-view-mode.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.cosmic-top-controls {
+  background-color: var(--elevated-dark);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  margin-bottom: var(--panel-gap);
+  border-radius: var(--border-radius);
+}
+
+.cosmic-controls-grid {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.cosmic-control-button {
+  background-color: var(--elevated-dark);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius);
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: var(--transition-standard);
+  flex: 0 1 auto;
+  min-width: 120px;
+  color: var(--text-primary);
+}
+
+.cosmic-control-button:hover {
+  background-color: rgba(124, 77, 255, 0.1);
+  border-color: rgba(124, 77, 255, 0.3);
+}
+
+.cosmic-control-button.active {
+  background-color: rgba(124, 77, 255, 0.2);
+  border-color: var(--primary-color);
+}
+
+.cosmic-control-icon {
+  font-size: 1.25rem;
+}
+
+.cosmic-control-label {
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+

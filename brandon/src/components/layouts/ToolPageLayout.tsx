@@ -66,6 +66,12 @@ export function createDynamicPanelComponent(
   });
 }
 
+interface ToolPageLayoutProps {
+  meta: ToolMeta;
+  metadata?: Record<string, any>;
+  children: React.ReactNode;
+}
+
 export function ToolPageLayout({ meta, metadata, children }: ToolPageLayoutProps) {
   // Support legacy 'metadata' prop
   const metaData = meta || metadata;

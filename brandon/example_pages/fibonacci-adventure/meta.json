@@ -1,0 +1,83 @@
+{
+  "id": "fibonacci-adventure",
+  "title": "Fibonacci Adventure",
+  "description": "An interactive exploration of the Fibonacci sequence and its fascinating connections to nature, art, and mathematics",
+  "category": "Mathematics",
+  "subcategory": "Number Theory",
+  "featured": true,
+  "difficulty": "intermediate",
+  "lastUpdated": "2024-03-30",
+  "icon": "🌿",
+  "color": "from-green-600 to-emerald-600",
+  "shape": "circle",
+  "enabled": true,
+  "tags": [
+    "mathematics",
+    "fibonacci",
+    "number theory",
+    "nature",
+    "visualization"
+  ],
+  "keywords": [
+    "fibonacci sequence",
+    "golden ratio",
+    "number theory",
+    "mathematical patterns",
+    "nature mathematics"
+  ],
+  "type": "tool",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "explorer",
+        "label": "Explore",
+        "icon": "🔍",
+        "color": {
+          "active": "bg-green-500 text-white",
+          "hover": "bg-green-100 dark:bg-green-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "💡",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Mathematics",
+      "path": "/mathematics"
+    },
+    "nextTools": [
+      {
+        "id": "mathQuest",
+        "title": "Math Quest",
+        "icon": "⚔️",
+        "path": "/games/mathQuest"
+      }
+    ]
+  }
+} 

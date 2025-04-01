@@ -1,0 +1,114 @@
+{
+  "Web3 & Blockchain": [
+    {
+      "name": "React Three Fiber",
+      "description": "React renderer for Three.js",
+      "icon": "🎲",
+      "link": "https://github.com/pmndrs/react-three-fiber"
+    },
+    {
+      "name": "React Three Drei",
+      "description": "3D React Helpers",
+      "icon": "🎮",
+      "link": "https://github.com/pmndrs/drei"
+    }
+  ],
+  "Core": [
+    {
+      "name": "Next.js 14",
+      "description": "React Framework",
+      "icon": "⚡",
+      "link": "https://github.com/vercel/next.js"
+    },
+    {
+      "name": "React 18",
+      "description": "UI Library",
+      "icon": "⚛️",
+      "link": "https://github.com/facebook/react"
+    },
+    {
+      "name": "TypeScript",
+      "description": "Type Safety",
+      "icon": "📘",
+      "link": "https://github.com/microsoft/TypeScript"
+    }
+  ],
+  "Styling & UI": [
+    {
+      "name": "Tailwind CSS",
+      "description": "Utility-first CSS",
+      "icon": "🎨",
+      "link": "https://github.com/tailwindlabs/tailwindcss"
+    },
+    {
+      "name": "Framer Motion",
+      "description": "Animations",
+      "icon": "🎭",
+      "link": "https://github.com/framer/motion"
+    },
+    {
+      "name": "Radix UI",
+      "description": "Accessible Components",
+      "icon": "🔲",
+      "link": "https://github.com/radix-ui/primitives"
+    },
+    {
+      "name": "Shadcn/UI",
+      "description": "Component Library",
+      "icon": "🎯",
+      "link": "https://github.com/shadcn-ui/ui"
+    }
+  ],
+  "Mathematics & Visualization": [
+    {
+      "name": "Three.js",
+      "description": "3D Graphics",
+      "icon": "🎮",
+      "link": "https://github.com/mrdoob/three.js"
+    },
+    {
+      "name": "Math.js",
+      "description": "Math Operations",
+      "icon": "🔢",
+      "link": "https://github.com/josdejong/mathjs"
+    },
+    {
+      "name": "Recharts",
+      "description": "Data Visualization",
+      "icon": "📊",
+      "link": "https://github.com/recharts/recharts"
+    },
+    {
+      "name": "MathJax",
+      "description": "Math Rendering",
+      "icon": "📐",
+      "link": "https://github.com/mathjax/MathJax"
+    }
+  ],
+  "Development": [
+    {
+      "name": "Nx",
+      "description": "Build System",
+      "icon": "🏗️",
+      "link": "https://github.com/nrwl/nx"
+    },
+    {
+      "name": "Jest",
+      "description": "Testing",
+      "icon": "🧪",
+      "link": "https://github.com/facebook/jest"
+    },
+    {
+      "name": "Playwright",
+      "description": "E2E Testing",
+      "icon": "🎭",
+      "link": "https://github.com/microsoft/playwright"
+    },
+    {
+      "name": "ESLint",
+      "description": "Code Quality",
+      "icon": "✨",
+      "link": "https://github.com/eslint/eslint"
+    }
+  ]
+}

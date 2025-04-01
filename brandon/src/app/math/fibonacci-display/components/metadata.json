@@ -1,0 +1,19 @@
+{
+  "name": "Fibonacci Display",
+  "title": "Fibonacci Sequence Explorer",
+  "status": "published",
+  "description": "An interactive tool for generating and analyzing the Fibonacci sequence with dynamic charts.",
+  "path": "/math/fibonacci-display",
+  "categories": ["math", "education", "sequence"],
+  "sub_categories": ["Fibonacci", "charts", "interactive"],
+  "category_pages": "education",
+  "order": 8,
+  "featured": true,
+  "createdDate": "2024-02-25",
+  "icon": "🔢",
+  "tags": ["Fibonacci", "sequence generation", "charts", "interactive", "education"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 8
+  }
+}

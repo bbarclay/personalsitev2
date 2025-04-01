@@ -3,23 +3,25 @@
 import React from 'react';
 import { ToolPageLayout, createDynamicPanelComponent } from '@/components/layouts/ToolPageLayout';
 import { loadToolMeta } from '@/utils/meta-loader';
+import { LinearSystemsSolver } from './components/solver/LinearSystemsSolver';
+import { LinearSystemsLearning } from './components/learn/LinearSystemsLearning';
+import { LinearSystemsApplications } from './components/applications/LinearSystemsApplications';
+import { LinearSystemsResources } from './components/resources/LinearSystemsResources';
 import metaJson from './meta.json';
 
-// Load metadata with proper defaults
 const meta = loadToolMeta(metaJson);
 
-// Create dynamic panel component with placeholders
 const LinearSystemsContent = createDynamicPanelComponent({
-  solver: () => <div>Solver panel content</div>,
-  explanation: () => <div>Explanation panel content</div>,
-  applications: () => <div>Applications panel content</div>,
-  resources: () => <div>Resources panel content</div>
+  solver: LinearSystemsSolver,
+  explanation: LinearSystemsLearning,
+  applications: LinearSystemsApplications,
+  resources: LinearSystemsResources
 });
 
 export default function LinearSystemsPage() {
   return (
     <ToolPageLayout meta={meta}>
-      <div>Tool content</div>
+      <LinearSystemsContent />
     </ToolPageLayout>
   );
 }

@@ -1,0 +1,19 @@
+{
+  "name": "Mixture of Experts",
+  "title": "Understanding Mixture of Experts in Large Language Models",
+  "status": "published",
+  "description": "An interactive visualization explaining how Mixture of Experts (MoE) architecture works in modern language models, showing the flow from input through expert networks to final output.",
+  "path": "/ai/moe",
+  "categories": ["ai", "technology", "architecture"],
+  "sub_categories": ["LLM", "visualization", "system-design"],
+  "category_pages": "technology",
+  "order": 7,
+  "featured": false,
+  "createdDate": "2024-02-20",
+  "icon": "🤖",
+  "tags": ["MoE", "Mixture of Experts", "LLM", "artificial intelligence", "system architecture", "visualization"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 7
+  }
+}

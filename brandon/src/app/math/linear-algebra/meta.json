@@ -1,24 +1,25 @@
 {
-  "id": "linear-algebra",
-  "title": "Linear Algebra",
-  "description": "Tools for solving linear algebra problems",
-  "category": "Math",
+  "id": "LinearAlgebra",
+  "title": "LinearAlgebra",
+  "description": "Interactive LinearAlgebra tool for mathematics exploration",
+  "category": "Mathematics",
+  "subcategory": "Linear Algebra",
   "type": "math",
   "difficulty": "intermediate",
-  "icon": "🧮",
-  "lastUpdated": "2023-10-15",
-  "color": "from-blue-500 to-indigo-500",
+  "lastUpdated": "2025-04-01",
+  "icon": "🔢",
+  "color": "from-teal-500 to-green-500",
+  "shape": "rectangle",
   "enabled": true,
+  "featured": false,
   "tags": [
-    "linear algebra",
-    "matrices",
-    "vectors"
+    "math",
+    "interactive"
   ],
   "keywords": [
-    "linear algebra",
-    "matrix operations",
-    "vector spaces",
-    "eigenvalues"
+    "linearalgebra",
+    "math",
+    "tool"
   ],
   "sidebar": {
     "tabs": [
@@ -43,27 +44,21 @@
       {
         "id": "applications",
         "label": "Applications",
-        "icon": "🔍",
+        "icon": "🌐",
         "color": {
-          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "active": "bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300",
           "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       },
       {
         "id": "resources",
         "label": "Resources",
-        "icon": "📑",
+        "icon": "📖",
         "color": {
           "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
           "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
         }
       }
     ]
-  },
-  "navigation": {
-    "category": {
-      "title": "Mathematics",
-      "path": "/math"
-    }
   }
 }

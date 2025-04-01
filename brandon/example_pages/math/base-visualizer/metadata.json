@@ -1,0 +1,19 @@
+{
+  "name": "Base Visualizer",
+  "title": "Number Base Visualization Tool",
+  "status": "published",
+  "description": "Interactive tool for visualizing numbers in different bases and number systems",
+  "path": "/math/base-visualizer",
+  "categories": ["math", "education"],
+  "sub_categories": "number systems, visualization, base conversion",
+  "category_pages": "education",
+  "order": 5,
+  "featured": false,
+  "createdDate": "2024-01-20",
+  "icon": "🔢",
+  "tags": ["number bases", "visualization", "education", "number systems"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 5
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "id": "jacobi-perron-explorer",
+  "title": "Jacobi-Perron Explorer",
+  "description": "An interactive tool for exploring the Jacobi-Perron algorithm and its applications in number theory",
+  "category": "Mathematics",
+  "subcategory": "Number Theory",
+  "featured": true,
+  "difficulty": "advanced",
+  "lastUpdated": "2024-03-30",
+  "icon": "🔢",
+  "color": "from-green-600 to-blue-600",
+  "shape": "circle",
+  "enabled": true,
+  "tags": [
+    "mathematics",
+    "number theory",
+    "algorithm",
+    "interactive",
+    "visualization"
+  ],
+  "keywords": [
+    "Jacobi-Perron algorithm",
+    "number theory",
+    "continued fractions",
+    "mathematical visualization",
+    "algorithm exploration"
+  ],
+  "type": "tool",
+  "sidebar": {
+    "tabs": [
+      {
+        "id": "explorer",
+        "label": "Explore",
+        "icon": "🔍",
+        "color": {
+          "active": "bg-green-500 text-white",
+          "hover": "bg-green-100 dark:bg-green-900"
+        }
+      },
+      {
+        "id": "explanation",
+        "label": "Learn",
+        "icon": "📖",
+        "color": {
+          "active": "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "applications",
+        "label": "Uses",
+        "icon": "💡",
+        "color": {
+          "active": "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "icon": "📚",
+        "color": {
+          "active": "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-300",
+          "hover": "bg-gray-100 dark:hover:bg-gray-700/50"
+        }
+      }
+    ]
+  },
+  "navigation": {
+    "category": {
+      "title": "Mathematics",
+      "path": "/mathematics"
+    },
+    "nextTools": [
+      {
+        "id": "groupmaster",
+        "title": "Group Master",
+        "icon": "👥",
+        "path": "/mathematics/groupmaster"
+      }
+    ]
+  }
+} 

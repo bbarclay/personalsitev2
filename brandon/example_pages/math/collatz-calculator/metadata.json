@@ -1,0 +1,20 @@
+
+{
+  "name": "Collatz Calculator",
+  "title": "Collatz Conjecture Calculator",
+  "status": "published",
+  "description": "Calculate and visualize sequences based on the Collatz conjecture and custom rules.",
+  "path": "/math/collatz-calculator",
+  "categories": ["math", "education"],
+  "sub_categories": "collatz conjecture, sequences, visualization",
+  "category_pages": "education",
+  "order": 8,
+  "featured": false,
+  "createdDate": "2024-01-20",
+  "icon": "🔢",
+  "tags": ["collatz conjecture", "sequences", "visualization", "education"],
+  "authors": ["Brandon Barclay"],
+  "category": {
+    "priority": 8
+  }
+}

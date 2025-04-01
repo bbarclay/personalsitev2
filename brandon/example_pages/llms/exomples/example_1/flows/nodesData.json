@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "id": "smith",
+      "type": "family",
+      "data": {
+        "type": "parent",
+        "familyName": "Smith Family",
+        "layout": {
+          "columns": 5
+        },
+        "children": [
+          {
+            "id": "smith-1",
+            "type": "tooltip",
+            "name": "John",
+            "age": 10,
+            "scale": 0.8,
+            "tooltip": {
+              "label": "The youngest boy, loves playing video games",
+              "position": "Bottom"
+            }
+          },
+          {
+            "id": "smith-2",
+            "type": "tooltip",
+            "name": "Sarah",
+            "imageUrl": "/api/placeholder/100/100",
+            "scale": 1,
+            "tooltip": {
+              "label": "The artist of the family",
+              "position": "Top"
+            }
+          },
+          {
+            "id": "smith-3",
+            "type": "tooltip",
+            "name": "Mike",
+            "age": 12,
+            "tooltip": {
+              "label": "Future programmer, already learning Python",
+              "position": "Right"
+            }
+          },
+          {
+            "id": "smith-4",
+            "type": "tooltip",
+            "name": "Emma",
+            "age": 8,
+            "scale": 0.9,
+            "customClasses": "bg-pink-100 dark:bg-pink-900",
+            "tooltip": {
+              "label": "Loves ballet and painting",
+              "position": "Left"
+            }
+          },
+          {
+            "id": "smith-5",
+            "type": "tooltip",
+            "name": "Alex",
+            "age": 15,
+            "customClasses": "bg-indigo-100 dark:bg-indigo-900",
+            "tooltip": {
+              "label": "The tech-savvy teenager",
+              "position": "Bottom"
+            }
+          }
+        ]
+      },
+      "position": {
+        "x": 30.570488600775832,
+        "y": -84.83862426451256
+      },
+      "draggable": true,
+      "measured": {
+        "width": 505,
+        "height": 216
+      },
+      "selected": true,
+      "dragging": false
+    },
+    {
+      "id": "smith-annotation",
+      "type": "annotationNode",
+      "data": {
+        "label": "The Smiths are a modern family showcasing different types of nodes: default, image, and icon. Each child represents a unique way to display data in our flow.",
+        "level": 1,
+        "arrow": "⤹",
+        "arrowStyle": {
+          "right": 20,
+          "bottom": -25,
+          "transform": "rotate(-45deg)"
+        }
+      },
+      "position": {
+        "x": -192.13251980625452,
+        "y": -58.52231654177712
+      },
+      "parentNode": "smith",
+      "draggable": true,
+      "measured": {
+        "width": 180,
+        "height": 189
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "image1",
+      "type": "image",
+      "data": {
+        "imageUrl": "/api/placeholder/200/200",
+        "label": "Sample Image"
+      },
+      "position": {
+        "x": 718.4332725570803,
+        "y": -76.1588120539335
+      },
+      "draggable": true,
+      "measured": {
+        "width": 129,
+        "height": 240
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "icon1",
+      "type": "iconCard",
+      "data": {
+        "title": "User Profile",
+        "description": "Manage your account settings and preferences",
+        "icon": {
+          "type": {},
+          "key": null,
+          "ref": null,
+          "props": {
+            "className": "w-6 h-6"
+          },
+          "_owner": null,
+          "_store": {}
+        }
+      },
+      "position": {
+        "x": -139.8243787219597,
+        "y": 183.34240287998094
+      },
+      "draggable": true,
+      "measured": {
+        "width": 336,
+        "height": 88
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "simple1",
+      "type": "simple",
+      "data": {
+        "label": "Simple Node"
+      },
+      "position": {
+        "x": 676.7137024844327,
+        "y": 327.2739400945116
+      },
+      "draggable": true,
+      "measured": {
+        "width": 126,
+        "height": 56
+      },
+      "selected": false,
+      "dragging": false
+    }
+  ]
+}

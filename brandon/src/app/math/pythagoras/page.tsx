@@ -5,28 +5,21 @@ import { ToolPageLayout, createDynamicPanelComponent } from '@/components/layout
 import { loadToolMeta } from '@/utils/meta-loader';
 import metaJson from './meta.json';
 
+// Import our improved components
+import SolverPanel from './components/SolverPanel';
+import ExplanationPanel from './components/ExplanationPanel';
+import ApplicationsPanel from './components/ApplicationsPanel';
+import ResourcesPanel from './components/ResourcesPanel';
+
 // Load metadata with proper defaults
 const meta = loadToolMeta(metaJson);
 
-const PlaceholderPanel = () => (
-  <div className="p-4">
-    <h2 className="text-2xl font-bold mb-4">Pythagorean Theorem</h2>
-    <p className="text-gray-700 dark:text-gray-300">
-      The Pythagorean theorem states that in a right triangle, the square of the length of the hypotenuse equals 
-      the sum of squares of the lengths of the other two sides: a² + b² = c².
-      This tool allows you to calculate any side of a right triangle when you know the other two sides.
-    </p>
-  </div>
-);
-
-// Create dynamic panel component with placeholders
-
-
+// Create dynamic panel component with our custom components
 const PythagorasContent = createDynamicPanelComponent({
-  solver: PlaceholderPanel,
-  explanation: PlaceholderPanel,
-  applications: PlaceholderPanel,
-  resources: PlaceholderPanel
+  solver: SolverPanel,
+  explanation: ExplanationPanel,
+  applications: ApplicationsPanel,
+  resources: ResourcesPanel
 });
 
 export default function PythagorasPage() {

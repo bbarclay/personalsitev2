@@ -1,0 +1,14 @@
+
+{
+  "name": "ArcAGI Flow",
+  "description": "Visual representation of AGI system architecture and flow",
+  "pages": ["/ai", "/math"],
+  "category": {
+    "name": "AI Visualizations",
+    "description": "Visual representations and diagrams of AI systems",
+    "priority": 1,
+    "icon": "📊"
+  },
+  "reviewed": true,
+  "featured": true
+}
