@@ -13,9 +13,9 @@ import { GamePreferences, ThemeMode, GameDifficulty } from '../types/config';
 import { gameReducer, initialGameState } from '../reducers/gameReducer';
 import { DEFAULT_GAME_CONFIG } from '../config/game-config';
 import { 
-  saveGameState, 
-  savePreferences, 
-  getInitialPreferences 
+  saveProgress,
+  updatePreferences,
+  getPreferences,
 } from '../utils/storage';
 
 interface GameContextValue {
@@ -48,15 +48,15 @@ const GameContext = createContext<Optional<GameContextValue>>(undefined);
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(gameReducer, initialGameState);
-  const [preferences, setPreferences] = React.useState<GamePreferences>(getInitialPreferences);
+  const [preferences, setPreferences] = React.useState<GamePreferences>(getPreferences);
 
   // Persist state changes
   useEffect(() => {
-    saveGameState(state);
+    saveProgress(state);
   }, [state]);
 
   useEffect(() => {
-    savePreferences(preferences);
+    updatePreferences(preferences);
   }, [preferences]);
 
   // Game Actions

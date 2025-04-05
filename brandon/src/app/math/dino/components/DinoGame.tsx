@@ -13,6 +13,7 @@ import { MemoryGame } from './MemoryGame';
 import { ShowCelebration } from '../types';
 import { getProgress, saveProgress, updateAchievement } from '../utils/storage';
 import { getRandomDinosaur } from '../utils/era-utils';
+import { MemoryGameState } from '../types/index';
 
 interface DinoGameProps {
   currentEra: EraId;
@@ -27,7 +28,7 @@ export function DinoGame({
 }: DinoGameProps) {
   const [activeTab, setActiveTab] = useState<string>('world');
   const [score, setScore] = useState<number>(() => getProgress().score);
-  const [showMemoryGame, setShowMemoryGame] = useState<boolean | 'show' | 'input'>(false);
+  const [showMemoryGame, setShowMemoryGame] = useState<MemoryGameState>(false);
   const [memoryGameDinos, setMemoryGameDinos] = useState<string[]>([]);
   const [userAnswer, setUserAnswer] = useState<string>('');
   const [memoryResult, setMemoryResult] = useState<boolean | null>(null);

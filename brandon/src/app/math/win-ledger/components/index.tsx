@@ -2,7 +2,23 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React from 'react';
-import { SymbolIcon } from '@/components/math/symbol-icon';
+// import { SymbolIcon } from '@/components/math/symbol-icon';
+
+// Placeholder SymbolIcon component 
+const SymbolIcon = ({ symbolId, size }: { symbolId: number, size: number }) => (
+  <div style={{ 
+    width: size, 
+    height: size, 
+    background: '#333', 
+    borderRadius: '50%', 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    fontSize: size * 0.7
+  }}>
+    {['🍒', '🔔', '7️⃣', '⭐'][symbolId % 4] || symbolId}
+  </div>
+);
 
 export interface WinRecord {
   id: string;

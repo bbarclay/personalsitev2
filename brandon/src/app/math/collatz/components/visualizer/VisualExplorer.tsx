@@ -16,6 +16,7 @@ import { FractalVisualizer } from './FractalVisualizer';
 import { HexGridVisualizer } from './HexGridVisualizer';
 import { useCollatz } from '../../hooks/useCollatz';
 import { PlayCircle, PauseCircle, SkipForward, Shuffle, RefreshCw } from 'lucide-react';
+import { Label } from '@/components/ui/label';
 
 interface VisualExplorerProps {
   initialNumber?: number;
@@ -292,15 +293,17 @@ export function VisualExplorer({ initialNumber = 27 }: VisualExplorerProps) {
                   <span>Slow</span>
                   <span>Fast</span>
                 </div>
-                <Slider 
-                  min={100} 
-                  max={3000} 
-                  step={100} 
-                  value={[autoPlaySpeed]} 
-                  onValueChange={handleAutoPlaySpeedChange}
-                  defaultValue={[1000]}
-                  className="w-full"
-                />
+                <div className="flex items-center space-x-2 w-full">
+                  <Label>Speed: {autoPlaySpeed}ms</Label>
+                  <Slider 
+                    min={100} 
+                    max={3000} 
+                    step={100} 
+                    value={[autoPlaySpeed]} 
+                    onValueChange={handleAutoPlaySpeedChange}
+                    className="w-full"
+                  />
+                </div>
               </div>
               
               <Select 

@@ -1,6 +1,17 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { RotateCcw, AlertTriangle, InfoIcon, ArrowLeftRight } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function SolverPanel() {
   const [expression, setExpression] = useState('x^2');
@@ -8,14 +19,29 @@ export default function SolverPanel() {
   const [upperBound, setUpperBound] = useState('1');
   const [numRectangles, setNumRectangles] = useState('10');
   const [method, setMethod] = useState('left');
-  const [result, setResult] = useState<number | null>(null);
+  const [results, setResults] = useState<Record<string, number | null>>({
+    left: null,
+    right: null,
+    mid: null
+  });
   const [error, setError] = useState('');
   const [exactResult, setExactResult] = useState<number | null>(null);
   const [showExact, setShowExact] = useState(false);
   const [autoUpdate, setAutoUpdate] = useState(true);
+  const [compareMode, setCompareMode] = useState(false);
   
-  // Canvas reference for visualization
+  // Canvas references for visualization
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const compareCanvasRef = useRef<HTMLCanvasElement>(null);
+  
+  // Predefined examples
+  const examples = [
+    { name: 'Quadratic', expression: 'x^2', lowerBound: '0', upperBound: '1' },
+    { name: 'Sine Wave', expression: 'sin(x)', lowerBound: '0', upperBound: 'pi' },
+    { name: 'Exponential', expression: 'e^x', lowerBound: '0', upperBound: '2' },
+    { name: 'Logarithm', expression: 'log(x)', lowerBound: '1', upperBound: '3' },
+    { name: 'Inverse', expression: '1/x', lowerBound: '1', upperBound: '4' },
+  ];
   
   // Function to evaluate mathematical expressions
   const evaluateExpression = (expr: string, x: number): number => {
@@ -74,7 +100,7 @@ export default function SolverPanel() {
     }
   };
 
-  const calculateRiemannSum = () => {
+  const calculateRiemannSum = (calculationMethod = method) => {
     try {
       const a = parseFloat(lowerBound);
       const b = parseFloat(upperBound);
@@ -98,7 +124,7 @@ export default function SolverPanel() {
       for (let i = 0; i < n; i++) {
         let x;
         
-        switch (method) {
+        switch (calculationMethod) {
           case 'left':
             x = a + i * dx;
             break;
@@ -116,24 +142,80 @@ export default function SolverPanel() {
         sum += fX * dx;
       }
       
-      setResult(sum);
+      return sum;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const calculateAllMethods = () => {
+    setError('');
+    try {
+      const leftResult = calculateRiemannSum('left');
+      const rightResult = calculateRiemannSum('right');
+      const midResult = calculateRiemannSum('mid');
+      
+      setResults({
+        left: leftResult,
+        right: rightResult,
+        mid: midResult
+      });
+      
       calculateExactIntegral();
-      setError('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
-      setResult(null);
+      setResults({
+        left: null,
+        right: null,
+        mid: null
+      });
       setExactResult(null);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    calculateRiemannSum();
+    if (compareMode) {
+      calculateAllMethods();
+    } else {
+      try {
+        const result = calculateRiemannSum();
+        setResults({ ...results, [method]: result });
+        calculateExactIntegral();
+        setError('');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        setResults({ ...results, [method]: null });
+        setExactResult(null);
+      }
+    }
+  };
+  
+  const applyExample = (index: number) => {
+    const example = examples[index];
+    setExpression(example.expression);
+    setLowerBound(example.lowerBound);
+    setUpperBound(example.upperBound);
+  };
+  
+  const resetCalculator = () => {
+    setExpression('x^2');
+    setLowerBound('0');
+    setUpperBound('1');
+    setNumRectangles('10');
+    setMethod('left');
+    setResults({
+      left: null,
+      right: null,
+      mid: null
+    });
+    setError('');
+    setExactResult(null);
+    setShowExact(false);
   };
   
   // Draw the function and Riemann sum visualization
-  const drawVisualization = () => {
-    const canvas = canvasRef.current;
+  const drawVisualization = (canvas: HTMLCanvasElement | null, drawMethod?: string) => {
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
@@ -243,10 +325,12 @@ export default function SolverPanel() {
       const dx = (b - a) / n;
       const rectangles = [];
       
+      const methodToUse = drawMethod || method;
+      
       for (let i = 0; i < n; i++) {
         let x;
         
-        switch (method) {
+        switch (methodToUse) {
           case 'left':
             x = a + i * dx;
             break;
@@ -274,9 +358,29 @@ export default function SolverPanel() {
         }
       }
       
-      // Draw Riemann sum rectangles
-      ctx.fillStyle = 'rgba(173, 216, 230, 0.5)';
-      ctx.strokeStyle = 'rgba(70, 130, 180, 0.8)';
+      // Draw Riemann sum rectangles with color based on method
+      let rectColor, rectBorderColor;
+      
+      switch (methodToUse) {
+        case 'left':
+          rectColor = 'rgba(173, 216, 230, 0.5)';
+          rectBorderColor = 'rgba(70, 130, 180, 0.8)';
+          break;
+        case 'right':
+          rectColor = 'rgba(144, 238, 144, 0.5)';
+          rectBorderColor = 'rgba(46, 139, 87, 0.8)';
+          break;
+        case 'mid':
+          rectColor = 'rgba(255, 182, 193, 0.5)';
+          rectBorderColor = 'rgba(220, 20, 60, 0.8)';
+          break;
+        default:
+          rectColor = 'rgba(173, 216, 230, 0.5)';
+          rectBorderColor = 'rgba(70, 130, 180, 0.8)';
+      }
+      
+      ctx.fillStyle = rectColor;
+      ctx.strokeStyle = rectBorderColor;
       ctx.lineWidth = 1;
       
       for (const rect of rectangles) {
@@ -318,6 +422,15 @@ export default function SolverPanel() {
       ctx.textAlign = 'center';
       ctx.fillText(`f(x) = ${expression}`, width / 2, padding / 2);
       
+      // Add method label if specified
+      if (drawMethod) {
+        const methodName = drawMethod === 'left' ? 'Left' : drawMethod === 'right' ? 'Right' : 'Midpoint';
+        ctx.fillStyle = rectBorderColor;
+        ctx.font = 'bold 16px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${methodName} Riemann Sum`, width / 2, height - 10);
+      }
+      
     } catch (err) {
       // Handle drawing errors silently
     }
@@ -326,205 +439,426 @@ export default function SolverPanel() {
   // Effect to update the visualization when parameters change
   useEffect(() => {
     if (autoUpdate) {
-      calculateRiemannSum();
+      if (compareMode) {
+        calculateAllMethods();
+      } else {
+        try {
+          const result = calculateRiemannSum();
+          setResults({ ...results, [method]: result });
+          calculateExactIntegral();
+          setError('');
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'An error occurred');
+          setResults({ ...results, [method]: null });
+          setExactResult(null);
+        }
+      }
     }
-    drawVisualization();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [expression, lowerBound, upperBound, numRectangles, method, autoUpdate]);
+    
+    // Draw the primary visualization
+    drawVisualization(canvasRef.current);
+    
+    // Draw the comparison visualizations if in compare mode
+    if (compareMode) {
+      const canvasWidth = compareCanvasRef.current?.width || 0;
+      const canvasHeight = compareCanvasRef.current?.height || 0;
+      const ctx = compareCanvasRef.current?.getContext('2d');
+      
+      if (ctx && canvasWidth > 0 && canvasHeight > 0) {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        
+        // Create three separate visuals in one canvas
+        const thirdWidth = Math.floor(canvasWidth / 3);
+        
+        // Store the original canvas
+        const originalCanvas = compareCanvasRef.current;
+        
+        // Create temporary canvases
+        const leftCanvas = document.createElement('canvas');
+        leftCanvas.width = thirdWidth;
+        leftCanvas.height = canvasHeight;
+        
+        const rightCanvas = document.createElement('canvas');
+        rightCanvas.width = thirdWidth;
+        rightCanvas.height = canvasHeight;
+        
+        const midCanvas = document.createElement('canvas');
+        midCanvas.width = thirdWidth;
+        midCanvas.height = canvasHeight;
+        
+        // Draw each method on its own canvas
+        drawVisualization(leftCanvas, 'left');
+        drawVisualization(rightCanvas, 'right');
+        drawVisualization(midCanvas, 'mid');
+        
+        // Combine them
+        ctx.drawImage(leftCanvas, 0, 0);
+        ctx.drawImage(rightCanvas, thirdWidth, 0);
+        ctx.drawImage(midCanvas, thirdWidth * 2, 0);
+        
+        // Add separator lines
+        ctx.strokeStyle = '#888';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(thirdWidth, 0);
+        ctx.lineTo(thirdWidth, canvasHeight);
+        ctx.moveTo(thirdWidth * 2, 0);
+        ctx.lineTo(thirdWidth * 2, canvasHeight);
+        ctx.stroke();
+      }
+    }
+  }, [expression, lowerBound, upperBound, numRectangles, method, autoUpdate, compareMode]);
 
   return (
     <div className="space-y-6">
       <div className="prose dark:prose-invert max-w-none">
-        <h2>Riemann Sum Calculator</h2>
-        <p>
-          Calculate the definite integral using Riemann sums with left, right, or midpoint approximation methods.
-          The calculator visualizes how the approximation works by showing the rectangles used.
+        <h2 className="mb-2">Riemann Sum Calculator</h2>
+        <p className="text-muted-foreground">
+          Calculate definite integrals using Riemann sums with various approximation methods.
+          Visualize how rectangles approximate the area under a curve.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1 space-y-4">
-          <form onSubmit={handleSubmit} className="space-y-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
-            <div>
-              <label htmlFor="expression" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Function f(x)
-              </label>
-              <div className="mt-1">
-                <input
-                  type="text"
-                  id="expression"
-                  value={expression}
-                  onChange={(e) => setExpression(e.target.value)}
-                  placeholder="e.g., x^2, sin(x), e^x"
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Supported: +, -, *, /, ^, sin(), cos(), tan(), sqrt(), log(), exp(), pi, e
-              </p>
-            </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex justify-between items-center">
+                <span>Function & Parameters</span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={resetCalculator}
+                        className="h-8 w-8"
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Reset all values</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="expression">Function f(x)</Label>
+                  <Input
+                    id="expression"
+                    value={expression}
+                    onChange={(e) => setExpression(e.target.value)}
+                    placeholder="e.g., x^2, sin(x), e^x"
+                  />
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Supported: +, -, *, /, ^, sin(), cos(), tan(), sqrt(), log(), exp(), pi, e
+                  </p>
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="lowerBound" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Lower Bound (a)
-                </label>
-                <div className="mt-1">
-                  <input
-                    type="text"
-                    id="lowerBound"
-                    value={lowerBound}
-                    onChange={(e) => setLowerBound(e.target.value)}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="lowerBound">Lower Bound (a)</Label>
+                    <Input
+                      id="lowerBound"
+                      value={lowerBound}
+                      onChange={(e) => setLowerBound(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="upperBound">Upper Bound (b)</Label>
+                    <Input
+                      id="upperBound"
+                      value={upperBound}
+                      onChange={(e) => setUpperBound(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
-              
-              <div>
-                <label htmlFor="upperBound" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Upper Bound (b)
-                </label>
-                <div className="mt-1">
-                  <input
-                    type="text"
-                    id="upperBound"
-                    value={upperBound}
-                    onChange={(e) => setUpperBound(e.target.value)}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="numRectangles" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Number of Rectangles (n)
-                </label>
-                <div className="mt-1">
-                  <input
-                    type="range"
+
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <Label htmlFor="numRectangles">Rectangles: {numRectangles}</Label>
+                    <span className="text-xs text-muted-foreground">1-100</span>
+                  </div>
+                  <Slider
                     id="numRectangles"
-                    min="1"
-                    max="100"
-                    value={numRectangles}
-                    onChange={(e) => setNumRectangles(e.target.value)}
-                    className="block w-full"
+                    min={1}
+                    max={100}
+                    step={1}
+                    value={[parseInt(numRectangles)]}
+                    onValueChange={(value) => setNumRectangles(value[0].toString())}
                   />
-                  <div className="flex justify-between text-xs mt-1">
-                    <span>1</span>
-                    <span>50</span>
-                    <span>100</span>
-                  </div>
-                  <div className="text-center text-sm font-medium mt-1">
-                    {numRectangles}
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>Approximation Method</Label>
+                  {!compareMode && (
+                    <Select value={method} onValueChange={setMethod}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select method" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="left">Left Riemann Sum</SelectItem>
+                        <SelectItem value="right">Right Riemann Sum</SelectItem>
+                        <SelectItem value="mid">Midpoint Riemann Sum</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                  
+                  <div className="flex items-center space-x-2 mt-2">
+                    <Switch
+                      id="compareMode"
+                      checked={compareMode}
+                      onCheckedChange={setCompareMode}
+                    />
+                    <Label htmlFor="compareMode" className="cursor-pointer">
+                      <div className="flex items-center">
+                        <span>Compare All Methods</span>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InfoIcon className="h-4 w-4 ml-1 text-muted-foreground" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Shows all three approximation methods side by side</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </Label>
                   </div>
                 </div>
-              </div>
-              
-              <div>
-                <label htmlFor="method" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Method
-                </label>
-                <div className="mt-1">
-                  <select
-                    id="method"
-                    value={method}
-                    onChange={(e) => setMethod(e.target.value)}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="autoUpdate"
+                    checked={autoUpdate}
+                    onCheckedChange={setAutoUpdate}
+                  />
+                  <Label htmlFor="autoUpdate">Update automatically</Label>
+                </div>
+                
+                <Button type="submit" className="w-full" disabled={autoUpdate}>
+                  Calculate
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Examples</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-2">
+                {examples.map((example, index) => (
+                  <Button 
+                    key={index} 
+                    variant="outline" 
+                    onClick={() => applyExample(index)}
+                    className="justify-start"
                   >
-                    <option value="left">Left Riemann Sum</option>
-                    <option value="right">Right Riemann Sum</option>
-                    <option value="mid">Midpoint Riemann Sum</option>
-                  </select>
-                </div>
+                    <span className="font-mono mr-2">f(x) = {example.expression}</span>
+                    <span className="text-xs text-muted-foreground ml-auto">
+                      [{example.lowerBound}, {example.upperBound}]
+                    </span>
+                  </Button>
+                ))}
               </div>
-            </div>
-            
-            <div className="flex items-center">
-              <input
-                id="autoUpdate"
-                name="autoUpdate"
-                type="checkbox"
-                checked={autoUpdate}
-                onChange={(e) => setAutoUpdate(e.target.checked)}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label htmlFor="autoUpdate" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                Update automatically
-              </label>
-            </div>
-            
-            <button
-              type="submit"
-              className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Calculate
-            </button>
-          </form>
+            </CardContent>
+          </Card>
 
           {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-3">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
-                </div>
-              </div>
-            </div>
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
 
-          {result !== null && (
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-              <h3 className="text-lg font-medium text-blue-800 dark:text-blue-300 mb-2">Result</h3>
-              <div className="text-xl font-bold text-blue-700 dark:text-blue-400">
-                ∫<sub>{lowerBound}</sub><sup>{upperBound}</sup> {expression} dx ≈ {result.toFixed(6)}
-              </div>
-              
-              {showExact && exactResult !== null && (
-                <div className="mt-2 text-sm text-blue-700 dark:text-blue-400">
-                  <div className="font-medium">Exact value: {exactResult.toFixed(6)}</div>
-                  <div className="mt-1">
-                    Error: {Math.abs(result - exactResult).toFixed(6)} ({(Math.abs(result - exactResult) / Math.abs(exactResult) * 100).toFixed(2)}%)
-                  </div>
+          {!compareMode && results[method] !== null && (
+            <Card className="bg-primary/5 border-primary/20">
+              <CardContent className="pt-6">
+                <h3 className="text-lg font-medium text-primary mb-2">Result</h3>
+                <div className="font-mono text-xl font-semibold">
+                  ∫<sub>{lowerBound}</sub><sup>{upperBound}</sup> {expression} dx ≈ {results[method]?.toFixed(6)}
                 </div>
-              )}
-            </div>
+                
+                {showExact && exactResult !== null && (
+                  <div className="mt-4 text-sm">
+                    <div className="font-medium">Exact value: {exactResult.toFixed(6)}</div>
+                    <div className="mt-1">
+                      Error: {Math.abs((results[method] ?? 0) - exactResult).toFixed(6)} ({(Math.abs((results[method] ?? 0) - exactResult) / Math.abs(exactResult) * 100).toFixed(2)}%)
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+          
+          {compareMode && (results.left !== null || results.right !== null || results.mid !== null) && (
+            <Card className="bg-primary/5 border-primary/20">
+              <CardContent className="pt-6">
+                <h3 className="text-lg font-medium text-primary mb-2">Comparison Results</h3>
+                <div className="space-y-3">
+                  {results.left !== null && (
+                    <div className="p-2 bg-blue-100 dark:bg-blue-950 rounded-md">
+                      <div className="font-medium">Left: {results.left.toFixed(6)}</div>
+                      {showExact && exactResult !== null && (
+                        <div className="text-xs mt-1">
+                          Error: {Math.abs(results.left - exactResult).toFixed(6)} ({(Math.abs(results.left - exactResult) / Math.abs(exactResult) * 100).toFixed(2)}%)
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {results.right !== null && (
+                    <div className="p-2 bg-green-100 dark:bg-green-950 rounded-md">
+                      <div className="font-medium">Right: {results.right.toFixed(6)}</div>
+                      {showExact && exactResult !== null && (
+                        <div className="text-xs mt-1">
+                          Error: {Math.abs(results.right - exactResult).toFixed(6)} ({(Math.abs(results.right - exactResult) / Math.abs(exactResult) * 100).toFixed(2)}%)
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {results.mid !== null && (
+                    <div className="p-2 bg-pink-100 dark:bg-pink-950 rounded-md">
+                      <div className="font-medium">Midpoint: {results.mid.toFixed(6)}</div>
+                      {showExact && exactResult !== null && (
+                        <div className="text-xs mt-1">
+                          Error: {Math.abs(results.mid - exactResult).toFixed(6)} ({(Math.abs(results.mid - exactResult) / Math.abs(exactResult) * 100).toFixed(2)}%)
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {showExact && exactResult !== null && (
+                    <div className="p-2 bg-purple-100 dark:bg-purple-950 rounded-md">
+                      <div className="font-medium">Exact: {exactResult.toFixed(6)}</div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           )}
         </div>
         
-        <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Visualization</h3>
-          <div className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-900">
-            <canvas
-              ref={canvasRef}
-              width={800}
-              height={500}
-              className="w-full h-auto"
-            />
-          </div>
-          <div className="mt-4 flex flex-wrap gap-4 text-sm">
-            <div className="flex items-center">
-              <span className="h-3 w-6 bg-red-500 inline-block mr-2"></span>
-              <span className="text-gray-700 dark:text-gray-300">Function f(x)</span>
-            </div>
-            <div className="flex items-center">
-              <span className="h-3 w-6 bg-blue-200 border border-blue-500 inline-block mr-2"></span>
-              <span className="text-gray-700 dark:text-gray-300">{method === 'left' ? 'Left' : method === 'right' ? 'Right' : 'Midpoint'} Rectangles</span>
-            </div>
-          </div>
-          <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-            <p>
-              Riemann sums approximate the area under a curve by dividing it into rectangles.
-              The {method === 'left' ? 'left' : method === 'right' ? 'right' : 'midpoint'} Riemann sum uses 
-              the function value at the {method === 'left' ? 'left' : method === 'right' ? 'right' : 'midpoint'} of each interval to determine the height of each rectangle.
-              As the number of rectangles increases, the approximation gets closer to the exact value of the definite integral.
-            </p>
-          </div>
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex justify-between items-center">
+                <span>Visualization</span>
+                {compareMode && (
+                  <span className="text-sm text-muted-foreground">
+                    Showing all three methods side by side
+                  </span>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {!compareMode ? (
+                <div className="border rounded-lg overflow-hidden bg-card">
+                  <canvas
+                    ref={canvasRef}
+                    width={800}
+                    height={500}
+                    className="w-full h-auto"
+                  />
+                  <div className="p-4 flex flex-wrap gap-6 text-sm">
+                    <div className="flex items-center">
+                      <span className="h-3 w-6 bg-red-500 inline-block mr-2"></span>
+                      <span>Function f(x)</span>
+                    </div>
+                    {method === 'left' && (
+                      <div className="flex items-center">
+                        <span className="h-3 w-6 bg-blue-200 border border-blue-500 inline-block mr-2"></span>
+                        <span>Left Rectangles</span>
+                      </div>
+                    )}
+                    {method === 'right' && (
+                      <div className="flex items-center">
+                        <span className="h-3 w-6 bg-green-200 border border-green-500 inline-block mr-2"></span>
+                        <span>Right Rectangles</span>
+                      </div>
+                    )}
+                    {method === 'mid' && (
+                      <div className="flex items-center">
+                        <span className="h-3 w-6 bg-pink-200 border border-pink-500 inline-block mr-2"></span>
+                        <span>Midpoint Rectangles</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="border rounded-lg overflow-hidden bg-card">
+                  <canvas
+                    ref={compareCanvasRef}
+                    width={1200}
+                    height={500}
+                    className="w-full h-auto"
+                  />
+                  <div className="p-4 grid grid-cols-3 gap-4 text-sm">
+                    <div className="flex flex-col items-center">
+                      <span className="h-3 w-6 bg-blue-200 border border-blue-500 inline-block mb-1"></span>
+                      <span>Left Riemann Sum</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <span className="h-3 w-6 bg-green-200 border border-green-500 inline-block mb-1"></span>
+                      <span>Right Riemann Sum</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <span className="h-3 w-6 bg-pink-200 border border-pink-500 inline-block mb-1"></span>
+                      <span>Midpoint Riemann Sum</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              <div className="mt-4 text-sm text-muted-foreground">
+                <p>
+                  The Riemann sum approximates the area under a curve by dividing it into rectangles.
+                  The approximation improves as the number of rectangles increases. The midpoint method
+                  typically gives the most accurate approximation among the three methods.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {showExact && exactResult !== null && (
+            <Card className="mt-4">
+              <CardContent className="pt-6">
+                <div className="flex items-center space-x-2 mb-4">
+                  <InfoIcon className="h-5 w-5 text-primary" />
+                  <h3 className="text-lg font-medium">Mathematical Insight</h3>
+                </div>
+                <p className="mb-3">
+                  For the function f(x) = {expression} on the interval [{lowerBound}, {upperBound}]:
+                </p>
+                <div className="space-y-2 font-mono p-3 bg-muted rounded-md">
+                  <div>• Exact value of the integral: {exactResult.toFixed(8)}</div>
+                  {compareMode && results.left !== null && results.mid !== null && results.right !== null && (
+                    <>
+                      <div>• Left Riemann Sum error: {Math.abs(results.left - exactResult).toFixed(8)} ({(Math.abs(results.left - exactResult) / Math.abs(exactResult) * 100).toFixed(2)}%)</div>
+                      <div>• Midpoint Riemann Sum error: {Math.abs(results.mid - exactResult).toFixed(8)} ({(Math.abs(results.mid - exactResult) / Math.abs(exactResult) * 100).toFixed(2)}%)</div>
+                      <div>• Right Riemann Sum error: {Math.abs(results.right - exactResult).toFixed(8)} ({(Math.abs(results.right - exactResult) / Math.abs(exactResult) * 100).toFixed(2)}%)</div>
+                    </>
+                  )}
+                </div>
+                <p className="mt-4 text-sm text-muted-foreground">
+                  {expression === 'x^2' && 'For quadratic functions, the midpoint rule is significantly more accurate than left or right sums.'}
+                  {expression === 'sin(x)' && 'For sinusoidal functions, errors depend on where the interval begins and ends relative to the curve.'}
+                  {expression === 'e^x' && 'For exponential functions, the error in the right sum is typically larger than the left sum when integrating on positive intervals.'}
+                  Notice how the error decreases as you increase the number of rectangles.
+                </p>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

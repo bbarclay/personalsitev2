@@ -9,7 +9,7 @@ import ShapeSelector from './ShapeSelector';
 import ShapeControls from './ShapeControls';
 import ShapeCanvas from './ShapeCanvas';
 import { useGeometryPlayground } from './hooks/useGeometryPlayground';
-import '../math-components.css';
+import '../../math-components.css';
 
 const GeometryPlayground = () => {
   const [mounted, setMounted] = useState(false);

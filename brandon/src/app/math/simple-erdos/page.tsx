@@ -20,12 +20,12 @@ const PlaceholderContent = () => (
 );
 
 // Create dynamic panel component
-const UsimpleUerdosContent = createDynamicPanelComponent({
+const SimpleErdosContent = createDynamicPanelComponent({
   solver: () => (
     <div className="space-y-6">
       <div className="prose dark:prose-invert max-w-none">
-        <h2 className="text-2xl font-bold">UsimpleUerdos</h2>
-        <p>Interactive UsimpleUerdos visualization and calculation tool.</p>
+        <h2 className="text-2xl font-bold">Simple Erdos</h2>
+        <p>Interactive Simple Erdos visualization and calculation tool.</p>
       </div>
       <MainComponent />
     </div>
@@ -35,10 +35,10 @@ const UsimpleUerdosContent = createDynamicPanelComponent({
   resources: PlaceholderContent
 });
 
-export default function UsimpleUerdosPage() {
+export default function SimpleErdosPage() {
   return (
     <ToolPageLayout meta={meta}>
-      <UsimpleUerdosContent />
+      <SimpleErdosContent />
     </ToolPageLayout>
   );
 }

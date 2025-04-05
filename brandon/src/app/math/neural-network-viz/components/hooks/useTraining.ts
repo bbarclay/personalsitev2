@@ -29,7 +29,7 @@ export function useTraining(): [TrainingState, TrainingActions] {
   const [trainingPhase, setTrainingPhase] = useState<TrainingPhase>('starting');
   const [error, setError] = useState<string | null>(null);
 
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | undefined>(undefined);
   const lastUpdateTimeRef = useRef<number>(0);
 
   const initializeTraining = useCallback(() => {

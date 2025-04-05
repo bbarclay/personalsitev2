@@ -1,0 +1,12 @@
+/* Pythagorean Tool Specific Styles */
+.visualization {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Animation transitions */
+.visualization path,
+.visualization line,
+.visualization text {
+  transition: all 0.5s ease-in-out;
+}

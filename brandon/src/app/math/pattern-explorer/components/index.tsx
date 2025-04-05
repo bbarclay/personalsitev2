@@ -9,7 +9,7 @@ import PatternControls from './PatternControls';
 import PatternDisplay from './PatternDisplay';
 import PatternTypeSelector from './PatternTypeSelector';
 import { usePatternGenerator } from './hooks/usePatternGenerator';
-import '../math-components.css';
+import '../../math-components.css';
 
 const PatternExplorer = () => {
   const [mounted, setMounted] = useState(false);

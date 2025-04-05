@@ -64,7 +64,7 @@ export const DinoWorld: React.FC<DinoWorldProps> = ({
   const backgroundRef = useRef<BackgroundRenderer | null>(null);
   const dinoAnimatorRef = useRef<DinoAnimator | null>(null);
   const lastTimeRef = useRef<number>(performance.now());
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | undefined>(undefined);
 
   // Helper functions
   const generatePlatforms = (width: number, height: number): Platform[] => {

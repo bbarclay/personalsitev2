@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import * as d3 from 'd3';
+import { scaleOrdinal, scaleSequential } from 'd3-scale';
+import { interpolateViridis, interpolatePlasma, interpolateInferno, interpolateMagma } from 'd3-scale-chromatic';
 
 interface TimelineData {
   value: number;
@@ -14,6 +16,14 @@ interface TimelineVisualizerProps {
   height?: number;
   colorScheme?: 'viridis' | 'plasma' | 'inferno' | 'magma';
 }
+
+// Map color scheme names to actual d3 interpolator functions
+const interpolators = {
+  viridis: interpolateViridis,
+  plasma: interpolatePlasma,
+  inferno: interpolateInferno,
+  magma: interpolateMagma,
+};
 
 export function TimelineVisualizer({
   data,
@@ -40,15 +50,16 @@ export function TimelineVisualizer({
     // Create color scale
     const colorScale = d3.scaleSequential()
       .domain([1, d3.max(data, d => d.value) || 100])
-      .interpolator(d3[`interpolate${colorScheme.charAt(0).toUpperCase() + colorScheme.slice(1)}`]);
+      .interpolator(interpolators[colorScheme]);
 
     // Create x and y scales
     const xScale = d3.scaleLinear()
       .domain([0, data.length - 1])
       .range([0, innerWidth]);
 
+    const maxValue = d3.max(data, d => d.value);
     const yScale = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.value) * 1.1 || 100])
+      .domain([0, maxValue != null ? maxValue * 1.1 : 100])
       .range([innerHeight, 0]);
 
     // Create the line
@@ -182,7 +193,7 @@ export function TimelineVisualizer({
       .attr('stroke-opacity', 0.1);
 
     // Add zoom behavior
-    const zoom = d3.zoom()
+    const zoom = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.5, 10])
       .extent([[0, 0], [innerWidth, innerHeight]])
       .on('zoom', (event) => {

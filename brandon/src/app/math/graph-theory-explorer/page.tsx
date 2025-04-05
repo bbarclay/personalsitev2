@@ -9,29 +9,18 @@ import metaJson from './meta.json';
 // Load metadata with proper defaults
 const meta = loadToolMeta(metaJson);
 
-// Define placeholder content for each panel
-const PlaceholderContent = () => (
-  <div className="p-4 bg-white dark:bg-gray-800 rounded-lg">
-    <h2 className="text-xl font-medium mb-4">Content Coming Soon</h2>
-    <p className="text-gray-600 dark:text-gray-300">
-      This section is being developed. Check back soon for updates!
-    </p>
-  </div>
-);
+// Dynamic imports for components
+const GraphExplorer = dynamic(() => import('./components/GraphExplorer'), { ssr: false });
+const ExplanationPanel = dynamic(() => import('./components/ExplanationPanel'), { ssr: false });
+const ApplicationsPanel = dynamic(() => import('./components/ApplicationsPanel'), { ssr: false });
+const ResourcesPanel = dynamic(() => import('./components/ResourcesPanel'), { ssr: false });
 
 // Create dynamic panel component
 const GraphTheoryExplorerContent = createDynamicPanelComponent({
-  solver: () => (
-    <div className="space-y-6">
-      <div className="prose dark:prose-invert max-w-none">
-        <h2 className="text-2xl font-bold">GraphTheoryExplorer</h2>
-      </div>
-      {/* Import the original component here */}
-    </div>
-  ),
-  explanation: PlaceholderContent,
-  applications: PlaceholderContent,
-  resources: PlaceholderContent
+  solver: () => <GraphExplorer />,
+  explanation: () => <ExplanationPanel />,
+  applications: () => <ApplicationsPanel />,
+  resources: () => <ResourcesPanel />
 });
 
 export default function GraphTheoryExplorerPage() {

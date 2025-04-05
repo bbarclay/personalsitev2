@@ -2,11 +2,26 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React from 'react';
-import { SymbolIcon } from '@/components/math/SymbolIcon';
-import { symbols } from '@/components/math/slot-machine/utils';
+// import { SymbolIcon } from '@/components/math/SymbolIcon';
+// import { symbols } from '@/components/math/slot-machine/utils';
+
+// Placeholder for SymbolIcon since the original component is missing
+const SymbolIcon = ({ symbolId, size }: { symbolId: number, size: number }) => (
+  <div style={{ width: size, height: size, background: '#333', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    {symbolId}
+  </div>
+);
+
+// Placeholder symbols data since the original import is missing
+const symbols = [
+  { id: 1, name: 'Cherry', isWild: false, isScatter: false, triggersJackpot: false, payout: { five: 100, four: 50, three: 20 } },
+  { id: 2, name: 'Bell', isWild: false, isScatter: false, triggersJackpot: false, payout: { five: 200, four: 100, three: 40 } },
+  { id: 3, name: 'Seven', isWild: false, isScatter: false, triggersJackpot: true, payout: { five: 500, four: 200, three: 80 } },
+  { id: 4, name: 'Wild', isWild: true, isScatter: false, triggersJackpot: false, payout: { five: 300, four: 150, three: 60 } }
+];
 
 export interface Symbol {
-  id: number; // Ensure 'id' is defined
+  id: number;
   isWild: boolean;
   triggersJackpot: boolean;
   payout: {

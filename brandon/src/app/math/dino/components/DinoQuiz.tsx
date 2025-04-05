@@ -298,7 +298,7 @@ export function DinoQuiz({ currentEra, darkMode, onComplete }: DinoQuizProps) {
 function getButtonVariant(
   index: number,
   question: Question
-): 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | null {
+): 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | undefined {
   if (!question.answered) {
     return 'outline';
   }
@@ -311,5 +311,5 @@ function getButtonVariant(
     return 'destructive'; // Red for wrong selection
   }
   
-  return 'ghost'; // Grey out other options
+  return undefined; // Return undefined instead of null for other options
 } 

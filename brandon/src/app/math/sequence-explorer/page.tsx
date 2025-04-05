@@ -20,12 +20,12 @@ const PlaceholderContent = () => (
 );
 
 // Create dynamic panel component
-const UsequenceUexplorerContent = createDynamicPanelComponent({
+const SequenceExplorerContent = createDynamicPanelComponent({
   solver: () => (
     <div className="space-y-6">
       <div className="prose dark:prose-invert max-w-none">
-        <h2 className="text-2xl font-bold">UsequenceUexplorer</h2>
-        <p>Interactive UsequenceUexplorer visualization and calculation tool.</p>
+        <h2 className="text-2xl font-bold">Sequence Explorer</h2>
+        <p>Interactive Sequence Explorer visualization and calculation tool.</p>
       </div>
       <MainComponent />
     </div>
@@ -35,10 +35,10 @@ const UsequenceUexplorerContent = createDynamicPanelComponent({
   resources: PlaceholderContent
 });
 
-export default function UsequenceUexplorerPage() {
+export default function SequenceExplorerPage() {
   return (
     <ToolPageLayout meta={meta}>
-      <UsequenceUexplorerContent />
+      <SequenceExplorerContent />
     </ToolPageLayout>
   );
 }

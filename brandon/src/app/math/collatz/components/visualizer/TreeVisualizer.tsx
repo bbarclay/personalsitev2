@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import * as d3 from 'd3';
+import { HierarchyPointNode, HierarchyPointLink } from 'd3-hierarchy';
 
 interface TreeNode {
   value: number;
@@ -65,15 +66,17 @@ export function TreeVisualizer({
       .domain([0, maxDepth])
       .interpolator(d3.interpolateBlues);
 
-    // Draw links
+    // Create links
+    const linkGenerator = d3.linkHorizontal<HierarchyPointLink<TreeNode>, HierarchyPointNode<TreeNode>>()
+      .x(d => xScale(d.y))
+      .y(d => yScale(d.x));
+
     g.selectAll('path.link')
       .data(treeData.links())
       .enter()
       .append('path')
       .attr('class', 'link')
-      .attr('d', d3.linkHorizontal()
-        .x(d => xScale(d.y))
-        .y(d => yScale(d.x)))
+      .attr('d', linkGenerator)
       .attr('fill', 'none')
       .attr('stroke', '#ccc')
       .attr('stroke-width', 1);
@@ -106,7 +109,7 @@ export function TreeVisualizer({
       .text(d => `Value: ${d.data.value}\nDepth: ${d.depth}\n${d.data.isEven ? 'Even' : 'Odd'}`);
 
     // Add zoom behavior
-    const zoom = d3.zoom()
+    const zoom = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.1, 3])
       .on('zoom', (event) => {
         g.attr('transform', event.transform);

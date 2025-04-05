@@ -4,7 +4,7 @@ import React from 'react';
 import { ToolPageLayout, createDynamicPanelComponent } from '@/components/layouts/ToolPageLayout';
 import { loadToolMeta } from '@/utils/meta-loader';
 import metaJson from './meta.json';
-import MainComponent from './components/MainComponent';
+import { FactorialCalculator } from './components/MainComponent';
 
 // Load metadata with proper defaults
 const meta = loadToolMeta(metaJson);
@@ -27,7 +27,7 @@ const UfactorialUcalculatorContent = createDynamicPanelComponent({
         <h2 className="text-2xl font-bold">UfactorialUcalculator</h2>
         <p>Interactive UfactorialUcalculator visualization and calculation tool.</p>
       </div>
-      <MainComponent />
+      <FactorialCalculator />
     </div>
   ),
   explanation: PlaceholderContent,
