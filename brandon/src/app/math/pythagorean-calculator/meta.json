@@ -1,7 +1,7 @@
 {
   "id": "PythagoreanCalculator",
-  "title": "PythagoreanCalculator",
-  "description": "Interactive PythagoreanCalculator tool for mathematics exploration",
+  "title": "Pythagorean Theorem Calculator",
+  "description": "Interactive calculator and visualizer for the Pythagorean theorem with visual proofs and applications",
   "category": "Mathematics",
   "subcategory": "Geometry",
   "type": "math",
@@ -11,15 +11,20 @@
   "color": "from-yellow-500 to-orange-500",
   "shape": "rectangle",
   "enabled": true,
-  "featured": false,
+  "featured": true,
+  "status": "completed",
   "tags": [
     "math",
     "interactive"
   ],
   "keywords": [
-    "pythagoreancalculator",
+    "pythagorean",
+    "theorem",
+    "right triangle",
+    "hypotenuse",
+    "geometry",
     "math",
-    "tool"
+    "calculator"
   ],
   "sidebar": {
     "tabs": [
