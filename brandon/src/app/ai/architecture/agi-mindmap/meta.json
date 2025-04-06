@@ -1,5 +1,6 @@
 {
   "id": "agi-mindmap",
+  "path": "/ai/architecture/agi-mindmap",
   "title": "AGI Architecture Mindmap",
   "description": "An interactive visualization of AGI (Artificial General Intelligence) architecture components and their relationships.",
   "category": "AI Architecture",
@@ -12,10 +13,10 @@
   "shape": "circle",
   "enabled": true,
   "tags": [
-    "AGI", 
-    "Artificial General Intelligence", 
-    "AI architecture", 
-    "visualization", 
+    "AGI",
+    "Artificial General Intelligence",
+    "AI architecture",
+    "visualization",
     "mindmap"
   ],
   "keywords": [
@@ -62,4 +63,4 @@
       }
     ]
   }
-} 
+}

@@ -661,7 +661,7 @@ const CollatzNetwork: React.FC = () => {
               </Select>
             </div>
           </div>
-        )
+        )}  {/* Close the isAutoPlaying conditional */}
 
         <Tabs defaultValue="network" className="mt-4">
           <TabsList className="grid grid-cols-4 gap-4">

@@ -31,7 +31,7 @@ interface Tool {
   description: string;
   category: string;
   path: string;
-  icon?: string;
+  icon?: string | { component: string; props?: Record<string, any> };
   tags?: string[];
   level?: 'Beginner' | 'Intermediate' | 'Advanced';
   color?: string;
@@ -45,11 +45,11 @@ interface ToolsPageProps {
   type: 'math' | 'ai';
 }
 
-export const ToolsPage: React.FC<ToolsPageProps> = ({ 
-  initialTools, 
-  title, 
+export const ToolsPage: React.FC<ToolsPageProps> = ({
+  initialTools,
+  title,
   description,
-  type 
+  type
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('All Categories');
@@ -59,44 +59,44 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
   const [isFilterExpanded, setIsFilterExpanded] = useState(false);
   const [recentlyViewed, setRecentlyViewed] = useState<Tool[]>([]);
   const tools = initialTools;
-  
+
   // Get unique categories from tools
   const categories = ['All Categories', ...Array.from(new Set(tools.map(tool => tool.category)))];
-  
+
   // Get unique tags from tools
   const allTags = Array.from(new Set(tools.flatMap(tool => tool.tags || [])));
-  
+
   // Get unique levels from tools
   const allLevels = Array.from(new Set(tools.map(tool => tool.level).filter(Boolean))) as string[];
 
   // Count tools per category
   const categoryCount = categories.reduce((acc, category) => {
-    acc[category] = category === 'All Categories' 
-      ? tools.length 
+    acc[category] = category === 'All Categories'
+      ? tools.length
       : tools.filter(tool => tool.category === category).length;
     return acc;
   }, {} as Record<string, number>);
 
   // Filter tools based on search term, category, level, and tags
   const filteredTools = tools.filter(tool => {
-    const matchesSearch = searchTerm === '' || 
+    const matchesSearch = searchTerm === '' ||
       tool.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (tool.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())));
-    
+
     const matchesCategory = activeCategory === 'All Categories' || tool.category === activeCategory;
-    
+
     const matchesLevel = activeLevel === null || tool.level === activeLevel;
-    
-    const matchesTags = activeTags.length === 0 || 
+
+    const matchesTags = activeTags.length === 0 ||
       activeTags.every(tag => tool.tags?.includes(tag));
-    
+
     return matchesSearch && matchesCategory && matchesLevel && matchesTags;
   });
 
   // Calculate featured tools (first 6 after filtering)
   const featuredTools = filteredTools.slice(0, 6);
-  
+
   // Group tools by category for the "All Tools" section
   const toolsByCategory = categories.slice(1).map(category => {
     return {
@@ -165,17 +165,17 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
             useEffect(() => {
               const mathSymbols = ['+', '−', '×', '÷', '=', 'Σ', '∫', 'π', '√', 'Δ', '∞', '∂', 'θ', 'λ'];
               const aiSymbols = ['🤖', '🧠', '📊', '🔍', '⚡', '💡', '🎯', '🔮', '📈', '🎨', '🔢', '💻'];
-              
+
               const newSymbols = Array.from({ length: 50 }).map(() => ({
                 left: Math.random() * 100,
                 top: Math.random() * 100,
                 fontSize: Math.random() * 20 + 10,
                 rotation: Math.random() * 360,
-                symbol: type === 'math' 
+                symbol: type === 'math'
                   ? mathSymbols[Math.floor(Math.random() * mathSymbols.length)]
                   : aiSymbols[Math.floor(Math.random() * aiSymbols.length)]
               }));
-              
+
               setSymbols(newSymbols);
             }, [type]); // Only regenerate when type changes
 
@@ -234,8 +234,8 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                   >
                     <div className="flex items-center">
                       <div className={`mr-3 p-2 rounded-lg ${
-                        activeCategory === category 
-                          ? 'bg-white/20' 
+                        activeCategory === category
+                          ? 'bg-white/20'
                           : 'bg-gray-100 dark:bg-gray-800'
                       }`}>
                         {getCategoryIcon(category)}
@@ -257,7 +257,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                   </motion.button>
                 ))}
               </div>
-              
+
               {/* Quick Links */}
               <div className="p-4 border-t border-gray-200 dark:border-gray-800">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Quick Links</h3>
@@ -283,21 +283,21 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                 <div className="flex items-center space-x-2">
                   <Filter size={18} className="text-indigo-600 dark:text-indigo-400" />
                   <h3 className="font-semibold">Filters</h3>
-                  
+
                   {/* Active filters count */}
                   {(activeCategory !== 'All Categories' || activeLevel !== null || activeTags.length > 0) && (
                     <span className="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-xs px-2 py-1 rounded-full">
-                      {(activeCategory !== 'All Categories' ? 1 : 0) + 
-                       (activeLevel !== null ? 1 : 0) + 
+                      {(activeCategory !== 'All Categories' ? 1 : 0) +
+                       (activeLevel !== null ? 1 : 0) +
                        activeTags.length}
                     </span>
                   )}
                 </div>
-                
+
                 <div className="flex items-center space-x-4">
                   {/* Reset filters button */}
                   {(activeCategory !== 'All Categories' || activeLevel !== null || activeTags.length > 0 || searchTerm) && (
-                    <button 
+                    <button
                       onClick={resetFilters}
                       className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center"
                     >
@@ -305,36 +305,36 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                       Reset
                     </button>
                   )}
-                  
+
                   {/* View toggle */}
                   <div className="bg-gray-100 dark:bg-gray-800 rounded-lg flex">
-                    <button 
+                    <button
                       onClick={() => setViewMode('grid')}
-                      className={`p-2 rounded-l-lg ${viewMode === 'grid' 
-                        ? 'bg-indigo-600 text-white' 
+                      className={`p-2 rounded-l-lg ${viewMode === 'grid'
+                        ? 'bg-indigo-600 text-white'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
                     >
                       <Grid size={16} />
                     </button>
-                    <button 
+                    <button
                       onClick={() => setViewMode('list')}
-                      className={`p-2 rounded-r-lg ${viewMode === 'list' 
-                        ? 'bg-indigo-600 text-white' 
+                      className={`p-2 rounded-r-lg ${viewMode === 'list'
+                        ? 'bg-indigo-600 text-white'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
                     >
                       <List size={16} />
                     </button>
                   </div>
-                  
+
                   {/* Expand/collapse filter */}
-                  <button 
+                  <button
                     onClick={() => setIsFilterExpanded(!isFilterExpanded)}
                     className="text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center"
                   >
                     {isFilterExpanded ? 'Less' : 'More'} filters
-                    <ChevronDown 
-                      size={14} 
-                      className={`ml-1 transform transition-transform ${isFilterExpanded ? 'rotate-180' : ''}`} 
+                    <ChevronDown
+                      size={14}
+                      className={`ml-1 transform transition-transform ${isFilterExpanded ? 'rotate-180' : ''}`}
                     />
                   </button>
                 </div>
@@ -352,7 +352,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                   {searchTerm && (
-                    <button 
+                    <button
                       onClick={() => setSearchTerm('')}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                     >
@@ -368,12 +368,12 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                     exit={{ opacity: 0, y: -10 }}
                     className="mt-2 text-sm text-gray-500 dark:text-gray-400"
                   >
-                    Found {filteredTools.length} {filteredTools.length === 1 ? 'tool' : 'tools'} 
+                    Found {filteredTools.length} {filteredTools.length === 1 ? 'tool' : 'tools'}
                     for "{searchTerm}"
                   </motion.div>
                 )}
               </div>
-              
+
               {/* Expanded filters */}
               <AnimatePresence>
                 {isFilterExpanded && (
@@ -407,7 +407,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                           ))}
                         </div>
                       </div>
-                      
+
                       {/* Tags filter */}
                       <div className="md:col-span-2">
                         <h4 className="font-medium mb-2 text-sm text-gray-700 dark:text-gray-300">Tags</h4>
@@ -450,7 +450,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
             {/* Active Filters */}
             <AnimatePresence>
               {(activeCategory !== 'All Categories' || activeLevel !== null || activeTags.length > 0) && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
@@ -459,11 +459,11 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                   <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-3 border border-gray-200 dark:border-gray-800">
                     <div className="flex flex-wrap gap-2 items-center">
                       <span className="text-sm text-gray-600 dark:text-gray-400">Active filters:</span>
-                      
+
                       {activeCategory !== 'All Categories' && (
                         <div className="bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium flex items-center">
                           <span className="mr-1">Category:</span> {activeCategory}
-                          <button 
+                          <button
                             onClick={() => setActiveCategory('All Categories')}
                             className="ml-2 hover:text-blue-900 dark:hover:text-blue-100"
                           >
@@ -471,11 +471,11 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                           </button>
                         </div>
                       )}
-                      
+
                       {activeLevel && (
                         <div className="bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm font-medium flex items-center">
                           <span className="mr-1">Level:</span> {activeLevel}
-                          <button 
+                          <button
                             onClick={() => setActiveLevel(null)}
                             className="ml-2 hover:text-purple-900 dark:hover:text-purple-100"
                           >
@@ -483,14 +483,14 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                           </button>
                         </div>
                       )}
-                      
+
                       {activeTags.map(tag => (
-                        <div 
+                        <div
                           key={tag}
                           className="bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 px-3 py-1 rounded-full text-sm font-medium flex items-center"
                         >
                           <span className="mr-1">Tag:</span> {tag}
-                          <button 
+                          <button
                             onClick={() => toggleTag(tag)}
                             className="ml-2 hover:text-green-900 dark:hover:text-green-100"
                           >
@@ -498,8 +498,8 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                           </button>
                         </div>
                       ))}
-                      
-                      <button 
+
+                      <button
                         onClick={resetFilters}
                         className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 ml-auto"
                       >
@@ -510,7 +510,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                 </motion.div>
               )}
             </AnimatePresence>
-            
+
             {/* Featured Tools */}
             {filteredTools.length > 0 && (
               <div className="mb-12">
@@ -535,7 +535,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                           <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-1000 animate-pulse-slow">
                             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10"></div>
                           </div>
-                          
+
                           {/* Tool content */}
                           <div className="relative z-10 p-6 flex flex-col h-full">
                             {/* Icon with shape */}
@@ -543,13 +543,13 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                               <div className={`${getShapeClass(tool.shape || 'square')} bg-gradient-to-br ${tool.color || 'from-blue-600 to-indigo-600'} flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300 relative overflow-hidden`}>
                                 {/* Animated background for icon */}
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                <div className="relative z-10">{tool.icon}</div>
-                                
+                                <div className="relative z-10">{typeof tool.icon === 'string' ? tool.icon : '🤖'}</div>
+
                                 {/* Decorative elements */}
                                 <div className="absolute -top-4 -right-4 w-8 h-8 bg-white/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                 <div className="absolute -bottom-4 -left-4 w-8 h-8 bg-white/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                               </div>
-                              
+
                               {/* Tags and level */}
                               <div className="flex flex-wrap gap-2 justify-end">
                                 {tool.tags?.slice(0, 2).map(tag => (
@@ -568,18 +568,18 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                                 )}
                               </div>
                             </div>
-                            
+
                             {/* Title with animated underline */}
                             <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white relative inline-block">
                               {tool.title}
                               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-500 group-hover:w-full transition-all duration-300"></span>
                             </h3>
-                            
+
                             {/* Description with gradient text on hover */}
                             <p className="text-gray-600 dark:text-gray-400 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-600 group-hover:to-purple-600 dark:group-hover:from-indigo-400 dark:group-hover:to-purple-400 mb-4 line-clamp-2">
                               {tool.description}
                             </p>
-                            
+
                             {/* Action button */}
                             <div className="mt-auto">
                               <button className="group-hover:bg-indigo-600 group-hover:text-white dark:group-hover:bg-white/90 dark:group-hover:text-gray-900 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg transition-colors duration-300 flex items-center text-sm font-medium relative overflow-hidden">
@@ -589,7 +589,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                               </button>
                             </div>
                           </div>
-                          
+
                           {/* Background decorative elements */}
                           <div className="absolute top-0 right-0 p-4 opacity-10 transition-opacity group-hover:opacity-20">
                             {tool.shape === 'triangle' && <Triangle className="h-16 w-16" />}
@@ -599,7 +599,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                             {(tool.shape === 'parallelogram' || tool.shape === 'rhombus') && <div className="h-16 w-16 rotate-45 border-2 border-current" />}
                             {(tool.shape === 'pentagon' || tool.shape === 'octagon' || tool.shape === 'trapezoid') && <div className="h-16 w-16 border-2 border-current" />}
                           </div>
-                          
+
                           {/* Animated corner accents */}
                           <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                           <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -627,7 +627,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                 <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-6">
                   We couldn't find any tools matching your current filters. Try adjusting your search criteria or browse all categories.
                 </p>
-                <button 
+                <button
                   onClick={resetFilters}
                   className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
                 >
@@ -656,7 +656,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                           {group.tools.length} {group.tools.length === 1 ? 'tool' : 'tools'}
                         </span>
                       </h3>
-                      
+
                       {viewMode === 'grid' ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                           {group.tools.map((tool, index) => (
@@ -672,7 +672,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                                 <div className={`relative p-4 rounded-lg overflow-hidden bg-gray-100/80 dark:bg-gray-900/80 border border-gray-300 dark:border-gray-800 hover:border-${tool.color?.split(' ')[0].replace('from-', '')}-400 transition-all duration-300 hover:shadow-glow-sm`}>
                                   <div className="flex items-center gap-3">
                                     <div className={`text-2xl h-10 w-10 flex items-center justify-center rounded-md bg-gradient-to-br ${tool.color || 'from-blue-600 to-indigo-600'}`}>
-                                      {tool.icon}
+                                      {typeof tool.icon === 'string' ? tool.icon : '🤖'}
                                     </div>
                                     <div>
                                       <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white">{tool.title}</h4>
@@ -709,7 +709,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                                 <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-800 hover:border-indigo-300 dark:hover:border-indigo-700">
                                   <div className="flex items-center">
                                     <div className={`text-2xl h-12 w-12 flex-shrink-0 flex items-center justify-center rounded-md bg-gradient-to-br ${tool.color || 'from-blue-600 to-indigo-600'} mr-4`}>
-                                      {tool.icon}
+                                      {typeof tool.icon === 'string' ? tool.icon : '🤖'}
                                     </div>
                                     <div className="flex-grow">
                                       <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
@@ -757,7 +757,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                   Math Domains
                   <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
                 </h2>
-                
+
                 <div className="grid gap-8 grid-cols-1 md:grid-cols-3">
                   {/* Statistics Domain */}
                   <motion.div
@@ -774,13 +774,13 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                         <h3 className="text-2xl font-bold text-center text-white">Statistics</h3>
                         <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 w-14 h-14 bg-white/10 rounded-full opacity-0 group-hover:opacity-100 group-hover:bottom-4 transition-all duration-500"></div>
                       </div>
-                      
+
                       {/* Decorative elements */}
                       <div className="absolute -bottom-4 -right-4 w-24 h-24 border-4 border-green-500/20 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
                       <div className="absolute -top-4 -left-4 w-16 h-16 border-4 border-green-500/20 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
                     </div>
                   </motion.div>
-                  
+
                   {/* Physics Domain */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -796,14 +796,14 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                         <h3 className="text-2xl font-bold text-center text-white">Physics</h3>
                         <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 w-14 h-14 bg-white/10 rounded-full opacity-0 group-hover:opacity-100 group-hover:bottom-4 transition-all duration-500"></div>
                       </div>
-                      
+
                       {/* Decorative elements */}
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="w-40 h-40 border-4 border-orange-500/20 transform rotate-45 group-hover:rotate-[135deg] transition-all duration-1000"></div>
                       </div>
                     </div>
                   </motion.div>
-                  
+
                   {/* Discrete Math Domain */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -833,7 +833,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                     </div>
                   </motion.div>
                 </div>
-                
+
                 {/* Navigation Bar */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -849,7 +849,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                       <div className="absolute -left-10 top-1/2 w-20 h-40 bg-white/5 blur-xl transform -translate-y-1/2 rounded-full animate-pulse-slow"></div>
                       <div className="absolute -right-10 top-1/2 w-20 h-40 bg-white/5 blur-xl transform -translate-y-1/2 rounded-full animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
                     </div>
-                    
+
                     {["Home", "About", "Services", "Portfolio", "Contact"].map((item, index) => (
                       <Link
                         key={item}
@@ -861,7 +861,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
                       </Link>
                     ))}
                   </div>
-                  
+
                   {/* Bottom decorative zigzag */}
                   <svg width="100%" height="10" viewBox="0 0 1200 40" preserveAspectRatio="none">
                     <path
@@ -877,7 +877,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
           </div>
         </div>
       </div>
-      
+
       {/* CSS for custom shapes and animations */}
       <style jsx>{`
         @keyframes pulse-slow {
@@ -888,53 +888,53 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({
             opacity: 0.8;
           }
         }
-        
+
         .animate-pulse-slow {
           animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
-        
+
         .clip-path-hexagon {
           clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
         }
-        
+
         .clip-path-triangle {
           clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
         }
-        
+
         .clip-path-pentagon {
           clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
         }
-        
+
         .clip-path-trapezoid {
           clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
         }
-        
+
         .clip-path-octagon {
           clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
         }
-        
+
         .shadow-glow-sm {
           box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
         }
-        
+
         .shadow-glow-md {
           box-shadow: 0 0 25px rgba(59, 130, 246, 0.3);
         }
-        
+
         .text-gradient {
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
         }
-        
+
         .hide-scrollbar::-webkit-scrollbar {
           display: none; /* Chrome, Safari, Opera */
         }
-        
+
         .hide-scrollbar {
           -ms-overflow-style: none;  /* IE and Edge */
           scrollbar-width: none;  /* Firefox */
         }
-        
+
         .line-clamp-1 {
           overflow: hidden;
           display: -webkit-box;

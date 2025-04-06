@@ -17,9 +17,9 @@ interface ResizablePanelGroupProps {
   className?: string;
 }
 
-export function ResizablePanelGroup({ 
-  children, 
-  direction = 'horizontal', 
+export function ResizablePanelGroup({
+  children,
+  direction = 'horizontal',
   className,
 }: ResizablePanelGroupProps) {
   const [sizes, setSizes] = useState<number[]>([]);
@@ -28,23 +28,25 @@ export function ResizablePanelGroup({
   const handleResize = (index: number, delta: number) => {
     setSizes(prevSizes => {
       const newSizes = [...prevSizes];
-      
+
       // Update the size of the current panel and the next one
       if (index < newSizes.length - 1) {
         newSizes[index] += delta;
         newSizes[index + 1] -= delta;
       }
-      
+
       return newSizes;
     });
   };
 
   // Initialize panel sizes based on children count
   useEffect(() => {
-    const panelCount = React.Children.count(children.filter(
+    // Ensure children is an array before filtering
+    const childrenArray = React.Children.toArray(children);
+    const panelCount = childrenArray.filter(
       (child: any) => child?.type?.name === 'ResizablePanel'
-    ));
-    
+    ).length;
+
     if (panelCount > 0) {
       setSizes(Array(panelCount).fill(100 / panelCount));
     }
@@ -52,10 +54,10 @@ export function ResizablePanelGroup({
 
   return (
     <ResizableContext.Provider value={{ onResize: handleResize }}>
-      <div 
+      <div
         ref={groupRef}
         className={cn(
-          "flex", 
+          "flex",
           direction === 'horizontal' ? 'flex-row' : 'flex-col',
           className
         )}
@@ -106,9 +108,9 @@ interface ResizableHandleProps {
   className?: string;
 }
 
-export function ResizableHandle({ 
+export function ResizableHandle({
   withHandle = false,
-  className 
+  className
 }: ResizableHandleProps) {
   const { onResize } = useContext(ResizableContext);
   const [isDragging, setIsDragging] = useState(false);
@@ -118,7 +120,7 @@ export function ResizableHandle({
   const handleMouseDown = (e: MouseEvent) => {
     setIsDragging(true);
     startPosRef.current = e.clientX;
-    
+
     // Find the index by looking at previous sibling
     const handle = e.currentTarget as HTMLDivElement;
     const panel = handle.previousElementSibling as HTMLDivElement;
@@ -127,7 +129,7 @@ export function ResizableHandle({
       const panelIndex = children.indexOf(panel);
       handleIndex.current = Math.floor(panelIndex / 2);
     }
-    
+
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
   };
@@ -161,4 +163,4 @@ export function ResizableHandle({
       )}
     </div>
   );
-} 
+}

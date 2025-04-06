@@ -37,39 +37,42 @@ const TYPE_DEFAULTS: Record<string, Partial<ToolMeta>> = {
 export function loadToolMeta(metaJson: any): ToolMeta {
   // Apply defaults in correct order (global -> type -> specific)
   const typeDefaults = TYPE_DEFAULTS[metaJson.type as string] || {};
-  
+
   // Format color to ensure it's a string
-  const colorString = typeof metaJson.color === 'string' 
-    ? metaJson.color 
+  const colorString = typeof metaJson.color === 'string'
+    ? metaJson.color
     : (typeof metaJson.color === 'object' && metaJson.color !== null && 'gradient' in metaJson.color
-      ? (metaJson.color as any).gradient 
+      ? (metaJson.color as any).gradient
       : undefined);
-  
+
   // Process sidebar tabs with proper defaults
   let sidebarConfig = {};
   if (metaJson.sidebar) {
     // If sidebar is provided in meta.json but tabs aren't, use DEFAULT_SIDEBAR_TABS
     if (!metaJson.sidebar.tabs || !Array.isArray(metaJson.sidebar.tabs) || metaJson.sidebar.tabs.length === 0) {
-      sidebarConfig = { 
-        sidebar: { 
-          ...metaJson.sidebar, 
-          tabs: DEFAULT_SIDEBAR_TABS 
-        } 
+      sidebarConfig = {
+        sidebar: {
+          ...metaJson.sidebar,
+          tabs: DEFAULT_SIDEBAR_TABS
+        }
       };
     }
     // Otherwise, use the provided tabs (they'll be merged with metaJson.sidebar later)
   } else {
     // If no sidebar config at all, use default tabs
-    sidebarConfig = { 
-      sidebar: { 
-        tabs: DEFAULT_SIDEBAR_TABS 
-      } 
+    sidebarConfig = {
+      sidebar: {
+        tabs: DEFAULT_SIDEBAR_TABS
+      }
     };
   }
-  
+
   // Construct path if not provided
   const path = metaJson.path || `/${metaJson.type || 'ai'}/${metaJson.id}`;
-  
+
+  // For AI tools, ensure the path is properly formatted for AIPageMeta compatibility
+  const formattedPath = metaJson.type === 'ai' ? `/ai/${metaJson.id.replace(/^ai\//, '')}` : path;
+
   // Apply all defaults in order of precedence
   const meta = {
     ...GLOBAL_DEFAULTS,
@@ -77,12 +80,12 @@ export function loadToolMeta(metaJson: any): ToolMeta {
     ...sidebarConfig,
     ...metaJson,
     // Add path to ensure it's always present
-    path,
+    path: formattedPath,
     // Make sure sidebar structure is maintained if metaJson has sidebar but not tabs
     sidebar: {
-      ...(sidebarConfig.sidebar || {}),
+      ...(sidebarConfig as any)?.sidebar || {},
       ...(metaJson.sidebar || {}),
-      tabs: metaJson.sidebar?.tabs || sidebarConfig.sidebar?.tabs || DEFAULT_SIDEBAR_TABS
+      tabs: metaJson.sidebar?.tabs || (sidebarConfig as any)?.sidebar?.tabs || DEFAULT_SIDEBAR_TABS
     },
     // Override with properly formatted values
     color: colorString || typeDefaults.color || '#3b82f6', // default to blue if not provided
@@ -91,6 +94,6 @@ export function loadToolMeta(metaJson: any): ToolMeta {
     tags: metaJson.tags || [],
     keywords: metaJson.keywords || []
   } as ToolMeta;
-  
+
   return meta;
-} 
+}

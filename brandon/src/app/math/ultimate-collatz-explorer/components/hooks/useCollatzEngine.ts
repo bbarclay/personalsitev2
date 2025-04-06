@@ -77,7 +77,7 @@ export const useCollatzEngine = () => {
     // Find steps where we divide by 2 consecutively (power of 2 steps)
     let consecutiveDivides = 0;
     for (let i = 1; i < seq.length; i++) {
-      if (seq[i] * 2 === seq[i-1]) {
+      if (seq[i] * 2 === seq[i - 1]) {
         consecutiveDivides++;
       } else if (consecutiveDivides > 0) {
         patterns.powerOf2Steps.push(consecutiveDivides);
@@ -181,10 +181,20 @@ export const useCollatzEngine = () => {
         let steps = 0;
 
         while (current !== 1 && steps < 1000) {
-          if (current % rules.divideBy === 0) {
-            current = current / rules.divideBy + rules.addAfterDivide;
+          if (current % 2 === 0) {
+            // Use divideBy if available, otherwise use evenMultiplier
+            if (rules.divideBy) {
+              current = current / rules.divideBy + (rules.addAfterDivide || 0);
+            } else {
+              current = rules.evenMultiplier * current + rules.evenAdditive;
+            }
           } else {
-            current = current * rules.multiplyBy + rules.addAfterMultiply;
+            // Use multiplyBy if available, otherwise use oddMultiplier
+            if (rules.multiplyBy) {
+              current = current * rules.multiplyBy + (rules.addAfterMultiply || 0);
+            } else {
+              current = rules.oddMultiplier * current + rules.oddAdditive;
+            }
           }
           sequence.push(current);
           steps++;

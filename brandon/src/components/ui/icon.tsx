@@ -15,7 +15,7 @@ export function Icon({ icon, className = '' }: IconProps) {
   if (typeof icon === 'string') {
     // Check if the string contains emoji by looking for non-ASCII characters
     const isEmoji = /[^\u0000-\u007F]/.test(icon);
-    
+
     if (isEmoji) {
       return <span className={className}>{icon}</span>;
     }
@@ -55,5 +55,6 @@ export function Icon({ icon, className = '' }: IconProps) {
     })
   );
 
-  return <IconComponent className={className} {...props} />;
-} 
+  // Pass props to the dynamically loaded component
+  return <IconComponent {...props} />;
+}

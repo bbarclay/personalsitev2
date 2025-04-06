@@ -24,7 +24,7 @@ export interface GraphData {
 export interface Algorithm {
   id: string;
   name: string;
-  category: 'traversal' | 'shortest-path' | 'spanning-tree' | 'coloring' | 'connectivity' | 'other';
+  category: 'traversal' | 'pathfinding' | 'spanning-tree' | 'ordering' | 'connectivity' | 'other';
   description?: string;
 }
 
@@ -47,4 +47,4 @@ export interface AlgorithmState {
   isComplete: boolean;
   result?: any;
   message?: string;
-} 
+}

@@ -2,8 +2,12 @@ import React, { createContext, useState, useContext, useEffect, ReactNode } from
 
 // Define interfaces for our data structures
 export interface CollatzSequence {
-  startNumber: number;
+  startingNumber: number;
   sequence: number[];
+  steps: number;
+  maxValue: number;
+  oddCount: number;
+  evenCount: number;
 }
 
 export interface CustomCollatzRules {
@@ -11,6 +15,10 @@ export interface CustomCollatzRules {
   evenAdditive: number;
   oddMultiplier: number;
   oddAdditive: number;
+  divideBy?: number;
+  addAfterDivide?: number;
+  multiplyBy?: number;
+  addAfterMultiply?: number;
 }
 
 export type VisualizationType = 'lineGraph' | 'heatmap' | 'trajectory' | 'barChart' | 'comparative' | 'stopTime' | 'glitchySequence';
@@ -62,22 +70,28 @@ export const CollatzContextProvider: React.FC<{children: ReactNode}> = ({ childr
   });
 
   // Calculate standard Collatz sequence
-  const calculateStandardSequence = (startNumber: number) => {
-    if (startNumber <= 0) return;
+  const calculateStandardSequence = (startingNumber: number) => {
+    if (startingNumber <= 0) return;
 
     const sequence: number[] = [];
-    let current = startNumber;
+    let current = startingNumber;
+    let oddCount = 0;
+    let evenCount = 0;
+    let maxValue = startingNumber;
 
     // Generate sequence
     while (current !== 1 && sequence.length < 1000) {
       sequence.push(current);
+      maxValue = Math.max(maxValue, current);
 
       if (current % 2 === 0) {
         // Even number: divide by 2
         current = current / 2;
+        evenCount++;
       } else {
         // Odd number: 3n + 1
         current = 3 * current + 1;
+        oddCount++;
       }
     }
 
@@ -87,28 +101,38 @@ export const CollatzContextProvider: React.FC<{children: ReactNode}> = ({ childr
     }
 
     setStandardSequence({
-      startNumber,
-      sequence
+      startingNumber,
+      sequence,
+      steps: sequence.length - 1,
+      maxValue,
+      oddCount,
+      evenCount
     });
   };
 
   // Calculate sequence with custom rules
-  const calculateCustomSequence = (startNumber: number) => {
-    if (startNumber <= 0) return;
+  const calculateCustomSequence = (startingNumber: number) => {
+    if (startingNumber <= 0) return;
 
     const sequence: number[] = [];
-    let current = startNumber;
+    let current = startingNumber;
+    let oddCount = 0;
+    let evenCount = 0;
+    let maxValue = startingNumber;
 
     // Generate sequence with custom rules
     while (current !== 1 && sequence.length < 1000 && current > 0) {
       sequence.push(current);
+      maxValue = Math.max(maxValue, current);
 
       if (current % 2 === 0) {
         // Even number: apply custom rule
         current = customRules.evenMultiplier * current + customRules.evenAdditive;
+        evenCount++;
       } else {
         // Odd number: apply custom rule
         current = customRules.oddMultiplier * current + customRules.oddAdditive;
+        oddCount++;
       }
 
       // Round to avoid floating point issues
@@ -121,31 +145,41 @@ export const CollatzContextProvider: React.FC<{children: ReactNode}> = ({ childr
     }
 
     setCustomSequence({
-      startNumber,
-      sequence
+      startingNumber,
+      sequence,
+      steps: sequence.length - 1,
+      maxValue,
+      oddCount,
+      evenCount
     });
   };
 
   // Add a sequence to the comparison list
-  const addCompareSequence = (startNumber: number) => {
-    if (startNumber <= 0) return;
+  const addCompareSequence = (startingNumber: number) => {
+    if (startingNumber <= 0) return;
 
     // Check if already in list
-    if (compareSequences.some(seq => seq.startNumber === startNumber)) {
+    if (compareSequences.some(seq => seq.startingNumber === startingNumber)) {
       return;
     }
 
     const sequence: number[] = [];
-    let current = startNumber;
+    let current = startingNumber;
+    let oddCount = 0;
+    let evenCount = 0;
+    let maxValue = startingNumber;
 
     // Generate sequence
     while (current !== 1 && sequence.length < 1000) {
       sequence.push(current);
+      maxValue = Math.max(maxValue, current);
 
       if (current % 2 === 0) {
         current = current / 2;
+        evenCount++;
       } else {
         current = 3 * current + 1;
+        oddCount++;
       }
     }
 
@@ -155,15 +189,19 @@ export const CollatzContextProvider: React.FC<{children: ReactNode}> = ({ childr
     }
 
     setCompareSequences(prev => [...prev, {
-      startNumber,
-      sequence
+      startingNumber,
+      sequence,
+      steps: sequence.length - 1,
+      maxValue,
+      oddCount,
+      evenCount
     }]);
   };
 
   // Remove a sequence from comparison
-  const removeCompareSequence = (startNumber: number) => {
+  const removeCompareSequence = (startingNumber: number) => {
     setCompareSequences(prev =>
-      prev.filter(seq => seq.startNumber !== startNumber)
+      prev.filter(seq => seq.startingNumber !== startingNumber)
     );
   };
 

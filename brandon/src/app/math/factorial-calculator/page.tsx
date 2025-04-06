@@ -13,7 +13,7 @@ import FactorialFormula from './components/FactorialFormula';
 const meta = loadToolMeta(metaJson);
 
 // Create dynamic panel component
-const UfactorialUcalculatorContent = createDynamicPanelComponent({
+const FactorialCalculatorContent = createDynamicPanelComponent({
   solver: () => (
     <div className="space-y-6">
       <div className="prose dark:prose-invert max-w-none">
@@ -52,10 +52,10 @@ const UfactorialUcalculatorContent = createDynamicPanelComponent({
   )
 });
 
-export default function UfactorialUcalculatorPage() {
+export default function FactorialCalculatorPage() {
   return (
     <ToolPageLayout meta={meta}>
-      <UfactorialUcalculatorContent />
+      <FactorialCalculatorContent />
     </ToolPageLayout>
   );
 }

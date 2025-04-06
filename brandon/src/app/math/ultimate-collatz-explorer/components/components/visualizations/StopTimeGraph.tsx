@@ -18,11 +18,8 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [viewMode, setViewMode] = useState<'steps' | 'maxValue'>('steps');
-  const [rangeMultiplier, setRangeMultiplier] = useState<number>(1);
-  const [patternHighlight, setPatternHighlight] = useState<'none' | 'powerOfTwo' | 'powerOfThree'>('none');
-  const { standardSequence, updateStandardSequence } = useCollatzContext();
-  const [showInfoTooltip, setShowInfoTooltip] = useState(false);
+  const [viewMode] = useState<'steps' | 'maxValue'>('steps');
+  const { standardSequence, calculateStandardSequence } = useCollatzContext();
   const [showMaxValues, setShowMaxValues] = useState(false);
   const [showPatterns, setShowPatterns] = useState(false);
   const [zoomRange, setZoomRange] = useState(1);
@@ -32,7 +29,7 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
 
   // Use context data if props are not provided
   const data = propData || [];
-  const currentNumber = propCurrentNumber || standardSequence?.startNumber || 0;
+  const currentNumber = propCurrentNumber || standardSequence?.startingNumber || 0;
 
   // Resize observer to make chart responsive
   useEffect(() => {
@@ -54,7 +51,7 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
 
   // Generate stop time data if not provided
   useEffect(() => {
-    if (propData || !standardSequence?.startNumber) return;
+    if (propData || !standardSequence?.startingNumber) return;
 
     setIsLoading(true);
     setError(null);
@@ -62,7 +59,7 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
     // Simulate API call or heavy computation with delay
     const timer = setTimeout(() => {
       try {
-        const generatedData = generateStopTimeData(standardSequence.startNumber, zoomRange);
+        generateStopTimeData(standardSequence.startingNumber, zoomRange);
         setIsLoading(false);
       } catch (err) {
         setError("Error generating stop time data");
@@ -71,7 +68,7 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [standardSequence?.startNumber, zoomRange, propData]);
+  }, [standardSequence?.startingNumber, zoomRange, propData]);
 
   // Generate sample data for visualization
   const generateStopTimeData = (startNum: number, rangeMultiplier: number): StopTimeData[] => {
@@ -111,7 +108,7 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
     if (!svgRef.current || !data || data.length === 0 || dimensions.width === 0) return;
 
     drawChart(dimensions.width, dimensions.height);
-  }, [data, dimensions, viewMode, currentNumber, patternHighlight, showMaxValues, showPatterns, zoomRange]);
+  }, [data, dimensions, viewMode, currentNumber, showMaxValues, showPatterns, zoomRange]);
 
   // Main chart drawing function
   const drawChart = (width: number, height: number) => {
@@ -230,7 +227,7 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
         d3.axisLeft(yScale)
           .tickValues(logTicks)
           .tickFormat(d => {
-            const value = Math.pow(10, d);
+            const value = Math.pow(10, d as number);
             if (value >= 1e9) return `${(value/1e9).toFixed(0)}B`;
             if (value >= 1e6) return `${(value/1e6).toFixed(0)}M`;
             if (value >= 1e3) return `${(value/1e3).toFixed(0)}K`;
@@ -250,7 +247,7 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
       yAxis.call(
         d3.axisLeft(yScale)
           .tickValues(tickValues)
-          .tickFormat(d => Math.round(d).toString())
+          .tickFormat(d => Math.round(d as number).toString())
       );
     }
 
@@ -392,7 +389,7 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
         const peakY = yScale(metricAccessor(peak));
 
         // Create highlight circle with pulse animation
-        const peakPoint = interactiveLayer.append("circle")
+        interactiveLayer.append("circle")
           .attr("cx", peakX)
           .attr("cy", peakY)
           .attr("r", 6)
@@ -508,7 +505,7 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
       .style("opacity", 0)
       .transition()
       .duration(1500)
-      .delay((d, i) => 2000 + i * 5)
+      .delay((_, i) => 2000 + i * 5)
       .style("opacity", 1);
 
     // Enhanced hover effects
@@ -597,8 +594,8 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
 
       // Add click event
       node.addEventListener('click', function() {
-        if (updateStandardSequence) {
-          updateStandardSequence(d.start);
+        if (calculateStandardSequence) {
+          calculateStandardSequence(d.start);
         }
       });
     });
@@ -743,7 +740,7 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
       drawChart(newWidth, newHeight);
 
       // Add close button
-      const closeButton = chartContainer.append('div')
+      chartContainer.append('div')
         .style('position', 'absolute')
         .style('top', '10px')
         .style('right', '10px')

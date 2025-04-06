@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { DataPoint, TrainingPhase } from '../types';
 import { generateData, predict } from '../utils';
 
-interface TrainingState {
+interface TrainingStateInternal {
   iteration: number;
   data: DataPoint[];
   weights: number[];
@@ -13,14 +13,14 @@ interface TrainingState {
   error: string | null;
 }
 
-interface TrainingActions {
+interface TrainingActionsInternal {
   handlePlayPause: () => void;
   handleReset: () => void;
 }
 
 const UPDATE_INTERVAL = 100; // ms between updates
 
-export function useTraining(): [TrainingState, TrainingActions] {
+export function useTraining(): [TrainingStateInternal, TrainingActionsInternal] {
   const [iteration, setIteration] = useState<number>(0);
   const [data, setData] = useState<DataPoint[]>([]);
   const [weights, setWeights] = useState<number[]>([0, 0, 0]);

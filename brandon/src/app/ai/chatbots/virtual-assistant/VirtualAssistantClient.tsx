@@ -8,28 +8,30 @@ const FeaturesPanel = dynamic(() => import('./components/FeaturesPanel'), { ssr:
 const HelpPanel = dynamic(() => import('./components/HelpPanel'), { ssr: false });
 const SettingsPanel = dynamic(() => import('./components/SettingsPanel'), { ssr: false });
 
-const VirtualAssistantContent = dynamic(() => 
-  import('@/components/layouts/ToolPageLayout').then((mod) => {
-    const ToolPageLayout = mod.default;
-    return () => (
-      <ToolPageLayout
-        meta={meta}
-        panels={{
-          chat: ChatPanel,
-          features: FeaturesPanel,
-          help: HelpPanel,
-          settings: SettingsPanel,
-        }}
-      />
-    );
-  }),
-  { ssr: false }
-);
+// Import ToolPageLayout directly
+import { ToolPageLayout } from '@/components/layouts/ToolPageLayout';
 
 interface VirtualAssistantClientProps {
   meta: any; // Replace 'any' with proper type if available
 }
 
 export default function VirtualAssistantClient({ meta }: VirtualAssistantClientProps) {
-  return <VirtualAssistantContent />;
-} 
+  return (
+    <ToolPageLayout meta={meta}>
+      {({ activeTab }) => {
+        switch (activeTab) {
+          case 'chat':
+            return <ChatPanel />;
+          case 'features':
+            return <FeaturesPanel />;
+          case 'help':
+            return <HelpPanel />;
+          case 'settings':
+            return <SettingsPanel />;
+          default:
+            return <ChatPanel />;
+        }
+      }}
+    </ToolPageLayout>
+  );
+}

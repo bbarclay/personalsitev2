@@ -10,7 +10,7 @@ export interface AIPageMeta {
   keywords?: string[];
   relatedTools?: string[];
   path: string;
-  icon?: string;
+  icon?: string | { component: string; props?: Record<string, any> };
   level?: 'Beginner' | 'Intermediate' | 'Advanced';
   color?: string;
   shape?: string;

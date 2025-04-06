@@ -1,7 +1,7 @@
 {
   "id": "UltimateCollatzExplorer",
-  "title": "UltimateCollatzExplorer",
-  "description": "Interactive UltimateCollatzExplorer tool for mathematics exploration",
+  "title": "Ultimate Collatz Explorer",
+  "description": "Interactive Ultimate Collatz Explorer tool for mathematics exploration",
   "category": "Mathematics",
   "subcategory": "Number Theory",
   "type": "math",
@@ -17,9 +17,11 @@
     "interactive"
   ],
   "keywords": [
-    "ultimatecollatzexplorer",
+    "collatz",
+    "conjecture",
     "math",
-    "tool"
+    "tool",
+    "explorer"
   ],
   "sidebar": {
     "tabs": [

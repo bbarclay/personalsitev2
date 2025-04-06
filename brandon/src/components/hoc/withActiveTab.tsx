@@ -12,7 +12,7 @@ export function withActiveTab<P extends WithActiveTabProps>(
 ) {
   return function WithActiveTabComponent(props: Omit<P, keyof WithActiveTabProps>) {
     const searchParams = useSearchParams();
-    const activeTab = searchParams.get('tab') || 'solver';
+    const activeTab = searchParams ? searchParams.get('tab') || 'solver' : 'solver';
 
     return (
       <WrappedComponent

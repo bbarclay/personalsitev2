@@ -18,13 +18,13 @@ export function ToolHeader({ meta }: ToolHeaderProps) {
           <div className="flex items-center space-x-6">
             {/* Current Tool */}
             <div className="flex items-center">
-              <span className="text-xl mr-2">{meta.icon}</span>
+              <span className="text-xl mr-2">{typeof meta.icon === 'string' ? meta.icon : '🔧'}</span>
               <span className="font-medium">{meta.title}</span>
             </div>
 
             {/* Category Link */}
             {meta.navigation?.category && meta.navigation.category.path && (
-              <Link 
+              <Link
                 href={meta.navigation.category.path}
                 className="flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
               >
@@ -44,7 +44,7 @@ export function ToolHeader({ meta }: ToolHeaderProps) {
                   href={tool.path}
                   className="flex items-center px-3 py-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-gray-700/50 rounded-full transition-colors"
                 >
-                  <span className="text-lg mr-2">{tool.icon}</span>
+                  <span className="text-lg mr-2">{typeof tool.icon === 'string' ? tool.icon : '🔧'}</span>
                   <span>{tool.title}</span>
                 </Link>
               ))}
@@ -54,4 +54,4 @@ export function ToolHeader({ meta }: ToolHeaderProps) {
       </div>
     </div>
   );
-} 
+}

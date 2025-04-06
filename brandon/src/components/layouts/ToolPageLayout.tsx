@@ -37,7 +37,7 @@ export function createDynamicPanelComponent(
     // Only render the panel if it exists in the panels record and activeTab is not undefined
     const tabId = activeTab || '';
     const ActivePanel = tabId in panels ? panels[tabId] : undefined;
-    
+
     if (!ActivePanel) {
       // If the panel doesn't exist, render a fallback message
       return (
@@ -48,7 +48,7 @@ export function createDynamicPanelComponent(
         </div>
       );
     }
-    
+
     return (
       <AnimatePresence mode="wait">
         <motion.div
@@ -69,7 +69,7 @@ export function createDynamicPanelComponent(
 interface ToolPageLayoutProps {
   meta: ToolMeta;
   metadata?: Record<string, any>;
-  children: React.ReactNode;
+  children: React.ReactNode | ((props: { activeTab: string }) => React.ReactNode);
 }
 
 export function ToolPageLayout({ meta, metadata, children }: ToolPageLayoutProps) {
@@ -81,7 +81,7 @@ export function ToolPageLayout({ meta, metadata, children }: ToolPageLayoutProps
   }
 
   const [showToolbar, setShowToolbar] = useState(true);
-  
+
   // Get the tabs from metaData, but we no longer need ensureTabsHaveRequiredProperties
   // since meta-loader already handles this
   const sidebarTabs = metaData?.sidebar?.tabs || [];
@@ -99,13 +99,13 @@ export function ToolPageLayout({ meta, metadata, children }: ToolPageLayoutProps
           {/* Sidebar */}
           <AnimatePresence>
             {showToolbar && (
-              <motion.div 
+              <motion.div
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -100, opacity: 0 }}
               >
-                <ToolSidebar 
-                  meta={safeMeta} 
+                <ToolSidebar
+                  meta={safeMeta}
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
                 />
@@ -134,7 +134,7 @@ export function ToolPageLayout({ meta, metadata, children }: ToolPageLayoutProps
 
               {/* Tool Content */}
               <div className="space-y-8">
-                {typeof children === 'function' 
+                {typeof children === 'function'
                   ? children({ activeTab })
                   : React.Children.map(children, child => {
                       if (React.isValidElement(child) && child.type && (child.type as any).acceptsActiveTab) {
@@ -145,7 +145,7 @@ export function ToolPageLayout({ meta, metadata, children }: ToolPageLayoutProps
 
                 {/* Category Link */}
                 {safeMeta.navigation?.category && safeMeta.navigation.category.path && (
-                  <Link 
+                  <Link
                     href={safeMeta.navigation.category.path}
                     className="flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                   >
@@ -163,7 +163,7 @@ export function ToolPageLayout({ meta, metadata, children }: ToolPageLayoutProps
                           href={tool.path}
                           className="flex items-center px-3 py-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-gray-700/50 rounded-full transition-colors"
                         >
-                          <span className="text-lg mr-2">{tool.icon}</span>
+                          <span className="text-lg mr-2">{typeof tool.icon === 'string' ? tool.icon : '🔧'}</span>
                           <span>{tool.title}</span>
                         </Link>
                       ) : null

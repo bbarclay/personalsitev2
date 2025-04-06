@@ -1,7 +1,15 @@
 import { loadToolMeta } from '@/utils/meta-loader';
-import VirtualAssistantClient from './components/VirtualAssistantClient';
+import VirtualAssistantClient from './VirtualAssistantClient';
+import type { AIPageMeta } from '@/app/ai/types';
 
-const meta = loadToolMeta(import.meta.url);
+const toolMeta = loadToolMeta(import.meta.url);
+
+// Create a properly typed AIPageMeta object
+const meta: AIPageMeta = {
+  ...toolMeta,
+  path: `/ai/chatbots/virtual-assistant`,
+  enabled: true
+};
 
 export const metadata = {
   title: meta.title,

@@ -8,22 +8,28 @@ const ExplainPanel = dynamic(() => import('./ExplainPanel'), { ssr: false });
 const DebugPanel = dynamic(() => import('./DebugPanel'), { ssr: false });
 const SettingsPanel = dynamic(() => import('./SettingsPanel'), { ssr: false });
 
-const CodeAssistantContent = dynamic(() => 
-  import('@/components/layouts/ToolPageLayout').then((mod) => {
-    const ToolPageLayout = mod.default;
-    return ({ meta }: { meta: any }) => (
-      <ToolPageLayout
-        meta={meta}
-        panels={{
-          generate: GeneratePanel,
-          explain: ExplainPanel,
-          debug: DebugPanel,
-          settings: SettingsPanel,
-        }}
-      />
-    );
-  }),
-  { ssr: false }
+// Import ToolPageLayout directly
+import { ToolPageLayout } from '@/components/layouts/ToolPageLayout';
+
+const CodeAssistantContent = ({ meta }: { meta: any }) => (
+  <ToolPageLayout
+    meta={meta}
+  >
+    {({ activeTab }) => {
+      switch (activeTab) {
+        case 'generate':
+          return <GeneratePanel />;
+        case 'explain':
+          return <ExplainPanel />;
+        case 'debug':
+          return <DebugPanel />;
+        case 'settings':
+          return <SettingsPanel />;
+        default:
+          return <GeneratePanel />;
+      }
+    }}
+  </ToolPageLayout>
 );
 
 interface CodeAssistantClientProps {
@@ -32,4 +38,4 @@ interface CodeAssistantClientProps {
 
 export default function CodeAssistantClient({ meta }: CodeAssistantClientProps) {
   return <CodeAssistantContent meta={meta} />;
-} 
+}

@@ -8,28 +8,30 @@ const GalleryPanel = dynamic(() => import('./components/GalleryPanel'), { ssr: f
 const StylesPanel = dynamic(() => import('./components/StylesPanel'), { ssr: false });
 const SettingsPanel = dynamic(() => import('./components/SettingsPanel'), { ssr: false });
 
-const ImageCreatorContent = dynamic(() => 
-  import('@/components/layouts/ToolPageLayout').then((mod) => {
-    const ToolPageLayout = mod.default;
-    return () => (
-      <ToolPageLayout
-        meta={meta}
-        panels={{
-          create: CreatePanel,
-          gallery: GalleryPanel,
-          styles: StylesPanel,
-          settings: SettingsPanel,
-        }}
-      />
-    );
-  }),
-  { ssr: false }
-);
+// Import ToolPageLayout directly
+import { ToolPageLayout } from '@/components/layouts/ToolPageLayout';
 
 interface ImageCreatorClientProps {
   meta: any; // Replace 'any' with proper type if available
 }
 
 export default function ImageCreatorClient({ meta }: ImageCreatorClientProps) {
-  return <ImageCreatorContent />;
-} 
+  return (
+    <ToolPageLayout meta={meta}>
+      {({ activeTab }) => {
+        switch (activeTab) {
+          case 'create':
+            return <CreatePanel />;
+          case 'gallery':
+            return <GalleryPanel />;
+          case 'styles':
+            return <StylesPanel />;
+          case 'settings':
+            return <SettingsPanel />;
+          default:
+            return <CreatePanel />;
+        }
+      }}
+    </ToolPageLayout>
+  );
+}

@@ -2,17 +2,17 @@
 
 import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { 
-  GameState, 
-  GameAction, 
-  GameEvent, 
+import {
+  GameState as GameStateType,
+  GameAction,
+  GameEvent,
   SoundEffect,
-  Optional 
+  Optional
 } from '../types/game';
-import { GamePreferences, ThemeMode, GameDifficulty } from '../types/config';
+import { GamePreferences, ThemeMode, GameDifficulty, GameState as ConfigGameState } from '../types/config';
 import { gameReducer, initialGameState } from '../reducers/gameReducer';
 import { DEFAULT_GAME_CONFIG } from '../config/game-config';
-import { 
+import {
   saveProgress,
   updatePreferences,
   getPreferences,
@@ -20,10 +20,10 @@ import {
 
 interface GameContextValue {
   // State
-  state: GameState;
+  state: GameStateType;
   preferences: GamePreferences;
   config: typeof DEFAULT_GAME_CONFIG;
-  
+
   // Game Actions
   dispatch: React.Dispatch<GameAction>;
   startGame: () => void;
@@ -33,12 +33,12 @@ interface GameContextValue {
   unlockAchievement: (achievementId: string) => void;
   setCharacter: (characterId: string) => void;
   resetGame: () => void;
-  
+
   // Preferences
   setDifficulty: (difficulty: GameDifficulty) => void;
   setTheme: (theme: ThemeMode) => void;
   toggleSound: () => void;
-  
+
   // Utils
   playSound: (effect: SoundEffect) => void;
   showEvent: (event: GameEvent) => void;
@@ -160,16 +160,16 @@ export function useGamePreferences() {
 }
 
 export function useGameActions() {
-  const { 
-    startGame, 
-    updatePoints, 
-    discoverEra, 
-    collectFossil, 
+  const {
+    startGame,
+    updatePoints,
+    discoverEra,
+    collectFossil,
     unlockAchievement,
     setCharacter,
-    resetGame 
+    resetGame
   } = useGame();
-  
+
   return {
     startGame,
     updatePoints,

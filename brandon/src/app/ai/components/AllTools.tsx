@@ -14,7 +14,7 @@ export function AllTools({ pages }: AllToolsProps) {
       </div>
     );
   }
-  
+
   // Organize tools by category
   const categories = pages.reduce<Record<string, AIPageMeta[]>>((acc, page) => {
     if (!acc[page.category]) {
@@ -23,24 +23,24 @@ export function AllTools({ pages }: AllToolsProps) {
     acc[page.category].push(page);
     return acc;
   }, {});
-  
+
   return (
     <section>
       <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">All AI Tools</h2>
-      
+
       {Object.entries(categories).map(([category, categoryPages]) => (
         <div key={category} className="mb-8">
           <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">{category}</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {categoryPages.map(page => (
-              <Link 
+              <Link
                 key={page.id}
                 href={`/ai${page.path || `/${page.id}`}`}
                 className="block p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg transition hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500"
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xl">{page.icon || '🤖'}</span>
+                  <span className="text-xl">{typeof page.icon === 'string' ? page.icon : '🤖'}</span>
                   <h4 className="font-medium text-gray-900 dark:text-white">{page.title}</h4>
                 </div>
                 {page.subcategory && (
@@ -57,4 +57,4 @@ export function AllTools({ pages }: AllToolsProps) {
       ))}
     </section>
   );
-} 
+}

@@ -9,21 +9,24 @@ const cloneGraphData = (graphData: GraphData): GraphData => {
 };
 
 // Helper function to initialize algorithm state
-const initAlgorithmState = (graphData: GraphData): AlgorithmState => {
+const initAlgorithmState = (graphData: GraphData, algorithmId: string = ''): AlgorithmState => {
   return {
-    currentStep: 0,
-    totalSteps: 0,
-    visitedNodes: new Set<string>(),
-    visitedEdges: new Set<string>(),
-    highlightedNodes: new Set<string>(),
-    highlightedEdges: new Set<string>(),
-    nodeValues: new Map<string, number | string>(),
-    edgeValues: new Map<string, number | string>(),
+    algorithm: algorithmId,
+    step: 0,
+    startNode: null,
+    currentNode: null,
+    visitedNodes: [],
+    visitedEdges: [],
+    highlightedNodes: [],
+    highlightedEdges: [],
+    nodeColors: {},
+    edgeColors: {},
+    distances: {},
+    parents: {},
     queue: [],
     stack: [],
-    messages: [],
-    result: null,
-    complete: false
+    isComplete: false,
+    message: ''
   };
 };
 
@@ -39,33 +42,35 @@ export const bfsAlgorithm = (
 ): { initialState: AlgorithmState; stepFunction: (state: AlgorithmState) => AlgorithmState } => {
   // Create a copy of the graph to avoid modifying the original
   const graph = cloneGraphData(graphData);
-  
+
   // Initialize algorithm state
-  const initialState: AlgorithmState = initAlgorithmState(graph);
-  
+  const initialState: AlgorithmState = initAlgorithmState(graph, 'bfs');
+
   // If no start node is selected, return initial state
   if (!startNodeId) {
-    initialState.messages.push("Please select a starting node");
-    initialState.complete = true;
+    initialState.message = "Please select a starting node";
+    initialState.isComplete = true;
     return { initialState, stepFunction: (state) => state };
   }
-  
+
   // Set up the initial state
+  initialState.startNode = startNodeId;
+  initialState.currentNode = startNodeId;
   initialState.queue = [startNodeId];
-  initialState.highlightedNodes.add(startNodeId);
-  initialState.messages.push(`Starting BFS from node ${startNodeId}`);
-  
+  initialState.highlightedNodes = [startNodeId];
+  initialState.message = `Starting BFS from node ${startNodeId}`;
+
   // Create an adjacency list for the graph
   const adjacencyList = new Map<string, string[]>();
   graph.nodes.forEach(node => {
     adjacencyList.set(node.id, []);
   });
-  
+
   graph.edges.forEach(edge => {
     const sourceNeighbors = adjacencyList.get(edge.source) || [];
     sourceNeighbors.push(edge.target);
     adjacencyList.set(edge.source, sourceNeighbors);
-    
+
     // If the graph is undirected, add the reverse edge
     if (!graph.directed) {
       const targetNeighbors = adjacencyList.get(edge.target) || [];
@@ -73,53 +78,52 @@ export const bfsAlgorithm = (
       adjacencyList.set(edge.target, targetNeighbors);
     }
   });
-  
+
   // Step function for BFS
   const stepFunction = (state: AlgorithmState): AlgorithmState => {
     // If the algorithm is complete or the queue is empty, return the current state
-    if (state.complete || state.queue.length === 0) {
-      if (!state.complete) {
-        state.messages.push("BFS traversal complete");
-        state.complete = true;
+    if (state.isComplete || (state.queue && state.queue.length === 0)) {
+      if (!state.isComplete) {
+        state.message = "BFS traversal complete";
+        state.isComplete = true;
       }
       return { ...state };
     }
-    
+
     // Create a new state based on the current state
     const newState: AlgorithmState = { ...state };
-    newState.currentStep += 1;
-    
-    // Remove the highlighted status from all nodes and edges
-    newState.highlightedNodes = new Set<string>();
-    newState.highlightedEdges = new Set<string>();
-    
+    newState.step += 1;
+
+    // Reset highlighted nodes and edges
+    newState.highlightedNodes = [];
+    newState.highlightedEdges = [];
+
     // Dequeue the next node
-    const currentNodeId = newState.queue.shift()!;
-    
+    const currentNodeId = newState.queue?.shift() || '';
+
     // Mark the current node as visited
-    newState.visitedNodes.add(currentNodeId);
-    newState.highlightedNodes.add(currentNodeId);
-    newState.messages.push(`Visiting node ${currentNodeId}`);
-    
+    newState.currentNode = currentNodeId;
+    newState.visitedNodes = [...newState.visitedNodes, currentNodeId];
+    newState.highlightedNodes = [currentNodeId];
+    newState.message = `Visiting node ${currentNodeId}`;
+
     // Get the neighbors of the current node
     const neighbors = adjacencyList.get(currentNodeId) || [];
-    
+
     // Process each neighbor
     for (const neighborId of neighbors) {
-      const edgeKey = getEdgeKey(currentNodeId, neighborId);
-      
       // If the neighbor has not been visited, enqueue it
-      if (!newState.visitedNodes.has(neighborId) && !newState.queue.includes(neighborId)) {
-        newState.queue.push(neighborId);
-        newState.highlightedNodes.add(neighborId);
-        newState.highlightedEdges.add(edgeKey);
-        newState.messages.push(`Adding node ${neighborId} to the queue`);
+      if (!newState.visitedNodes.includes(neighborId) && !newState.queue?.includes(neighborId)) {
+        newState.queue = [...(newState.queue || []), neighborId];
+        newState.highlightedNodes = [...newState.highlightedNodes, neighborId];
+        newState.highlightedEdges = [...(newState.highlightedEdges || []), { source: currentNodeId, target: neighborId }];
+        newState.message += `\nAdding node ${neighborId} to the queue`;
       }
     }
-    
+
     return newState;
   };
-  
+
   return { initialState, stepFunction };
 };
 
@@ -130,33 +134,35 @@ export const dfsAlgorithm = (
 ): { initialState: AlgorithmState; stepFunction: (state: AlgorithmState) => AlgorithmState } => {
   // Create a copy of the graph to avoid modifying the original
   const graph = cloneGraphData(graphData);
-  
+
   // Initialize algorithm state
-  const initialState: AlgorithmState = initAlgorithmState(graph);
-  
+  const initialState: AlgorithmState = initAlgorithmState(graph, 'dfs');
+
   // If no start node is selected, return initial state
   if (!startNodeId) {
-    initialState.messages.push("Please select a starting node");
-    initialState.complete = true;
+    initialState.message = "Please select a starting node";
+    initialState.isComplete = true;
     return { initialState, stepFunction: (state) => state };
   }
-  
+
   // Set up the initial state
+  initialState.startNode = startNodeId;
+  initialState.currentNode = startNodeId;
   initialState.stack = [startNodeId];
-  initialState.highlightedNodes.add(startNodeId);
-  initialState.messages.push(`Starting DFS from node ${startNodeId}`);
-  
+  initialState.highlightedNodes = [startNodeId];
+  initialState.message = `Starting DFS from node ${startNodeId}`;
+
   // Create an adjacency list for the graph
   const adjacencyList = new Map<string, string[]>();
   graph.nodes.forEach(node => {
     adjacencyList.set(node.id, []);
   });
-  
+
   graph.edges.forEach(edge => {
     const sourceNeighbors = adjacencyList.get(edge.source) || [];
     sourceNeighbors.push(edge.target);
     adjacencyList.set(edge.source, sourceNeighbors);
-    
+
     // If the graph is undirected, add the reverse edge
     if (!graph.directed) {
       const targetNeighbors = adjacencyList.get(edge.target) || [];
@@ -164,54 +170,54 @@ export const dfsAlgorithm = (
       adjacencyList.set(edge.target, targetNeighbors);
     }
   });
-  
+
   // Step function for DFS
   const stepFunction = (state: AlgorithmState): AlgorithmState => {
     // If the algorithm is complete or the stack is empty, return the current state
-    if (state.complete || state.stack.length === 0) {
-      if (!state.complete) {
-        state.messages.push("DFS traversal complete");
-        state.complete = true;
+    if (state.isComplete || (state.stack && state.stack.length === 0)) {
+      if (!state.isComplete) {
+        state.message = "DFS traversal complete";
+        state.isComplete = true;
       }
       return { ...state };
     }
-    
+
     // Create a new state based on the current state
     const newState: AlgorithmState = { ...state };
-    newState.currentStep += 1;
-    
-    // Remove the highlighted status from all nodes and edges
-    newState.highlightedNodes = new Set<string>();
-    newState.highlightedEdges = new Set<string>();
-    
+    newState.step += 1;
+
+    // Reset highlighted nodes and edges
+    newState.highlightedNodes = [];
+    newState.highlightedEdges = [];
+
     // Pop the next node from the stack
-    const currentNodeId = newState.stack.pop()!;
-    
+    const currentNodeId = newState.stack?.pop() || '';
+
     // Mark the current node as visited
-    newState.visitedNodes.add(currentNodeId);
-    newState.highlightedNodes.add(currentNodeId);
-    newState.messages.push(`Visiting node ${currentNodeId}`);
-    
+    newState.currentNode = currentNodeId;
+    newState.visitedNodes = [...newState.visitedNodes, currentNodeId];
+    newState.highlightedNodes = [currentNodeId];
+    newState.message = `Visiting node ${currentNodeId}`;
+
     // Get the neighbors of the current node
     const neighbors = adjacencyList.get(currentNodeId) || [];
-    
+
     // Process each neighbor in reverse order (to maintain traversal order)
     for (let i = neighbors.length - 1; i >= 0; i--) {
       const neighborId = neighbors[i];
-      const edgeKey = getEdgeKey(currentNodeId, neighborId);
-      
+
       // If the neighbor has not been visited, push it to the stack
-      if (!newState.visitedNodes.has(neighborId) && !newState.stack.includes(neighborId)) {
-        newState.stack.push(neighborId);
-        newState.highlightedNodes.add(neighborId);
-        newState.highlightedEdges.add(edgeKey);
-        newState.messages.push(`Adding node ${neighborId} to the stack`);
+      if (!newState.visitedNodes.includes(neighborId) && !newState.stack?.includes(neighborId)) {
+        newState.stack = [...(newState.stack || []), neighborId];
+        newState.highlightedNodes = [...newState.highlightedNodes, neighborId];
+        newState.highlightedEdges = [...(newState.highlightedEdges || []), { source: currentNodeId, target: neighborId }];
+        newState.message += `\nAdding node ${neighborId} to the stack`;
       }
     }
-    
+
     return newState;
   };
-  
+
   return { initialState, stepFunction };
 };
 
@@ -223,48 +229,51 @@ export const dijkstraAlgorithm = (
 ): { initialState: AlgorithmState; stepFunction: (state: AlgorithmState) => AlgorithmState } => {
   // Create a copy of the graph to avoid modifying the original
   const graph = cloneGraphData(graphData);
-  
+
   // Initialize algorithm state
-  const initialState: AlgorithmState = initAlgorithmState(graph);
-  
+  const initialState: AlgorithmState = initAlgorithmState(graph, 'dijkstra');
+
   // If no start or end node is selected, return initial state
   if (!startNodeId || !endNodeId) {
-    initialState.messages.push("Please select a starting node and an end node");
-    initialState.complete = true;
+    initialState.message = "Please select a starting node and an end node";
+    initialState.isComplete = true;
     return { initialState, stepFunction: (state) => state };
   }
-  
+
   // Set up the initial state
-  initialState.messages.push(`Finding shortest path from node ${startNodeId} to node ${endNodeId}`);
-  
+  initialState.startNode = startNodeId;
+  initialState.currentNode = startNodeId;
+  initialState.message = `Finding shortest path from node ${startNodeId} to node ${endNodeId}`;
+
   // Initialize distances map (nodeId -> distance)
-  const distances = new Map<string, number>();
+  const distances: Record<string, number> = {};
   graph.nodes.forEach(node => {
-    distances.set(node.id, node.id === startNodeId ? 0 : Infinity);
-    initialState.nodeValues.set(node.id, node.id === startNodeId ? "0" : "∞");
+    distances[node.id] = node.id === startNodeId ? 0 : Infinity;
   });
-  
+  initialState.distances = distances;
+
   // Initialize previous nodes map (nodeId -> previousNodeId)
-  const previous = new Map<string, string | null>();
+  const parents: Record<string, string> = {};
   graph.nodes.forEach(node => {
-    previous.set(node.id, null);
+    parents[node.id] = '';
   });
-  
+  initialState.parents = parents;
+
   // Create a priority queue (simple array implementation)
   const queue = graph.nodes.map(node => node.id);
-  
+
   // Create an adjacency list with weights for the graph
   const adjacencyList = new Map<string, Array<{ node: string; weight: number }>>();
   graph.nodes.forEach(node => {
     adjacencyList.set(node.id, []);
   });
-  
+
   graph.edges.forEach(edge => {
     const weight = edge.weight || 1;
     const sourceNeighbors = adjacencyList.get(edge.source) || [];
     sourceNeighbors.push({ node: edge.target, weight });
     adjacencyList.set(edge.source, sourceNeighbors);
-    
+
     // If the graph is undirected, add the reverse edge
     if (!graph.directed) {
       const targetNeighbors = adjacencyList.get(edge.target) || [];
@@ -272,135 +281,142 @@ export const dijkstraAlgorithm = (
       adjacencyList.set(edge.target, targetNeighbors);
     }
   });
-  
+
   // Step function for Dijkstra's algorithm
   const stepFunction = (state: AlgorithmState): AlgorithmState => {
     // If the algorithm is complete or the queue is empty, return the current state
-    if (state.complete || queue.length === 0) {
-      if (!state.complete) {
-        state.messages.push("Dijkstra's algorithm complete");
-        
+    if (state.isComplete || queue.length === 0) {
+      if (!state.isComplete) {
+        state.message = "Dijkstra's algorithm complete";
+
         // Reconstruct the path from end to start
         const path: string[] = [];
         let current = endNodeId;
-        
-        while (current) {
+
+        while (current && state.parents && state.parents[current]) {
           path.unshift(current);
-          current = previous.get(current) || null;
+          current = state.parents[current];
         }
-        
+
+        if (current) {
+          path.unshift(current); // Add the start node
+        }
+
         // Highlight the path
-        state.highlightedNodes = new Set<string>(path);
+        state.highlightedNodes = path;
+        state.highlightedEdges = [];
         for (let i = 1; i < path.length; i++) {
-          const edgeKey = getEdgeKey(path[i - 1], path[i]);
-          state.highlightedEdges.add(edgeKey);
+          state.highlightedEdges.push({ source: path[i - 1], target: path[i] });
         }
-        
-        state.messages.push(`Shortest path: ${path.join(" -> ")}`);
-        state.messages.push(`Total distance: ${distances.get(endNodeId)}`);
+
+        state.message += `\nShortest path: ${path.join(" -> ")}\nTotal distance: ${state.distances?.[endNodeId] || 'unknown'}`;
         state.result = {
           path,
-          distance: distances.get(endNodeId)
+          distance: state.distances?.[endNodeId]
         };
-        state.complete = true;
+        state.isComplete = true;
       }
       return { ...state };
     }
-    
+
     // Create a new state based on the current state
     const newState: AlgorithmState = { ...state };
-    newState.currentStep += 1;
-    
-    // Remove the highlighted status from all nodes and edges
-    newState.highlightedNodes = new Set<string>();
-    newState.highlightedEdges = new Set<string>();
-    
+    newState.step += 1;
+
+    // Reset highlighted nodes and edges
+    newState.highlightedNodes = [];
+    newState.highlightedEdges = [];
+
     // Find the node with the minimum distance
     let minDistance = Infinity;
     let minNode: string | null = null;
-    
+
     for (const nodeId of queue) {
-      const distance = distances.get(nodeId) || Infinity;
+      const distance = newState.distances?.[nodeId] || Infinity;
       if (distance < minDistance) {
         minDistance = distance;
         minNode = nodeId;
       }
     }
-    
+
     // If minNode is still null, all remaining nodes are unreachable
     if (minNode === null) {
-      newState.messages.push("No path exists to the target node");
-      newState.complete = true;
+      newState.message = "No path exists to the target node";
+      newState.isComplete = true;
       return newState;
     }
-    
+
     // Remove the node with the minimum distance from the queue
     const minNodeIndex = queue.indexOf(minNode);
     queue.splice(minNodeIndex, 1);
-    
+
     // Mark the current node as visited
-    newState.visitedNodes.add(minNode);
-    newState.highlightedNodes.add(minNode);
-    newState.messages.push(`Visiting node ${minNode} with distance ${minDistance}`);
-    
+    newState.currentNode = minNode;
+    newState.visitedNodes = [...newState.visitedNodes, minNode];
+    newState.highlightedNodes = [minNode];
+    newState.message = `Visiting node ${minNode} with distance ${minDistance}`;
+
     // If we've reached the end node, we're done
     if (minNode === endNodeId) {
-      newState.messages.push(`Reached the target node ${endNodeId}`);
-      
+      newState.message += `\nReached the target node ${endNodeId}`;
+
       // Reconstruct the path from end to start
       const path: string[] = [];
       let current = endNodeId;
-      
-      while (current) {
+
+      while (current && newState.parents && newState.parents[current]) {
         path.unshift(current);
-        current = previous.get(current) || null;
+        current = newState.parents[current];
       }
-      
+
+      if (current) {
+        path.unshift(current); // Add the start node
+      }
+
       // Highlight the path
-      newState.highlightedNodes = new Set<string>(path);
+      newState.highlightedNodes = path;
+      newState.highlightedEdges = [];
       for (let i = 1; i < path.length; i++) {
-        const edgeKey = getEdgeKey(path[i - 1], path[i]);
-        newState.highlightedEdges.add(edgeKey);
+        newState.highlightedEdges.push({ source: path[i - 1], target: path[i] });
       }
-      
-      newState.messages.push(`Shortest path: ${path.join(" -> ")}`);
-      newState.messages.push(`Total distance: ${distances.get(endNodeId)}`);
+
+      newState.message += `\nShortest path: ${path.join(" -> ")}\nTotal distance: ${newState.distances?.[endNodeId] || 'unknown'}`;
       newState.result = {
         path,
-        distance: distances.get(endNodeId)
+        distance: newState.distances?.[endNodeId]
       };
-      newState.complete = true;
+      newState.isComplete = true;
       return newState;
     }
-    
+
     // Get the neighbors of the current node
     const neighbors = adjacencyList.get(minNode) || [];
-    
+
     // Process each neighbor
     for (const { node: neighborId, weight } of neighbors) {
       // Calculate the new distance
-      const newDistance = (distances.get(minNode) || 0) + weight;
-      
+      const newDistance = (newState.distances?.[minNode] || 0) + weight;
+
       // If the new distance is shorter than the current distance, update it
-      if (newDistance < (distances.get(neighborId) || Infinity)) {
-        distances.set(neighborId, newDistance);
-        previous.set(neighborId, minNode);
-        
-        // Update the node value in the state
-        newState.nodeValues.set(neighborId, newDistance.toString());
-        
+      if (newDistance < (newState.distances?.[neighborId] || Infinity)) {
+        if (newState.distances) {
+          newState.distances[neighborId] = newDistance;
+        }
+        if (newState.parents) {
+          newState.parents[neighborId] = minNode;
+        }
+
         // Highlight the edge
-        const edgeKey = getEdgeKey(minNode, neighborId);
-        newState.highlightedEdges.add(edgeKey);
-        newState.highlightedNodes.add(neighborId);
-        
-        newState.messages.push(`Updated distance to node ${neighborId}: ${newDistance}`);
+        newState.highlightedEdges = [...(newState.highlightedEdges || []), { source: minNode, target: neighborId }];
+        newState.highlightedNodes = [...newState.highlightedNodes, neighborId];
+
+        newState.message += `\nUpdated distance to node ${neighborId}: ${newDistance}`;
       }
     }
-    
+
     return newState;
   };
-  
+
   return { initialState, stepFunction };
 };
 
@@ -411,58 +427,61 @@ export const primAlgorithm = (
 ): { initialState: AlgorithmState; stepFunction: (state: AlgorithmState) => AlgorithmState } => {
   // Create a copy of the graph to avoid modifying the original
   const graph = cloneGraphData(graphData);
-  
+
   // Initialize algorithm state
-  const initialState: AlgorithmState = initAlgorithmState(graph);
-  
+  const initialState: AlgorithmState = initAlgorithmState(graph, 'prim');
+
   // If the graph is directed, show a message
   if (graph.directed) {
-    initialState.messages.push("Note: Prim's algorithm works best with undirected graphs");
+    initialState.message = "Note: Prim's algorithm works best with undirected graphs";
   }
-  
+
   // If no start node is selected, use the first node
   if (!startNodeId && graph.nodes.length > 0) {
     startNodeId = graph.nodes[0].id;
   }
-  
+
   // If there are no nodes, return initial state
   if (!startNodeId) {
-    initialState.messages.push("Please add nodes to the graph");
-    initialState.complete = true;
+    initialState.message = "Please add nodes to the graph";
+    initialState.isComplete = true;
     return { initialState, stepFunction: (state) => state };
   }
-  
+
   // Set up the initial state
-  initialState.messages.push(`Finding minimum spanning tree starting from node ${startNodeId}`);
-  
+  initialState.startNode = startNodeId;
+  initialState.currentNode = startNodeId;
+  initialState.message = `Finding minimum spanning tree starting from node ${startNodeId}`;
+
   // Initialize key values (nodeId -> key value)
-  const keys = new Map<string, number>();
+  const nodeColors: Record<string, string> = {};
   graph.nodes.forEach(node => {
-    keys.set(node.id, node.id === startNodeId ? 0 : Infinity);
-    initialState.nodeValues.set(node.id, node.id === startNodeId ? "0" : "∞");
+    nodeColors[node.id] = node.id === startNodeId ? 'green' : 'gray';
   });
-  
+  initialState.nodeColors = nodeColors;
+
   // Initialize parent nodes map (nodeId -> parentNodeId)
-  const parent = new Map<string, string | null>();
+  const parents: Record<string, string> = {};
   graph.nodes.forEach(node => {
-    parent.set(node.id, null);
+    parents[node.id] = '';
   });
-  
+  initialState.parents = parents;
+
   // Create a priority queue (simple array implementation)
   const queue = graph.nodes.map(node => node.id);
-  
+
   // Create an adjacency list with weights for the graph
   const adjacencyList = new Map<string, Array<{ node: string; weight: number }>>();
   graph.nodes.forEach(node => {
     adjacencyList.set(node.id, []);
   });
-  
+
   graph.edges.forEach(edge => {
     const weight = edge.weight || 1;
     const sourceNeighbors = adjacencyList.get(edge.source) || [];
     sourceNeighbors.push({ node: edge.target, weight });
     adjacencyList.set(edge.source, sourceNeighbors);
-    
+
     // If the graph is undirected, add the reverse edge
     if (!graph.directed) {
       const targetNeighbors = adjacencyList.get(edge.target) || [];
@@ -470,97 +489,105 @@ export const primAlgorithm = (
       adjacencyList.set(edge.target, targetNeighbors);
     }
   });
-  
+
   // Variable to track the total weight of the MST
   let mstWeight = 0;
-  
+
   // Step function for Prim's algorithm
   const stepFunction = (state: AlgorithmState): AlgorithmState => {
     // If the algorithm is complete or the queue is empty, return the current state
-    if (state.complete || queue.length === 0) {
-      if (!state.complete) {
-        state.messages.push("Prim's algorithm complete");
-        state.messages.push(`Minimum spanning tree weight: ${mstWeight}`);
+    if (state.isComplete || queue.length === 0) {
+      if (!state.isComplete) {
+        state.message = "Prim's algorithm complete";
+        state.message += `\nMinimum spanning tree weight: ${mstWeight}`;
         state.result = {
           mstWeight,
-          mstEdges: Array.from(state.visitedEdges)
+          mstEdges: state.visitedEdges
         };
-        state.complete = true;
+        state.isComplete = true;
       }
       return { ...state };
     }
-    
+
     // Create a new state based on the current state
     const newState: AlgorithmState = { ...state };
-    newState.currentStep += 1;
-    
+    newState.step += 1;
+
     // Find the node with the minimum key value
     let minKey = Infinity;
     let minNode: string | null = null;
-    
+
+    // Use distances as key values for Prim's algorithm
+    const keys: Record<string, number> = {};
+    queue.forEach(nodeId => {
+      keys[nodeId] = newState.distances?.[nodeId] || Infinity;
+    });
+
     for (const nodeId of queue) {
-      const key = keys.get(nodeId) || Infinity;
+      const key = keys[nodeId] || Infinity;
       if (key < minKey) {
         minKey = key;
         minNode = nodeId;
       }
     }
-    
+
     // If minNode is still null, all remaining nodes are unreachable
     if (minNode === null) {
-      newState.messages.push("No more nodes can be added to the MST");
-      newState.complete = true;
+      newState.message = "No more nodes can be added to the MST";
+      newState.isComplete = true;
       return newState;
     }
-    
+
     // Remove the node with the minimum key from the queue
     const minNodeIndex = queue.indexOf(minNode);
     queue.splice(minNodeIndex, 1);
-    
+
     // Mark the current node as visited
-    newState.visitedNodes.add(minNode);
-    newState.highlightedNodes.add(minNode);
-    newState.messages.push(`Adding node ${minNode} to the MST`);
-    
+    newState.currentNode = minNode;
+    newState.visitedNodes = [...newState.visitedNodes, minNode];
+    newState.highlightedNodes = [minNode];
+    newState.message = `Adding node ${minNode} to the MST`;
+
     // If the node has a parent, add the edge to the MST
-    const parentNode = parent.get(minNode);
+    const parentNode = newState.parents?.[minNode];
     if (parentNode) {
-      const edgeKey = getEdgeKey(parentNode, minNode);
-      newState.visitedEdges.add(edgeKey);
-      newState.highlightedEdges.add(edgeKey);
-      
+      const newEdge = { source: parentNode, target: minNode };
+      newState.visitedEdges = [...newState.visitedEdges, newEdge];
+      newState.highlightedEdges = [newEdge];
+
       // Add the edge weight to the total MST weight
-      const edge = graph.edges.find(e => 
-        (e.source === parentNode && e.target === minNode) || 
+      const edge = graph.edges.find(e =>
+        (e.source === parentNode && e.target === minNode) ||
         (!graph.directed && e.source === minNode && e.target === parentNode)
       );
-      
+
       if (edge) {
         mstWeight += edge.weight || 1;
-        newState.messages.push(`Adding edge ${parentNode}->${minNode} with weight ${edge.weight || 1}`);
+        newState.message += `\nAdding edge ${parentNode}->${minNode} with weight ${edge.weight || 1}`;
       }
     }
-    
+
     // Get the neighbors of the current node
     const neighbors = adjacencyList.get(minNode) || [];
-    
+
     // Process each neighbor
     for (const { node: neighborId, weight } of neighbors) {
       // If the neighbor is still in the queue and the weight is less than its current key
-      if (queue.includes(neighborId) && weight < (keys.get(neighborId) || Infinity)) {
-        keys.set(neighborId, weight);
-        parent.set(neighborId, minNode);
-        
-        // Update the node value in the state
-        newState.nodeValues.set(neighborId, weight.toString());
-        
-        newState.messages.push(`Updated key of node ${neighborId} to ${weight}`);
+      if (queue.includes(neighborId) && weight < (keys[neighborId] || Infinity)) {
+        if (newState.distances) {
+          newState.distances[neighborId] = weight;
+        }
+        if (newState.parents) {
+          newState.parents[neighborId] = minNode;
+        }
+
+        newState.message += `\nUpdated key of node ${neighborId} to ${weight}`;
       }
     }
-    
+
     return newState;
   };
-  
+
   return { initialState, stepFunction };
 };
 
@@ -570,118 +597,119 @@ export const topologicalSortAlgorithm = (
 ): { initialState: AlgorithmState; stepFunction: (state: AlgorithmState) => AlgorithmState } => {
   // Create a copy of the graph to avoid modifying the original
   const graph = cloneGraphData(graphData);
-  
+
   // Initialize algorithm state
-  const initialState: AlgorithmState = initAlgorithmState(graph);
-  
+  const initialState: AlgorithmState = initAlgorithmState(graph, 'topological-sort');
+
   // If the graph is not directed, show a message
   if (!graph.directed) {
-    initialState.messages.push("Topological sort only works on directed graphs");
-    initialState.complete = true;
+    initialState.message = "Topological sort only works on directed graphs";
+    initialState.isComplete = true;
     return { initialState, stepFunction: (state) => state };
   }
-  
+
   // Set up the initial state
-  initialState.messages.push("Starting topological sort");
-  
+  initialState.message = "Starting topological sort";
+
   // Create an adjacency list for the graph
   const adjacencyList = new Map<string, string[]>();
   graph.nodes.forEach(node => {
     adjacencyList.set(node.id, []);
   });
-  
+
   graph.edges.forEach(edge => {
     const sourceNeighbors = adjacencyList.get(edge.source) || [];
     sourceNeighbors.push(edge.target);
     adjacencyList.set(edge.source, sourceNeighbors);
   });
-  
+
   // Calculate in-degrees for all nodes
   const inDegree = new Map<string, number>();
   graph.nodes.forEach(node => {
     inDegree.set(node.id, 0);
   });
-  
+
   graph.edges.forEach(edge => {
     inDegree.set(edge.target, (inDegree.get(edge.target) || 0) + 1);
   });
-  
+
   // Initialize the queue with nodes that have no incoming edges (in-degree = 0)
   const queue: string[] = [];
   graph.nodes.forEach(node => {
     if ((inDegree.get(node.id) || 0) === 0) {
       queue.push(node.id);
-      initialState.highlightedNodes.add(node.id);
     }
   });
-  
+
   initialState.queue = [...queue];
-  initialState.messages.push(`Added nodes with no incoming edges to the queue: ${queue.join(", ") || "none"}`);
-  
+  initialState.highlightedNodes = [...queue];
+  initialState.message = `Added nodes with no incoming edges to the queue: ${queue.join(", ") || "none"}`;
+
   // Array to store the topological sort result
   const result: string[] = [];
-  
+
   // Step function for topological sort
   const stepFunction = (state: AlgorithmState): AlgorithmState => {
     // If the algorithm is complete or the queue is empty, return the current state
-    if (state.complete || state.queue.length === 0) {
-      if (!state.complete) {
+    if (state.isComplete || (state.queue && state.queue.length === 0)) {
+      if (!state.isComplete) {
         // Check if all nodes are visited
         if (result.length !== graph.nodes.length) {
-          state.messages.push("The graph contains a cycle, topological sort is not possible");
+          state.message = "The graph contains a cycle, topological sort is not possible";
         } else {
-          state.messages.push("Topological sort complete");
-          state.messages.push(`Topological order: ${result.join(" -> ")}`);
+          state.message = "Topological sort complete";
+          state.message += `\nTopological order: ${result.join(" -> ")}`;
           state.result = {
             order: result
           };
         }
-        state.complete = true;
+        state.isComplete = true;
       }
       return { ...state };
     }
-    
+
     // Create a new state based on the current state
     const newState: AlgorithmState = { ...state };
-    newState.currentStep += 1;
-    
-    // Remove the highlighted status from all nodes and edges
-    newState.highlightedNodes = new Set<string>();
-    newState.highlightedEdges = new Set<string>();
-    
+    newState.step += 1;
+
+    // Reset highlighted nodes and edges
+    newState.highlightedNodes = [];
+    newState.highlightedEdges = [];
+
     // Dequeue the next node
-    const currentNodeId = newState.queue.shift()!;
-    
+    const currentNodeId = newState.queue?.shift() || '';
+
     // Add the node to the result
     result.push(currentNodeId);
-    
+
     // Mark the current node as visited
-    newState.visitedNodes.add(currentNodeId);
-    newState.highlightedNodes.add(currentNodeId);
-    newState.messages.push(`Visiting node ${currentNodeId}, adding to topological order`);
-    
+    newState.currentNode = currentNodeId;
+    newState.visitedNodes = [...newState.visitedNodes, currentNodeId];
+    newState.highlightedNodes = [currentNodeId];
+    newState.message = `Visiting node ${currentNodeId}, adding to topological order`;
+
     // Get the neighbors of the current node
     const neighbors = adjacencyList.get(currentNodeId) || [];
-    
+
     // Process each neighbor
     for (const neighborId of neighbors) {
-      const edgeKey = getEdgeKey(currentNodeId, neighborId);
-      newState.highlightedEdges.add(edgeKey);
-      
+      // Highlight the edge
+      newState.highlightedEdges = [...(newState.highlightedEdges || []), { source: currentNodeId, target: neighborId }];
+
       // Decrease the in-degree of the neighbor
       inDegree.set(neighborId, (inDegree.get(neighborId) || 0) - 1);
-      
+
       // If the in-degree becomes 0, add the neighbor to the queue
       if ((inDegree.get(neighborId) || 0) === 0) {
-        newState.queue.push(neighborId);
-        newState.highlightedNodes.add(neighborId);
-        newState.messages.push(`Node ${neighborId} has no more incoming edges, adding to queue`);
+        newState.queue = [...(newState.queue || []), neighborId];
+        newState.highlightedNodes = [...newState.highlightedNodes, neighborId];
+        newState.message += `\nNode ${neighborId} has no more incoming edges, adding to queue`;
       }
     }
-    
+
     return newState;
   };
-  
+
   return { initialState, stepFunction };
 };
 
@@ -741,4 +769,4 @@ export const getAlgorithm = (
       // Default to BFS if algorithm not found
       return bfsAlgorithm(graphData, startNodeId);
   }
-}; 
+};

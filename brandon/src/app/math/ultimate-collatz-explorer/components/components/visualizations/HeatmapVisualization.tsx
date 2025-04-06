@@ -60,7 +60,7 @@ const GridView: React.FC<GridViewProps> = () => {
 
     // Example sequence data (normally from standardSequence)
     const sequenceData = standardSequence.sequence;
-    const startNumber = standardSequence.startNumber;
+    const startNumber = standardSequence.startingNumber;
 
     // Generate grid data - sample numbers around the current number
     const range = 100; // Range of numbers to display

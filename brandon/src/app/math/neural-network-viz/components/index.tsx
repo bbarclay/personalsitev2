@@ -17,6 +17,7 @@ import { ErrorBoundary } from './ErrorBoundary';
 import { useTraining } from './hooks';
 import { STORY_PHASES } from './constants';
 import { TrainingState, TrainingControls as TrainingControlsType } from './types';
+import { PhaseMessage } from './types';
 
 interface HeaderProps {
   title: string;
@@ -75,14 +76,14 @@ const MainContent = memo(({
     <TrainingStatus iteration={iteration} trainingPhase={trainingPhase} />
 
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <ToyRoom 
-        data={data} 
-        weights={weights} 
+      <ToyRoom
+        data={data}
+        weights={weights}
         iteration={iteration}
         isTraining={isTraining}
       />
-      <RobotVision 
-        data={data} 
+      <RobotVision
+        data={data}
         weights={weights}
         isTraining={isTraining}
       />
@@ -111,7 +112,7 @@ const NeuralNetworkViz = () => {
             <Header title={title} description={description} />
             <InfoBoxes />
           </div>
-          
+
           <div className="relative z-0">
             {error ? (
               <Alert variant="destructive" className="mb-6">

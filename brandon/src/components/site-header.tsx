@@ -13,7 +13,19 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 
-const navItems = [
+interface DropdownItem {
+  name: string;
+  href: string;
+}
+
+interface NavItem {
+  name: string;
+  href: string;
+  hasDropdown: boolean;
+  dropdownItems?: DropdownItem[];
+}
+
+const navItems: NavItem[] = [
   {
     name: "Home",
     href: "/",
@@ -59,18 +71,18 @@ export function SiteHeader() {
   const [activeDropdown, setActiveDropdown] = React.useState<string | null>(null);
   const [renderedSymbols, setRenderedSymbols] = useState<React.ReactNode[]>([]);
   const [isClient, setIsClient] = useState(false);
-  
+
   useEffect(() => {
     setIsClient(true);
   }, []);
-  
+
   useEffect(() => {
     if (isClient) {
       const symbols = generateMathSymbols();
       setRenderedSymbols(symbols);
     }
   }, [isClient]);
-  
+
   const toggleDropdown = (name: string) => {
     setActiveDropdown(activeDropdown === name ? null : name);
   };
@@ -82,13 +94,13 @@ export function SiteHeader() {
       const left = Math.random() * 100;
       const opacity = (Math.random() * 0.07) + 0.03;
       const size = Math.floor(Math.random() * 15) + 10;
-      
+
       return (
-        <div 
+        <div
           key={index}
           className="absolute text-blue-600 dark:text-blue-400 pointer-events-none select-none"
-          style={{ 
-            top: `${top}%`, 
+          style={{
+            top: `${top}%`,
             left: `${left}%`,
             opacity,
             fontSize: `${size}px`,
@@ -115,7 +127,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 w-full backdrop-blur-lg shadow-md border-b bg-white/80 dark:bg-gray-950/80">
       <div className="relative container h-16 flex items-center px-4">
         <GeometricBackground />
-        
+
         {/* Logo and mobile menu */}
         <div className="flex items-center mr-4 sm:mr-6">
           <Sheet>
@@ -140,20 +152,20 @@ export function SiteHeader() {
                 {navItems.map((item) => (
                   <div key={item.name} className="flex flex-col">
                     <div className="flex justify-between items-center">
-                      <Link 
+                      <Link
                         href={item.href}
                         className="font-medium hover:text-blue-600 dark:hover:text-blue-400"
                       >
                         {item.name}
                       </Link>
                       {item.hasDropdown && (
-                        <Button 
-                          variant="ghost" 
+                        <Button
+                          variant="ghost"
                           size="icon"
                           onClick={() => toggleDropdown(item.name)}
                         >
                           <ChevronDown className={cn(
-                            "h-4 w-4 transition-transform", 
+                            "h-4 w-4 transition-transform",
                             activeDropdown === item.name && "rotate-180"
                           )} />
                         </Button>
@@ -177,7 +189,7 @@ export function SiteHeader() {
               </nav>
             </SheetContent>
           </Sheet>
-          
+
           <Link href="/" className="hidden sm:flex items-center space-x-2">
             <motion.div
               whileHover={{ rotate: 360 }}
@@ -188,7 +200,7 @@ export function SiteHeader() {
             <span className="text-xl font-bold">Brandon's Site</span>
           </Link>
         </div>
-        
+
         {/* Desktop navigation */}
         <nav className="hidden lg:flex flex-1 items-center justify-center">
           <ul className="flex space-x-1">
@@ -203,7 +215,7 @@ export function SiteHeader() {
                     <ChevronDown className="h-4 w-4 group-hover:rotate-180 transition-transform duration-200" />
                   )}
                 </Link>
-                
+
                 {item.hasDropdown && (
                   <div className="absolute left-0 mt-2 w-48 origin-top-left rounded-md bg-white dark:bg-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                     <div className="py-1 rounded-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
@@ -223,11 +235,11 @@ export function SiteHeader() {
             ))}
           </ul>
         </nav>
-        
+
         {/* Right side elements: animated decorative element and theme toggle */}
         <div className="flex items-center space-x-4">
           <div className="hidden lg:block">
-            <motion.div 
+            <motion.div
               className="w-12 h-8 relative"
               initial={{ opacity: 0.8 }}
               animate={{ opacity: 1 }}
@@ -240,7 +252,7 @@ export function SiteHeader() {
               <div className="absolute bottom-0 right-1/4 w-3/4 h-0.5 bg-blue-600 dark:bg-blue-400"></div>
             </motion.div>
           </div>
-          
+
           <ThemeToggle />
         </div>
       </div>

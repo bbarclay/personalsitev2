@@ -8,22 +8,28 @@ const HistoryPanel = dynamic(() => import('./HistoryPanel'), { ssr: false });
 const ReportsPanel = dynamic(() => import('./ReportsPanel'), { ssr: false });
 const SettingsPanel = dynamic(() => import('./SettingsPanel'), { ssr: false });
 
-const SentimentAnalyzerContent = dynamic(() => 
-  import('@/components/layouts/ToolPageLayout').then((mod) => {
-    const ToolPageLayout = mod.default;
-    return ({ meta }: { meta: any }) => (
-      <ToolPageLayout
-        meta={meta}
-        panels={{
-          analyze: AnalyzePanel,
-          history: HistoryPanel,
-          reports: ReportsPanel,
-          settings: SettingsPanel,
-        }}
-      />
-    );
-  }),
-  { ssr: false }
+// Import ToolPageLayout directly
+import { ToolPageLayout } from '@/components/layouts/ToolPageLayout';
+
+const SentimentAnalyzerContent = ({ meta }: { meta: any }) => (
+  <ToolPageLayout
+    meta={meta}
+  >
+    {({ activeTab }) => {
+      switch (activeTab) {
+        case 'analyze':
+          return <AnalyzePanel />;
+        case 'history':
+          return <HistoryPanel />;
+        case 'reports':
+          return <ReportsPanel />;
+        case 'settings':
+          return <SettingsPanel />;
+        default:
+          return <AnalyzePanel />;
+      }
+    }}
+  </ToolPageLayout>
 );
 
 interface SentimentAnalyzerClientProps {
@@ -32,4 +38,4 @@ interface SentimentAnalyzerClientProps {
 
 export default function SentimentAnalyzerClient({ meta }: SentimentAnalyzerClientProps) {
   return <SentimentAnalyzerContent meta={meta} />;
-} 
+}
