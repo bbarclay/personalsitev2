@@ -20,12 +20,12 @@ const PlaceholderContent = () => (
 );
 
 // Create dynamic panel component
-const LCollatz_LCalculatorContent = createDynamicPanelComponent({
+const CollatzCalculatorContent = createDynamicPanelComponent({
   solver: () => (
     <div className="space-y-6">
       <div className="prose dark:prose-invert max-w-none">
-        <h2 className="text-2xl font-bold">LCollatz_LCalculator</h2>
-        <p>Interactive LCollatz LCalculator visualization and calculation tool.</p>
+        <h2 className="text-2xl font-bold">Collatz Calculator</h2>
+        <p>Interactive Collatz Calculator visualization and calculation tool.</p>
       </div>
       <IndexComponent />
     </div>
@@ -35,10 +35,10 @@ const LCollatz_LCalculatorContent = createDynamicPanelComponent({
   resources: PlaceholderContent
 });
 
-export default function LCollatz_LCalculatorPage() {
+export default function CollatzCalculatorPage() {
   return (
     <ToolPageLayout meta={meta}>
-      <LCollatz_LCalculatorContent />
+      <CollatzCalculatorContent />
     </ToolPageLayout>
   );
 }

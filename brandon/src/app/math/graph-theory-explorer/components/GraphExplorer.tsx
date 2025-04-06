@@ -10,17 +10,17 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { 
-  Share2, 
-  RotateCcw, 
-  Play, 
-  Pause, 
-  Skip, 
-  Plus, 
+import {
+  Share2,
+  RotateCcw,
+  Play,
+  Pause,
+  Skip,
+  Plus,
   Minus,
-  GripHorizontal, 
+  GripHorizontal,
   Shuffle,
-  ZoomIn, 
+  ZoomIn,
   ZoomOut,
   Info
 } from 'lucide-react';
@@ -29,34 +29,34 @@ import AlgorithmPanel from './AlgorithmPanel';
 import GraphProperties from './GraphProperties';
 import { GraphData, Node, Edge, Algorithm, AlgorithmState } from './types';
 import { generateRandomGraph, applyAlgorithm, getGraphProperties } from './graphUtils';
-import { ControlPanel } from './ControlPanel';
-import { InfoPanel } from './InfoPanel';
+import ControlPanel from './ControlPanel';
+import InfoPanel from './InfoPanel';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { toast } from "sonner";
 
 const presetGraphs = [
   { id: 'empty', name: 'Empty Graph', nodes: [], edges: [] },
-  { id: 'path', name: 'Path (P5)', nodes: Array(5).fill(null).map((_, i) => ({ id: i.toString(), label: `${i+1}` })), 
+  { id: 'path', name: 'Path (P5)', nodes: Array(5).fill(null).map((_, i) => ({ id: i.toString(), label: `${i+1}` })),
     edges: Array(4).fill(null).map((_, i) => ({ source: i.toString(), target: (i+1).toString(), weight: 1 })) },
-  { id: 'cycle', name: 'Cycle (C5)', nodes: Array(5).fill(null).map((_, i) => ({ id: i.toString(), label: `${i+1}` })), 
-    edges: [...Array(4).fill(null).map((_, i) => ({ source: i.toString(), target: (i+1).toString(), weight: 1 })), 
+  { id: 'cycle', name: 'Cycle (C5)', nodes: Array(5).fill(null).map((_, i) => ({ id: i.toString(), label: `${i+1}` })),
+    edges: [...Array(4).fill(null).map((_, i) => ({ source: i.toString(), target: (i+1).toString(), weight: 1 })),
            { source: '4', target: '0', weight: 1 }] },
   { id: 'complete', name: 'Complete (K5)', nodes: Array(5).fill(null).map((_, i) => ({ id: i.toString(), label: `${i+1}` })),
-    edges: Array.from({ length: 5 }).flatMap((_, i) => 
-      Array.from({ length: 5 }).slice(i + 1).map((_, j) => ({ 
-        source: i.toString(), 
-        target: (i + j + 1).toString(), 
-        weight: 1 
+    edges: Array.from({ length: 5 }).flatMap((_, i) =>
+      Array.from({ length: 5 }).slice(i + 1).map((_, j) => ({
+        source: i.toString(),
+        target: (i + j + 1).toString(),
+        weight: 1
       }))
     )},
-  { id: 'bipartite', name: 'Complete Bipartite (K3,3)', 
+  { id: 'bipartite', name: 'Complete Bipartite (K3,3)',
     nodes: [...Array(3).fill(null).map((_, i) => ({ id: `a${i}`, label: `A${i+1}`, group: 'A' })),
            ...Array(3).fill(null).map((_, i) => ({ id: `b${i}`, label: `B${i+1}`, group: 'B' }))],
-    edges: Array.from({ length: 3 }).flatMap((_, i) => 
-      Array.from({ length: 3 }).map((_, j) => ({ 
-        source: `a${i}`, 
-        target: `b${j}`, 
-        weight: 1 
+    edges: Array.from({ length: 3 }).flatMap((_, i) =>
+      Array.from({ length: 3 }).map((_, j) => ({
+        source: `a${i}`,
+        target: `b${j}`,
+        weight: 1
       }))
     )}
 ];
@@ -449,4 +449,4 @@ const GraphExplorer: React.FC = () => {
   );
 };
 
-export default GraphExplorer; 
+export default GraphExplorer;

@@ -5,6 +5,9 @@ import { ToolPageLayout, createDynamicPanelComponent } from '@/components/layout
 import { loadToolMeta } from '@/utils/meta-loader';
 import metaJson from './meta.json';
 import IndexComponent from './components/index';
+import ExplanationComponent from './components/ExplanationComponent';
+import ApplicationsComponent from './components/ApplicationsComponent';
+import ResourcesComponent from './components/ResourcesComponent';
 
 // Load metadata with proper defaults
 const meta = loadToolMeta(metaJson);
@@ -20,25 +23,25 @@ const PlaceholderContent = () => (
 );
 
 // Create dynamic panel component
-const LFibonacci_LExplorerContent = createDynamicPanelComponent({
+const FibonacciExplorerContent = createDynamicPanelComponent({
   solver: () => (
     <div className="space-y-6">
       <div className="prose dark:prose-invert max-w-none">
-        <h2 className="text-2xl font-bold">LFibonacci_LExplorer</h2>
-        <p>Interactive LFibonacci LExplorer visualization and calculation tool.</p>
+        <h2 className="text-2xl font-bold">Fibonacci Explorer</h2>
+        <p>Interactive Fibonacci Explorer visualization and calculation tool.</p>
       </div>
       <IndexComponent />
     </div>
   ),
-  explanation: PlaceholderContent,
-  applications: PlaceholderContent,
-  resources: PlaceholderContent
+  explanation: ExplanationComponent,
+  applications: ApplicationsComponent,
+  resources: ResourcesComponent
 });
 
-export default function LFibonacci_LExplorerPage() {
+export default function FibonacciExplorerPage() {
   return (
     <ToolPageLayout meta={meta}>
-      <LFibonacci_LExplorerContent />
+      <FibonacciExplorerContent />
     </ToolPageLayout>
   );
 }

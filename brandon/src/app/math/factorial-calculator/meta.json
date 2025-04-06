@@ -1,25 +1,32 @@
 {
   "id": "FactorialCalculator",
-  "title": "FactorialCalculator",
-  "description": "Interactive FactorialCalculator tool for mathematics exploration",
+  "title": "Factorial Calculator",
+  "description": "Interactive factorial visualization and calculation tool with step-by-step animations",
   "category": "Mathematics",
   "subcategory": "Number Theory",
   "type": "math",
-  "difficulty": "intermediate",
-  "lastUpdated": "2025-04-01",
+  "difficulty": "beginner",
+  "lastUpdated": "2023-07-15",
   "icon": "!",
-  "color": "from-violet-500 to-purple-500",
+  "color": "from-purple-600 to-indigo-600",
   "shape": "rectangle",
   "enabled": true,
-  "featured": false,
+  "featured": true,
   "tags": [
     "math",
-    "interactive"
+    "interactive",
+    "visualization",
+    "animation",
+    "combinatorics"
   ],
   "keywords": [
-    "factorialcalculator",
+    "factorial",
+    "calculator",
+    "n!",
+    "permutation",
+    "combination",
     "math",
-    "tool"
+    "visualization"
   ],
   "sidebar": {
     "tabs": [

@@ -5,6 +5,9 @@ import { ToolPageLayout, createDynamicPanelComponent } from '@/components/layout
 import { loadToolMeta } from '@/utils/meta-loader';
 import metaJson from './meta.json';
 import MainComponent from './components/MainComponent';
+import ExplanationComponent from './components/ExplanationComponent';
+import ApplicationsComponent from './components/ApplicationsComponent';
+import ResourcesComponent from './components/ResourcesComponent';
 
 // Load metadata with proper defaults
 const meta = loadToolMeta(metaJson);
@@ -20,25 +23,25 @@ const PlaceholderContent = () => (
 );
 
 // Create dynamic panel component
-const UcollatzUnetworkContent = createDynamicPanelComponent({
+const CollatzNetworkContent = createDynamicPanelComponent({
   solver: () => (
     <div className="space-y-6">
       <div className="prose dark:prose-invert max-w-none">
-        <h2 className="text-2xl font-bold">UcollatzUnetwork</h2>
-        <p>Interactive UcollatzUnetwork visualization and calculation tool.</p>
+        <h2 className="text-2xl font-bold">CollatzNetwork</h2>
+        <p>Interactive CollatzNetwork visualization and calculation tool.</p>
       </div>
       <MainComponent />
     </div>
   ),
-  explanation: PlaceholderContent,
-  applications: PlaceholderContent,
-  resources: PlaceholderContent
+  explanation: ExplanationComponent,
+  applications: ApplicationsComponent,
+  resources: ResourcesComponent
 });
 
-export default function UcollatzUnetworkPage() {
+export default function CollatzNetworkPage() {
   return (
     <ToolPageLayout meta={meta}>
-      <UcollatzUnetworkContent />
+      <CollatzNetworkContent />
     </ToolPageLayout>
   );
 }

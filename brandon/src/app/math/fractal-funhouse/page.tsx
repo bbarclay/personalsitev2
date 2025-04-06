@@ -20,12 +20,12 @@ const PlaceholderContent = () => (
 );
 
 // Create dynamic panel component
-const LFractal_LFunhouseContent = createDynamicPanelComponent({
+const FractalFunhouseContent = createDynamicPanelComponent({
   solver: () => (
     <div className="space-y-6">
       <div className="prose dark:prose-invert max-w-none">
-        <h2 className="text-2xl font-bold">LFractal_LFunhouse</h2>
-        <p>Interactive LFractal LFunhouse visualization and calculation tool.</p>
+        <h2 className="text-2xl font-bold">Fractal Funhouse</h2>
+        <p>Interactive Fractal Funhouse visualization and calculation tool.</p>
       </div>
       <IndexComponent />
     </div>
@@ -35,10 +35,10 @@ const LFractal_LFunhouseContent = createDynamicPanelComponent({
   resources: PlaceholderContent
 });
 
-export default function LFractal_LFunhousePage() {
+export default function FractalFunhousePage() {
   return (
     <ToolPageLayout meta={meta}>
-      <LFractal_LFunhouseContent />
+      <FractalFunhouseContent />
     </ToolPageLayout>
   );
 }

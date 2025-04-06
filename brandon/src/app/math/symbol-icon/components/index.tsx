@@ -17,7 +17,7 @@ interface SymbolIconProps {
   className?: string;
 }
 
-export const SymbolIcon: React.FC<SymbolIconProps> = ({
+const SymbolIcon: React.FC<SymbolIconProps> = ({
   symbolId,
   size = 24,
   className = ''
@@ -40,3 +40,26 @@ export const SymbolIcon: React.FC<SymbolIconProps> = ({
     </div>
   );
 };
+
+const SymbolIconDemo = () => {
+  return (
+    <div className="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg">
+      <h2 className="text-2xl font-bold mb-4">Symbol Icon Library</h2>
+      <p className="mb-4">A collection of slot machine symbols for use in game interfaces.</p>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+        {symbols.map(symbol => (
+          <div key={symbol.id} className="bg-white dark:bg-gray-700 p-4 rounded-lg flex flex-col items-center">
+            <SymbolIcon symbolId={symbol.id} size={48} />
+            <div className="mt-2 text-center">
+              <div className="font-medium">{symbol.name}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">ID: {symbol.id}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default SymbolIconDemo;

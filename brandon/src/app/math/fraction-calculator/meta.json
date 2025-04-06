@@ -1,31 +1,36 @@
 {
   "id": "FractionCalculator",
-  "title": "FractionCalculator",
-  "description": "Interactive FractionCalculator tool for mathematics exploration",
+  "title": "Fraction Calculator & Visualizer",
+  "description": "Interactive tool for visualizing, calculating and understanding fraction operations and relationships",
   "category": "Mathematics",
   "subcategory": "Arithmetic",
   "type": "math",
   "difficulty": "intermediate",
-  "lastUpdated": "2025-04-01",
+  "lastUpdated": "2025-04-05",
   "icon": "➗",
-  "color": "from-orange-500 to-red-500",
+  "color": "from-blue-500 to-purple-500",
   "shape": "rectangle",
   "enabled": true,
-  "featured": false,
+  "featured": true,
   "tags": [
     "math",
-    "interactive"
+    "interactive",
+    "fractions",
+    "arithmetic",
+    "education"
   ],
   "keywords": [
-    "fractioncalculator",
-    "math",
-    "tool"
+    "fraction calculator",
+    "fraction visualizer",
+    "math tool",
+    "arithmetic operations",
+    "educational"
   ],
   "sidebar": {
     "tabs": [
       {
         "id": "solver",
-        "label": "Solver",
+        "label": "Calculator",
         "icon": "🧮",
         "color": {
           "active": "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300",
@@ -34,7 +39,7 @@
       },
       {
         "id": "explanation",
-        "label": "Explanation",
+        "label": "Learn",
         "icon": "📚",
         "color": {
           "active": "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300",
@@ -43,7 +48,7 @@
       },
       {
         "id": "applications",
-        "label": "Applications",
+        "label": "Real-World",
         "icon": "🌐",
         "color": {
           "active": "bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300",

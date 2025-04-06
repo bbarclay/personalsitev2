@@ -1,0 +1,24 @@
+Tool ID,Title,Category,Difficulty,Last Updated,Solver Tab Complete,Explanation Tab Complete,Applications Tab Complete,Resources Tab Complete,Quality Score (1-100),Features Score (1-100),Notes
+linear-solver,Linear Equation Solver,Algebra,Beginner,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+polynomial,Polynomial Factorization,Algebra,Intermediate,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+linear-systems,Linear Systems Solver,Algebra,Intermediate,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+pythagoras,Pythagorean Theorem Calculator,Geometry,Beginner,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+collatz,Collatz Conjecture Explorer,Number Theory,Intermediate,2025-04-01,Yes,Yes,Yes,Yes,98,95,Extensive implementation with multiple visualization types, autoplay, analysis tools, tutorials, history, resources, and community sections
+riemann,Riemann Hypothesis Explorer,Number Theory,Advanced,2025-04-01,Yes,Yes,Yes,Yes,85,80,Well-implemented with dynamic components for all tabs, custom header, visualization toggle, and key facts section. Explanation panel is basic but functional.
+p-adic,P-adic Number Explorer,Number Theory,Advanced,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+derivative-calculator,Derivative Calculator,Calculus,Intermediate,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+integral-calculator,Integral Calculator,Calculus,Intermediate,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+limit-calculator,Limit Calculator,Calculus,Intermediate,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+probability-calculator,Probability Calculator,Probability,Beginner,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+data-analysis,Data Analysis Tool,Statistics,Intermediate,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+area-calculator,Area Calculator,Geometry,Beginner,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+pythagorean-calculator,Pythagorean Theorem Calculator,Geometry,Beginner,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+collatz-network,Collatz Network,Number Theory,Intermediate,2024-05-15,Yes,Yes,Yes,Yes,90,85,Recently updated with autoplay and comprehensive content
+collatz-proof,Collatz Proof,Number Theory,Advanced,2024-05-15,Yes,Yes,Yes,Yes,95,90,Comprehensive implementation with detailed explanations of proof approaches, applications of proof techniques, and extensive resources. Fixed naming issues.
+hermites-proof,Hermite's Proof,Number Theory,Advanced,2024-05-15,Yes,Yes,Yes,Yes,95,90,Comprehensive implementation with detailed explanations of Hermite's proof of e's transcendence, applications of his methods, and extensive resources. Fixed naming issues.
+fraction-calculator,Fraction Calculator & Visualizer,Arithmetic,Intermediate,2025-04-05,Yes,Yes,Yes,Yes,95,90,Comprehensive implementation with interactive calculator, detailed explanations, real-world applications, and extensive resources
+math-explorer,Math Explorer,Interactive Tools,Intermediate,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+prime-observatory,Prime Observatory,Number Theory,Intermediate,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+dino,Math Dinosaur Game,Educational,Beginner,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+fractal-funhouse,Fractal Funhouse,Complex Analysis,Intermediate,Unknown,Unknown,Unknown,Unknown,Unknown,0,0,Need to check implementation
+ultimate-collatz-explorer,Ultimate Collatz Explorer,Number Theory,Intermediate,2024-05-15,Yes,Yes,Yes,Yes,95,90,Comprehensive implementation with interactive explorer, detailed explanations, applications, and extensive resources. Fixed naming issues.

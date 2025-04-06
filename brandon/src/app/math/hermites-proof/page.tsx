@@ -5,6 +5,9 @@ import { ToolPageLayout, createDynamicPanelComponent } from '@/components/layout
 import { loadToolMeta } from '@/utils/meta-loader';
 import metaJson from './meta.json';
 import IndexComponent from './components/index';
+import ExplanationComponent from './components/ExplanationComponent';
+import ApplicationsComponent from './components/ApplicationsComponent';
+import ResourcesComponent from './components/ResourcesComponent';
 
 // Load metadata with proper defaults
 const meta = loadToolMeta(metaJson);
@@ -20,25 +23,25 @@ const PlaceholderContent = () => (
 );
 
 // Create dynamic panel component
-const LHermites_LProofContent = createDynamicPanelComponent({
+const HermitesProofContent = createDynamicPanelComponent({
   solver: () => (
     <div className="space-y-6">
       <div className="prose dark:prose-invert max-w-none">
-        <h2 className="text-2xl font-bold">LHermites_LProof</h2>
-        <p>Interactive LHermites LProof visualization and calculation tool.</p>
+        <h2 className="text-2xl font-bold">Hermite's Proof</h2>
+        <p>Interactive Hermite's Proof visualization and calculation tool.</p>
       </div>
       <IndexComponent />
     </div>
   ),
-  explanation: PlaceholderContent,
-  applications: PlaceholderContent,
-  resources: PlaceholderContent
+  explanation: ExplanationComponent,
+  applications: ApplicationsComponent,
+  resources: ResourcesComponent
 });
 
-export default function LHermites_LProofPage() {
+export default function HermitesProofPage() {
   return (
     <ToolPageLayout meta={meta}>
-      <LHermites_LProofContent />
+      <HermitesProofContent />
     </ToolPageLayout>
   );
 }

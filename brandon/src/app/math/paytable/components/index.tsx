@@ -31,7 +31,7 @@ export interface Symbol {
   };
 }
 
-export const Paytable: React.FC = () => {
+const Paytable: React.FC = () => {
   return (
     <Card>
       <CardHeader>
@@ -69,3 +69,9 @@ export const Paytable: React.FC = () => {
     </Card>
   );
 };
+
+const PaytableComponent = () => {
+  return <Paytable />;
+};
+
+export default PaytableComponent;

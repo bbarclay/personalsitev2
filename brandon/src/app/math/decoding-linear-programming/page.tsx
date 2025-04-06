@@ -20,12 +20,12 @@ const PlaceholderContent = () => (
 );
 
 // Create dynamic panel component
-const LDecoding_LLinear_LProgrammingContent = createDynamicPanelComponent({
+const DecodingLinearProgrammingContent = createDynamicPanelComponent({
   solver: () => (
     <div className="space-y-6">
       <div className="prose dark:prose-invert max-w-none">
-        <h2 className="text-2xl font-bold">LDecoding_LLinear_LProgramming</h2>
-        <p>Interactive LDecoding LLinear LProgramming visualization and calculation tool.</p>
+        <h2 className="text-2xl font-bold">Decoding Linear Programming</h2>
+        <p>Interactive Decoding Linear Programming visualization and calculation tool.</p>
       </div>
       <IndexComponent />
     </div>
@@ -35,10 +35,10 @@ const LDecoding_LLinear_LProgrammingContent = createDynamicPanelComponent({
   resources: PlaceholderContent
 });
 
-export default function LDecoding_LLinear_LProgrammingPage() {
+export default function DecodingLinearProgrammingPage() {
   return (
     <ToolPageLayout meta={meta}>
-      <LDecoding_LLinear_LProgrammingContent />
+      <DecodingLinearProgrammingContent />
     </ToolPageLayout>
   );
 }

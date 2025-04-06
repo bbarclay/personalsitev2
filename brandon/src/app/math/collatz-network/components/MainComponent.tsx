@@ -16,6 +16,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import {
   Play,
   Pause,
@@ -26,6 +28,10 @@ import {
   Zap,
   Activity,
   GitBranch,
+  Shuffle,
+  RefreshCw,
+  PlayCircle,
+  PauseCircle,
 } from 'lucide-react';
 import {
   LineChart,
@@ -110,6 +116,10 @@ const CollatzNetwork: React.FC = () => {
   const [startNumber, setStartNumber] = useState<number>(1);
   const [speed, setSpeed] = useState<number>(15);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(false);
+  const [autoPlaySpeed, setAutoPlaySpeed] = useState<number>(1000); // ms between numbers
+  const [autoPlayDirection, setAutoPlayDirection] = useState<'increment' | 'random'>('increment');
+  const autoPlayTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   interface Result {
     oddNumber: number;
@@ -235,6 +245,64 @@ const CollatzNetwork: React.FC = () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [isPlaying, speed, results]);
+
+  // Auto-play functionality
+  const toggleAutoPlay = () => {
+    if (isAutoPlaying) {
+      stopAutoPlay();
+    } else {
+      startAutoPlay();
+    }
+  };
+
+  const startAutoPlay = () => {
+    setIsAutoPlaying(true);
+    if (autoPlayTimerRef.current) {
+      clearInterval(autoPlayTimerRef.current);
+    }
+
+    autoPlayTimerRef.current = setInterval(() => {
+      if (autoPlayDirection === 'increment') {
+        const nextNum = startNumber + 2;
+        setStartNumber(nextNum);
+      } else {
+        // Generate a random odd number
+        const randomNum = Math.floor(Math.random() * 1000) * 2 + 1;
+        setStartNumber(randomNum);
+      }
+    }, autoPlaySpeed);
+  };
+
+  const stopAutoPlay = () => {
+    setIsAutoPlaying(false);
+    if (autoPlayTimerRef.current) {
+      clearInterval(autoPlayTimerRef.current);
+      autoPlayTimerRef.current = null;
+    }
+  };
+
+  const handleAutoPlaySpeedChange = (value: number[]) => {
+    setAutoPlaySpeed(value[0]);
+    // Restart autoplay with new speed if currently playing
+    if (isAutoPlaying) {
+      stopAutoPlay();
+      startAutoPlay();
+    }
+  };
+
+  const handleRandomNumber = () => {
+    // Generate a random odd number
+    const randomNum = Math.floor(Math.random() * 1000) * 2 + 1;
+    setStartNumber(randomNum);
+  };
+
+  // Clean up intervals on component unmount
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (autoPlayTimerRef.current) clearInterval(autoPlayTimerRef.current);
+    };
+  }, []);
 
   // Memoized analysis data
   const analysisData = useMemo(() => {
@@ -535,8 +603,65 @@ const CollatzNetwork: React.FC = () => {
             >
               <SkipForward className="h-4 w-4" />
             </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleRandomNumber}
+              title="Generate random odd number"
+            >
+              <Shuffle className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={isAutoPlaying ? "destructive" : "outline"}
+              size="icon"
+              onClick={toggleAutoPlay}
+              title={isAutoPlaying ? "Stop auto play" : "Start auto play"}
+            >
+              {isAutoPlaying ? (
+                <PauseCircle className="h-4 w-4" />
+              ) : (
+                <PlayCircle className="h-4 w-4" />
+              )}
+            </Button>
           </div>
         </div>
+
+        {isAutoPlaying && (
+          <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex-1 space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span>Slow</span>
+                  <span>Fast</span>
+                </div>
+                <div className="flex items-center space-x-2 w-full">
+                  <Label>Speed: {autoPlaySpeed}ms</Label>
+                  <Slider
+                    min={100}
+                    max={3000}
+                    step={100}
+                    value={[autoPlaySpeed]}
+                    onValueChange={handleAutoPlaySpeedChange}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+
+              <Select
+                value={autoPlayDirection}
+                onValueChange={(val: 'increment' | 'random') => setAutoPlayDirection(val)}
+              >
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="Mode" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="increment">Increment</SelectItem>
+                  <SelectItem value="random">Random</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )
 
         <Tabs defaultValue="network" className="mt-4">
           <TabsList className="grid grid-cols-4 gap-4">

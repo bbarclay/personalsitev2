@@ -20,7 +20,7 @@ type ExperimentConfig = {
   color: string;
 };
 
-export const ProbabilitySimulator = () => {
+const ProbabilitySimulator = () => {
   const [experimentType, setExperimentType] = useState<ExperimentType>('coin');
   const [numTrials, setNumTrials] = useState(100);
   const [results, setResults] = useState<ExperimentResult[]>([]);
@@ -412,3 +412,5 @@ export const ProbabilitySimulator = () => {
     </Card>
   );
 };
+
+export default ProbabilitySimulator;

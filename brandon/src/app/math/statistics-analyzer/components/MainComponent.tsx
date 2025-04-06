@@ -16,7 +16,7 @@ interface StatisticsResults {
     };
 }
 
-export const StatisticsAnalyzer = () => {
+const StatisticsAnalyzer = () => {
     const [numbers, setNumbers] = useState('');
     const [results, setResults] = useState<StatisticsResults | null>(null);
     const [error, setError] = useState('');
@@ -123,3 +123,5 @@ export const StatisticsAnalyzer = () => {
         </div>
     );
 };
+
+export default StatisticsAnalyzer;

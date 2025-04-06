@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { LinearSystemsHeader } from './components/LinearSystemsHeader';
+import LinearSystemsHeader from './components/LinearSystemsHeader';
 import { EnhancedSolverPanel } from './components/EnhancedSolverPanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 // Dynamically import components with SSR disabled for Three.js
 const VisualizerPanel = dynamic(
   () => import('./components/VisualizerPanel').then(mod => mod.default || mod),
-  { 
+  {
     ssr: false,
     loading: () => (
       <div className="min-h-[400px] flex items-center justify-center">
@@ -30,11 +30,11 @@ export default function LinearSystemsPage() {
   const [showTour, setShowTour] = useState(false);
   const [tourStep, setTourStep] = useState(0);
   const [difficulty, setDifficulty] = useState<'beginner' | 'intermediate' | 'advanced'>('beginner');
-  
+
   // Ensure components only render on client
   useEffect(() => {
     setMounted(true);
-    
+
     // Check if this is the first visit
     const isFirstVisit = !localStorage.getItem('linear-systems-visited');
     if (isFirstVisit) {
@@ -42,7 +42,7 @@ export default function LinearSystemsPage() {
       localStorage.setItem('linear-systems-visited', 'true');
     }
   }, []);
-  
+
   if (!mounted) {
     return (
       <div className="container mx-auto px-4 py-8 min-h-screen flex items-center justify-center">
@@ -96,7 +96,7 @@ export default function LinearSystemsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <LinearSystemsHeader />
-      
+
       {/* Tour overlay */}
       <AnimatePresence>
         {showTour && (
@@ -118,28 +118,28 @@ export default function LinearSystemsPage() {
                 {tourSteps[tourStep].icon}
                 <h3 className="text-xl font-bold ml-3">{tourSteps[tourStep].title}</h3>
               </div>
-              
+
               <p className="text-gray-600 dark:text-gray-300 mb-6">
                 {tourSteps[tourStep].description}
               </p>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex space-x-1">
                   {tourSteps.map((_, index) => (
-                    <div 
+                    <div
                       key={index}
                       className={`h-2 w-2 rounded-full ${tourStep === index ? 'bg-blue-600' : 'bg-gray-300'}`}
                     />
                   ))}
                 </div>
-                
+
                 <div className="space-x-2">
                   {tourStep > 0 && (
                     <Button variant="outline" size="sm" onClick={prevTourStep}>
                       Previous
                     </Button>
                   )}
-                  
+
                   {tourStep < tourSteps.length - 1 ? (
                     <Button onClick={nextTourStep}>
                       Next
@@ -155,7 +155,7 @@ export default function LinearSystemsPage() {
           </motion.div>
         )}
       </AnimatePresence>
-      
+
       {/* Difficulty selector */}
       <div className="mb-6 flex flex-col sm:flex-row items-center justify-between">
         <div className="mb-4 sm:mb-0">
@@ -164,7 +164,7 @@ export default function LinearSystemsPage() {
             Solve and visualize linear systems of equations with step-by-step explanations.
           </p>
         </div>
-        
+
         <div className="flex items-center">
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300 mr-3">Difficulty:</span>
           <div className="flex space-x-1">
@@ -190,10 +190,10 @@ export default function LinearSystemsPage() {
               Advanced
             </Badge>
           </div>
-          
-          <Button 
-            variant="ghost" 
-            size="sm" 
+
+          <Button
+            variant="ghost"
+            size="sm"
             className="ml-2"
             onClick={() => setShowTour(true)}
           >
@@ -202,10 +202,10 @@ export default function LinearSystemsPage() {
           </Button>
         </div>
       </div>
-      
-      <Tabs 
-        defaultValue="solver" 
-        value={activePanel} 
+
+      <Tabs
+        defaultValue="solver"
+        value={activePanel}
         onValueChange={setActivePanel}
         className="w-full mb-8"
       >
@@ -219,16 +219,16 @@ export default function LinearSystemsPage() {
             Visual Explorer
           </TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="solver" className="mt-6">
           <EnhancedSolverPanel />
         </TabsContent>
-        
+
         <TabsContent value="visualizer" className="mt-6">
           <VisualizerPanel />
         </TabsContent>
       </Tabs>
-      
+
       {/* Featured examples */}
       {difficulty !== 'beginner' && (
         <div className="mb-10">
@@ -252,7 +252,7 @@ export default function LinearSystemsPage() {
                 </Button>
               </CardContent>
             </Card>
-            
+
             <Card className="hover:shadow-md transition-shadow">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg">Chemical Balance</CardTitle>
@@ -272,7 +272,7 @@ export default function LinearSystemsPage() {
                 </Button>
               </CardContent>
             </Card>
-            
+
             <Card className="hover:shadow-md transition-shadow">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg">Circuit Analysis</CardTitle>
@@ -295,7 +295,7 @@ export default function LinearSystemsPage() {
           </div>
         </div>
       )}
-      
+
       <div className="mt-12 mb-8">
         <h2 className="text-2xl font-bold mb-4">About Linear Systems</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -303,10 +303,10 @@ export default function LinearSystemsPage() {
             <h3 className="text-xl font-semibold text-blue-700 dark:text-blue-400">Applications</h3>
             <p className="text-gray-700 dark:text-gray-300">
               Linear systems of equations are ubiquitous in science, engineering, economics, and many other fields.
-              They are used to model everything from electrical circuits to traffic flows, from economic models to 
+              They are used to model everything from electrical circuits to traffic flows, from economic models to
               physical systems.
             </p>
-            
+
             <h3 className="text-xl font-semibold text-blue-700 dark:text-blue-400">Geometry</h3>
             <p className="text-gray-700 dark:text-gray-300">
               A linear system can be interpreted geometrically:
@@ -319,7 +319,7 @@ export default function LinearSystemsPage() {
               <li>Overlapping lines or planes indicate infinitely many solutions</li>
             </ul>
           </div>
-          
+
           <div className="space-y-4">
             <h3 className="text-xl font-semibold text-blue-700 dark:text-blue-400">Solution Methods</h3>
             <p className="text-gray-700 dark:text-gray-300">
@@ -332,7 +332,7 @@ export default function LinearSystemsPage() {
               <li><span className="font-medium">Matrix Inversion:</span> Solves the system by computing the inverse of the coefficient matrix</li>
               <li><span className="font-medium">Iterative Methods:</span> Such as Jacobi or Gauss-Seidel, approximate the solution through successive iterations</li>
             </ul>
-            
+
             <h3 className="text-xl font-semibold text-blue-700 dark:text-blue-400">Understanding Solutions</h3>
             <p className="text-gray-700 dark:text-gray-300">
               The nature of solutions depends on the relationship between the number of equations (m) and variables (n):
@@ -345,7 +345,7 @@ export default function LinearSystemsPage() {
           </div>
         </div>
       </div>
-      
+
       {/* Real-world applications */}
       {difficulty === 'advanced' && (
         <div className="mb-12">
@@ -365,7 +365,7 @@ export default function LinearSystemsPage() {
                 </ul>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Economics</CardTitle>
@@ -380,7 +380,7 @@ export default function LinearSystemsPage() {
                 </ul>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Computer Science</CardTitle>

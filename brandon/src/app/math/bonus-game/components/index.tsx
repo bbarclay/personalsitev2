@@ -9,7 +9,7 @@ interface BonusGameProps {
   onClose: () => void;
 }
 
-export const BonusGame: React.FC<BonusGameProps> = ({ freeSpins, onClose }) => {
+const BonusGame: React.FC<BonusGameProps> = ({ freeSpins, onClose }) => {
   return (
     <div className="absolute inset-0 flex items-center justify-center z-50 bg-black bg-opacity-80">
       <div className="bg-gray-800 p-8 rounded-xl shadow-lg max-w-md w-full text-center">
@@ -38,3 +38,22 @@ export const BonusGame: React.FC<BonusGameProps> = ({ freeSpins, onClose }) => {
     </div>
   );
 };
+
+const BonusGameComponent = () => {
+  return (
+    <div className="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg">
+      <h2 className="text-2xl font-bold mb-4">Bonus Game Simulator</h2>
+      <p className="mb-4">This is a demonstration of a slot machine bonus game.</p>
+      <div className="flex justify-center">
+        <Button
+          onClick={() => {}}
+          className="bg-yellow-500 hover:bg-yellow-600"
+        >
+          Simulate Bonus Game
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default BonusGameComponent;
