@@ -1,7 +1,7 @@
 {
   "id": "BasicErdos",
-  "title": "BasicErdos",
-  "description": "Interactive BasicErdos tool for mathematics exploration",
+  "title": "Basic Erdős Discrepancy",
+  "description": "Interactive visualization of the Erdős Discrepancy Problem",
   "category": "Mathematics",
   "subcategory": "Graph Theory",
   "type": "math",
@@ -12,12 +12,16 @@
   "shape": "rectangle",
   "enabled": true,
   "featured": false,
+  "status": "completed",
   "tags": [
     "math",
     "interactive"
   ],
   "keywords": [
-    "basicerdos",
+    "erdos",
+    "discrepancy",
+    "sequences",
+    "number theory",
     "math",
     "tool"
   ],

@@ -1,7 +1,7 @@
 {
   "id": "BaseVisualizer",
-  "title": "BaseVisualizer",
-  "description": "Interactive BaseVisualizer tool for mathematics exploration",
+  "title": "Base Number System Visualizer",
+  "description": "Interactive tool for visualizing and converting between different number bases",
   "category": "Mathematics",
   "subcategory": "Number Systems",
   "type": "math",
@@ -12,12 +12,17 @@
   "shape": "rectangle",
   "enabled": true,
   "featured": false,
+  "status": "completed",
   "tags": [
     "math",
     "interactive"
   ],
   "keywords": [
-    "basevisualizer",
+    "number systems",
+    "base conversion",
+    "binary",
+    "hexadecimal",
+    "octal",
     "math",
     "tool"
   ],

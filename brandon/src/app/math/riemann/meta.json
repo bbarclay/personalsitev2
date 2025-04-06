@@ -1,7 +1,7 @@
 {
   "id": "Riemann",
-  "title": "Riemann",
-  "description": "Interactive Riemann tool for mathematics exploration",
+  "title": "Riemann Zeta Explorer",
+  "description": "Explore the fascinating Riemann zeta function, fundamental to understanding prime number distributions",
   "category": "Mathematics",
   "subcategory": "Number Theory",
   "type": "math",
@@ -11,13 +11,18 @@
   "color": "from-violet-500 to-purple-500",
   "shape": "rectangle",
   "enabled": true,
-  "featured": false,
+  "featured": true,
+  "status": "completed",
   "tags": [
     "math",
     "interactive"
   ],
   "keywords": [
     "riemann",
+    "zeta function",
+    "prime numbers",
+    "number theory",
+    "complex analysis",
     "math",
     "tool"
   ],

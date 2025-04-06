@@ -17,12 +17,24 @@ This repository contains groundbreaking research on a novel approach to the Riem
 
 ```
 Riemaninverse/
-├── inverse.md                         # Core theoretical framework
-├── validate.py                        # Validation script for mathematical proofs
-├── prime/                             # Prime number research components
-│   └── floor_prime_discovery/         # Floor function approach to prime discovery
-│       └── OFFICIAL_COMPLETION.md     # Official research completion declaration
-└── structural_spectral_rh_20250403_055727.zip # Complete research package
+├── README.md                          # Main project README
+├── code/                              # Source code
+│   ├── core/                          # Core algorithms
+│   │   ├── structural_invariant_test.py  # Structural invariant primality test
+│   │   ├── prime_discordance_algorithm.py # Prime discordance algorithm
+│   │   ├── quick_spectral_test.py      # Quick spectral analysis
+│   │   └── deep_spectral_analysis.py   # Deep spectral analysis
+│   ├── tests/                         # Test files
+│   ├── tools/                         # Utility tools
+│   └── visualization/                 # Visualization code
+├── docs/                              # Documentation
+│   ├── inverse.md                     # Core theoretical framework
+│   ├── completion_records/            # Official completion records
+│   ├── papers/                        # Academic papers
+│   ├── proofs/                        # Mathematical proofs
+│   └── research_summaries/            # Research summaries
+├── visualizations/                    # Visualization outputs
+└── archives/                          # Archive files
 ```
 
 ## Research Components
@@ -52,7 +64,7 @@ The repository includes a comprehensive mathematical framework that connects the
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/riemann-hypothesis.git
+git clone https://github.com/bbarclay/riemann-hypothesis.git
 cd riemann-hypothesis
 pip install -r requirements.txt
 ```
@@ -62,7 +74,7 @@ pip install -r requirements.txt
 To validate the mathematical proofs and run the test suite:
 
 ```bash
-python validate.py
+python code/core/validate.py
 ```
 
 ## Research Impact
@@ -93,7 +105,7 @@ If you use this research in your work, please cite:
   year={2025},
   month={April},
   publisher={GitHub},
-  url={https://github.com/yourusername/riemann-hypothesis}
+  url={https://github.com/bbarclay/riemann-hypothesis}
 }
 ```
 
