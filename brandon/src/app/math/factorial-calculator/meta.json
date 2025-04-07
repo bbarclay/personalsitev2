@@ -12,6 +12,7 @@
   "shape": "rectangle",
   "enabled": true,
   "featured": true,
+  "status": "completed",
   "tags": [
     "math",
     "interactive",
