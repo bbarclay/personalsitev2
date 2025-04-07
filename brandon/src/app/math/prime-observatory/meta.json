@@ -1,7 +1,7 @@
 {
   "id": "PrimeObservatory",
-  "title": "PrimeObservatory",
-  "description": "Interactive PrimeObservatory tool for mathematics exploration",
+  "title": "Prime Observatory",
+  "description": "Interactive tool for exploring prime numbers, their patterns, and properties",
   "category": "Mathematics",
   "subcategory": "Number Theory",
   "type": "math",
@@ -12,12 +12,17 @@
   "shape": "rectangle",
   "enabled": true,
   "featured": false,
+  "status": "completed",
   "tags": [
     "math",
     "interactive"
   ],
   "keywords": [
-    "primeobservatory",
+    "prime numbers",
+    "number theory",
+    "prime patterns",
+    "mathematics",
+    "prime distribution",
     "math",
     "tool"
   ],
