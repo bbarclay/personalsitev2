@@ -1,7 +1,7 @@
 {
   "id": "SlotMachine",
-  "title": "SlotMachine",
-  "description": "Interactive SlotMachine tool for mathematics exploration",
+  "title": "Slot Machine Simulator",
+  "description": "Interactive slot machine simulator with probability analysis and statistics",
   "category": "Mathematics",
   "subcategory": "Probability",
   "type": "math",
@@ -12,12 +12,18 @@
   "shape": "rectangle",
   "enabled": true,
   "featured": false,
+  "status": "completed",
   "tags": [
     "math",
     "interactive"
   ],
   "keywords": [
-    "slotmachine",
+    "slot machine",
+    "probability",
+    "random number generator",
+    "statistics",
+    "game design",
+    "simulation",
     "math",
     "tool"
   ],
