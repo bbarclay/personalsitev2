@@ -509,14 +509,14 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
       .style("opacity", 1);
 
     // Enhanced hover effects
-    points.each(function(d) {
+    points.each(function(this: SVGCircleElement, d: StopTimeData) {
       const point = d3.select(this);
       const node = point.node();
 
       if (!node) return;
 
       // Add mouseover event
-      node.addEventListener('mouseover', function(event) {
+      node.addEventListener('mouseover', function(event: MouseEvent) {
         // Enlarge point on hover
         point
           .transition()
@@ -584,7 +584,7 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
           .transition()
           .duration(200)
           .style('opacity', '0')
-          .end().then(() => {
+          .on('end', () => {
             tooltip.style('visibility', 'hidden');
           });
 
@@ -825,7 +825,7 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
   // Add helper function to find the first value less than start for the tooltip
   const getFirstValueLessThanStart = (start: number): number => {
     let current = start;
-    let firstLower = null;
+    let firstLower: number | null = null;
 
     // Handle special cases
     if (start === 1) return 1;
@@ -840,7 +840,7 @@ const StopTimeGraph = ({ data: propData, currentNumber: propCurrentNumber, onRan
       }
     }
 
-    return firstLower || 1;
+    return firstLower !== null ? firstLower : 1;
   };
 
   if (!data || data.length === 0) {
