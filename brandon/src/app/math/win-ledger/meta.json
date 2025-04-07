@@ -1,7 +1,7 @@
 {
   "id": "WinLedger",
-  "title": "WinLedger",
-  "description": "Interactive WinLedger tool for mathematics exploration",
+  "title": "Win Probability Ledger",
+  "description": "Interactive tool for tracking and analyzing win probabilities in various scenarios",
   "category": "Mathematics",
   "subcategory": "Interactive Tools",
   "type": "math",
@@ -12,12 +12,18 @@
   "shape": "rectangle",
   "enabled": true,
   "featured": false,
+  "status": "completed",
   "tags": [
     "math",
     "interactive"
   ],
   "keywords": [
-    "winledger",
+    "win probability",
+    "statistics",
+    "probability",
+    "analytics",
+    "sports",
+    "gambling",
     "math",
     "tool"
   ],

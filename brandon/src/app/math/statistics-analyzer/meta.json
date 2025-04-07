@@ -1,7 +1,7 @@
 {
   "id": "StatisticsAnalyzer",
-  "title": "StatisticsAnalyzer",
-  "description": "Interactive StatisticsAnalyzer tool for mathematics exploration",
+  "title": "Statistics Analyzer",
+  "description": "Interactive tool for statistical analysis and visualization of data",
   "category": "Mathematics",
   "subcategory": "Statistics",
   "type": "math",
@@ -12,12 +12,18 @@
   "shape": "rectangle",
   "enabled": true,
   "featured": false,
+  "status": "completed",
   "tags": [
     "math",
     "interactive"
   ],
   "keywords": [
-    "statisticsanalyzer",
+    "statistics",
+    "data analysis",
+    "probability",
+    "regression",
+    "hypothesis testing",
+    "visualization",
     "math",
     "tool"
   ],
