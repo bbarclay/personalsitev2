@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" fill="none">
+  <defs>
+    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#00ffff" stroke-width="0.5" opacity="0.1"/>
+    </pattern>
+    
+    <radialGradient id="spotlight" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="#0a0e27"/>
+  
+  <!-- Grid Pattern -->
+  <rect width="1920" height="1080" fill="url(#grid)"/>
+  
+  <!-- Spotlight Effect -->
+  <ellipse cx="960" cy="540" rx="800" ry="600" fill="url(#spotlight)"/>
+  
+  <!-- Floating Particles -->
+  <g id="particles">
+    <circle cx="300" cy="200" r="2" fill="#00ffff" opacity="0.6">
+      <animate attributeName="cy" values="200;180;200" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1600" cy="300" r="2" fill="#0088ff" opacity="0.5">
+      <animate attributeName="cy" values="300;320;300" dur="5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="500" cy="800" r="2" fill="#00ffff" opacity="0.7">
+      <animate attributeName="cy" values="800;780;800" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1400" cy="900" r="2" fill="#0066ff" opacity="0.6">
+      <animate attributeName="cy" values="900;920;900" dur="4.5s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bgGradient)"/>
+  
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0e27;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1f3a;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#0088ff;stop-opacity:0.4" />
+    </linearGradient>
+    
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Central Brain/Command Center -->
+  <g id="commandCenter" transform="translate(400, 300)">
+    <!-- Core Circle -->
+    <circle cx="0" cy="0" r="120" fill="none" stroke="url(#cyanGlow)" stroke-width="3" opacity="0.6" filter="url(#glow)"/>
+    <circle cx="0" cy="0" r="100" fill="none" stroke="#00ffff" stroke-width="2" opacity="0.8"/>
+    <circle cx="0" cy="0" r="80" fill="none" stroke="#0088ff" stroke-width="1.5" opacity="0.6"/>
+    
+    <!-- Inner Neural Network -->
+    <g id="neuralNet">
+      <!-- Nodes -->
+      <circle cx="0" cy="-50" r="8" fill="#00ffff" opacity="0.9"/>
+      <circle cx="43" cy="-25" r="6" fill="#00ddff" opacity="0.8"/>
+      <circle cx="43" cy="25" r="6" fill="#00ddff" opacity="0.8"/>
+      <circle cx="0" cy="50" r="8" fill="#00ffff" opacity="0.9"/>
+      <circle cx="-43" cy="25" r="6" fill="#00ddff" opacity="0.8"/>
+      <circle cx="-43" cy="-25" r="6" fill="#00ddff" opacity="0.8"/>
+      
+      <!-- Connections -->
+      <line x1="0" y1="-50" x2="43" y2="-25" stroke="#00ffff" stroke-width="1.5" opacity="0.4"/>
+      <line x1="0" y1="-50" x2="-43" y2="-25" stroke="#00ffff" stroke-width="1.5" opacity="0.4"/>
+      <line x1="43" y1="-25" x2="43" y2="25" stroke="#00ffff" stroke-width="1.5" opacity="0.4"/>
+      <line x1="43" y1="25" x2="0" y2="50" stroke="#00ffff" stroke-width="1.5" opacity="0.4"/>
+      <line x1="0" y1="50" x2="-43" y2="25" stroke="#00ffff" stroke-width="1.5" opacity="0.4"/>
+      <line x1="-43" y1="25" x2="-43" y2="-25" stroke="#00ffff" stroke-width="1.5" opacity="0.4"/>
+    </g>
+  </g>
+  
+  <!-- Orbital Rings -->
+  <g id="orbits">
+    <ellipse cx="400" cy="300" rx="200" ry="200" fill="none" stroke="#0088ff" stroke-width="1" opacity="0.3" stroke-dasharray="5,5">
+      <animateTransform attributeName="transform" type="rotate" from="0 400 300" to="360 400 300" dur="20s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="400" cy="300" rx="250" ry="250" fill="none" stroke="#00ffff" stroke-width="1" opacity="0.2" stroke-dasharray="8,8">
+      <animateTransform attributeName="transform" type="rotate" from="360 400 300" to="0 400 300" dur="30s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+  
+  <!-- Data Nodes -->
+  <g id="dataNodes">
+    <!-- AI Node -->
+    <circle cx="200" cy="150" r="15" fill="#00ffff" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="200" y="190" fill="#00ffff" font-family="monospace" font-size="12" text-anchor="middle">AI</text>
+    
+    <!-- Math Node -->
+    <circle cx="600" cy="150" r="15" fill="#ff00ff" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <text x="600" y="190" fill="#ff00ff" font-family="monospace" font-size="12" text-anchor="middle">MATH</text>
+    
+    <!-- Code Node -->
+    <circle cx="200" cy="450" r="15" fill="#00ff00" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <text x="200" y="490" fill="#00ff00" font-family="monospace" font-size="12" text-anchor="middle">CODE</text>
+    
+    <!-- Deploy Node -->
+    <circle cx="600" cy="450" r="15" fill="#ffaa00" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="2.2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="600" y="490" fill="#ffaa00" font-family="monospace" font-size="12" text-anchor="middle">DEPLOY</text>
+  </g>
+  
+  <!-- Connecting Lines -->
+  <g id="connections" opacity="0.4">
+    <line x1="200" y1="150" x2="400" y2="300" stroke="#00ffff" stroke-width="2" stroke-dasharray="5,5">
+      <animate attributeName="stroke-dashoffset" from="0" to="10" dur="1s" repeatCount="indefinite"/>
+    </line>
+    <line x1="600" y1="150" x2="400" y2="300" stroke="#ff00ff" stroke-width="2" stroke-dasharray="5,5">
+      <animate attributeName="stroke-dashoffset" from="0" to="10" dur="1.2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="200" y1="450" x2="400" y2="300" stroke="#00ff00" stroke-width="2" stroke-dasharray="5,5">
+      <animate attributeName="stroke-dashoffset" from="0" to="10" dur="1.5s" repeatCount="indefinite"/>
+    </line>
+    <line x1="600" y1="450" x2="400" y2="300" stroke="#ffaa00" stroke-width="2" stroke-dasharray="5,5">
+      <animate attributeName="stroke-dashoffset" from="0" to="10" dur="1.3s" repeatCount="indefinite"/>
+    </line>
+  </g>
+  
+  <!-- Tech Text -->
+  <text x="400" y="50" fill="#00ffff" font-family="monospace" font-size="24" text-anchor="middle" font-weight="bold" opacity="0.8">
+    BRANDON BARCLAY
+  </text>
+  <text x="400" y="75" fill="#0088ff" font-family="monospace" font-size="14" text-anchor="middle" opacity="0.6">
+    AI SYSTEMS • MATH TOOLS • PRODUCT ENGINEERING
+  </text>
+  
+  <!-- Bottom Stats -->
+  <g id="stats" transform="translate(400, 550)">
+    <text x="-120" y="0" fill="#00ffff" font-family="monospace" font-size="10" opacity="0.7">94% PROOF DENSITY</text>
+    <text x="20" y="0" fill="#ff00ff" font-family="monospace" font-size="10" opacity="0.7">91% BUYER CLARITY</text>
+  </g>
+</svg>

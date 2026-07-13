@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <linearGradient id="mathGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff00ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff0088;stop-opacity:1" />
+    </linearGradient>
+    <filter id="mathGlow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Main Circle -->
+  <circle cx="100" cy="100" r="70" fill="none" stroke="url(#mathGradient)" stroke-width="3" filter="url(#mathGlow)"/>
+  
+  <!-- Mathematical Symbols -->
+  <g font-family="serif" font-size="40" fill="#ff00ff" text-anchor="middle" font-weight="bold">
+    <!-- Pi -->
+    <text x="70" y="85">π</text>
+    <!-- Integral -->
+    <text x="130" y="85">∫</text>
+    <!-- Summation -->
+    <text x="70" y="135">Σ</text>
+    <!-- Square Root -->
+    <text x="130" y="135">√</text>
+  </g>
+  
+  <!-- Central Equation -->
+  <text x="100" y="110" font-family="monospace" font-size="16" fill="#ff00ff" text-anchor="middle" opacity="0.9">f(x)=ax²+b</text>
+  
+  <!-- Orbiting Particles -->
+  <circle cx="40" cy="100" r="4" fill="#ff00ff" opacity="0.7">
+    <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="160" cy="100" r="4" fill="#ff0088" opacity="0.7">
+    <animateTransform attributeName="transform" type="rotate" from="180 100 100" to="540 100 100" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Grid Pattern -->
+  <g opacity="0.2" stroke="#ff00ff" stroke-width="0.5">
+    <line x1="100" y1="30" x2="100" y2="170"/>
+    <line x1="30" y1="100" x2="170" y2="100"/>
+  </g>
+</svg>
